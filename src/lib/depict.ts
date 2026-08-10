@@ -54,6 +54,46 @@ export interface Depiction {
 export class DepictionError extends Error {}
 
 /**
+ * A small drawing for a grid of structures, where the point is the shape
+ * rather than the detail.
+ */
+export function thumbnail(smiles: string): string | null {
+  try {
+    const molecule = OCL.Molecule.fromSmiles(smiles);
+    if (molecule.getAllAtoms() === 0) return null;
+    return themeSvg(
+      molecule.toSVG(420, 300, `t${Math.random().toString(36).slice(2, 9)}`, {
+        autoCrop: true,
+        autoCropMargin: 8,
+        suppressChiralText: true,
+        suppressESR: true,
+        suppressCIPParity: true,
+        noStereoProblem: true,
+        strokeWidth: 1.5,
+        factorTextSize: 1,
+      }),
+      1.35,
+      120,
+    );
+  } catch {
+    return null;
+  }
+}
+
+/** Whether any atom carries a formal charge. */
+export function hasFormalCharge(smiles: string): boolean {
+  try {
+    const molecule = OCL.Molecule.fromSmiles(smiles);
+    for (let atom = 0; atom < molecule.getAllAtoms(); atom++) {
+      if (molecule.getAtomCharge(atom) !== 0) return true;
+    }
+    return false;
+  } catch {
+    return true;
+  }
+}
+
+/**
  * A key for the connectivity alone, ignoring stereochemistry and isotopes.
  *
  * PubChem's formula search returns each enantiomer and each deuterated
@@ -103,7 +143,9 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
   const drawing = molecule.getCompactCopy();
   if (options.showHydrogens) {
     drawing.addImplicitHydrogens();
-    drawing.inventCoordinates();
+    // The coordinate inventor discards hydrogens unless told otherwise, which
+    // would undo the line above.
+    drawing.inventCoordinates({ keepHydrogens: true });
   }
   if (options.showCarbons) {
     // The depictor has no "label every atom" switch, but a custom label is
@@ -136,7 +178,9 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
       suppressCIPParity: !options.showStereoLabels,
       noStereoProblem: true,
       strokeWidth: 1.7,
-      factorTextSize: 1.1,
+      // With every hydrogen spelled out there are three times as many labels
+      // competing for the same bond lengths, so they need to be smaller.
+      factorTextSize: options.showHydrogens ? 0.8 : 1.1,
       showAtomNumber: options.showAtomNumbers,
       noImplicitAtomLabelColors: false,
     }),
@@ -334,7 +378,7 @@ const COLOR_VARIABLES: Record<string, string> = {
   "rgb(255,181,181)": "var(--mol-x)",
 };
 
-function themeSvg(svg: string): string {
+function themeSvg(svg: string, scale = DISPLAY_SCALE, maxHeight = MAX_DISPLAY_HEIGHT): string {
   let out = svg;
 
   // Invisible hit-test shapes are only useful to an editor.
@@ -349,10 +393,10 @@ function themeSvg(svg: string): string {
   out = out.replace(
     /^<svg([^>]*?)width="([\d.]+)px"\s+height="([\d.]+)px"/,
     (_match, attributes: string, rawWidth: string, rawHeight: string) => {
-      let width = Number(rawWidth) * DISPLAY_SCALE;
-      let height = Number(rawHeight) * DISPLAY_SCALE;
-      if (height > MAX_DISPLAY_HEIGHT) {
-        const shrink = MAX_DISPLAY_HEIGHT / height;
+      let width = Number(rawWidth) * scale;
+      let height = Number(rawHeight) * scale;
+      if (height > maxHeight) {
+        const shrink = maxHeight / height;
         width *= shrink;
         height *= shrink;
       }

@@ -19,9 +19,11 @@ type Props = {
   resolution: Resolution;
   depiction: Depiction;
   display: DisplayOptions;
+  /** Link to switch the isomer list on or off, when the structure has one. */
+  isomers?: { open: boolean; href: string };
 };
 
-export function StructureView({ query, resolution, depiction, display }: Props) {
+export function StructureView({ query, resolution, depiction, display, isomers }: Props) {
   const heading = resolution.title ?? resolution.iupacName ?? query;
 
   return (
@@ -76,6 +78,23 @@ export function StructureView({ query, resolution, depiction, display }: Props) 
               {depiction.weight} <span className="text-text-faint">g/mol</span>
             </p>
           </div>
+          {isomers && (
+            <a
+              href={isomers.href}
+              className="mt-2 inline-flex items-center gap-1 text-sm text-accent-text hover:underline"
+            >
+              {isomers.open ? "Hide isomers" : "Show all isomers"}
+              <svg
+                viewBox="0 0 20 20"
+                className={`size-3.5 transition-transform ${isomers.open ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path d="m5 8 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          )}
           {depiction.fragmentCount > 1 && (
             <p className="mt-2 text-xs text-text-dim">
               {depiction.fragmentCount} separate components (a salt, mixture or hydrate).

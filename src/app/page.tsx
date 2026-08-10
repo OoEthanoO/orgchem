@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
+import { IsomerGrid, IsomerGridSkeleton } from "@/components/IsomerGrid";
 import { SearchForm } from "@/components/SearchForm";
+import { StereoSection, StereoSectionSkeleton } from "@/components/StereoSection";
 import { StructureView } from "@/components/StructureView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DepictionError, depict, type DisplayOptions } from "@/lib/depict";
@@ -28,6 +31,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
     showAtomNumbers: firstValue(params.n) === "1",
     showStereoLabels: firstValue(params.s) === "1",
   };
+  const showIsomers = firstValue(params.iso) === "1";
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -44,7 +48,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
       <SearchForm initialQuery={query} />
 
       {query ? (
-        <Result query={query} display={display} />
+        <Result query={query} display={display} showIsomers={showIsomers} />
       ) : (
         <Landing />
       )}
@@ -115,7 +119,15 @@ export default async function Page({ searchParams }: PageProps<"/">) {
   );
 }
 
-async function Result({ query, display }: { query: string; display: DisplayOptions }) {
+async function Result({
+  query,
+  display,
+  showIsomers,
+}: {
+  query: string;
+  display: DisplayOptions;
+  showIsomers: boolean;
+}) {
   let resolution;
   try {
     resolution = await resolveQuery(query);
@@ -140,6 +152,12 @@ async function Result({ query, display }: { query: string; display: DisplayOptio
     );
   }
 
+  // A structure with an open valence is a fragment, and fragments do not have
+  // a molecular formula that anything else shares.
+  const canListIsomers = depiction.openValences === 0;
+  // Asking for a formula is already asking for its isomers.
+  const isomersOpen = showIsomers || resolution.source === "formula";
+
   return (
     <div className="grid gap-4">
       <StructureView
@@ -147,38 +165,21 @@ async function Result({ query, display }: { query: string; display: DisplayOptio
         resolution={resolution}
         depiction={depiction}
         display={display}
+        isomers={
+          canListIsomers
+            ? { open: isomersOpen, href: isomerHref(query, display, !isomersOpen) }
+            : undefined
+        }
       />
-      {resolution.candidates && resolution.candidates.length > 1 && (
-        <Candidates candidates={resolution.candidates} />
+      <Suspense fallback={<StereoSectionSkeleton />}>
+        <StereoSection smiles={resolution.smiles} />
+      </Suspense>
+      {canListIsomers && isomersOpen && (
+        <Suspense fallback={<IsomerGridSkeleton formula={depiction.formulaPlain} />}>
+          <IsomerGrid formula={depiction.formulaPlain} current={resolution.smiles} />
+        </Suspense>
       )}
     </div>
-  );
-}
-
-function Candidates({
-  candidates,
-}: {
-  candidates: NonNullable<Awaited<ReturnType<typeof resolveQuery>>["candidates"]>;
-}) {
-  return (
-    <section className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow)] sm:p-5">
-      <h2 className="text-sm font-medium text-text">Other structures with this formula</h2>
-      <p className="mt-1 text-sm text-text-dim">
-        A molecular formula counts atoms; it does not say how they are joined.
-      </p>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {candidates.slice(1).map((candidate) => (
-          <li key={candidate.smiles}>
-            <Link
-              href={`/?q=${encodeURIComponent(`smiles:${candidate.smiles}`)}`}
-              className="inline-block rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
-            >
-              {candidate.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }
 
@@ -240,6 +241,17 @@ function ExampleList({ className = "" }: { className?: string }) {
       </ul>
     </div>
   );
+}
+
+/** The current URL with the isomer list switched on or off. */
+function isomerHref(query: string, display: DisplayOptions, open: boolean): string {
+  const params = new URLSearchParams({ q: query });
+  if (display.showHydrogens) params.set("h", "1");
+  if (display.showCarbons) params.set("c", "1");
+  if (display.showAtomNumbers) params.set("n", "1");
+  if (display.showStereoLabels) params.set("s", "1");
+  if (open) params.set("iso", "1");
+  return `/?${params}`;
 }
 
 function firstValue(value: string | string[] | undefined): string | undefined {

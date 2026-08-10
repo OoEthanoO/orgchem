@@ -50,7 +50,17 @@ prefixes force a particular reading.
 
 **Molecular formulas** are treated as the ambiguous things they are: `C₅H₁₂`
 does not name a structure, so the isomers are listed rather than one being
-picked silently.
+picked silently. Any result can show the same list on demand — "show all
+isomers" under the formula draws everything sharing it, so `1-hexanol` leads to
+the other 31 structures with the formula C₆H₁₄O.
+
+**Stereochemistry gets three dimensions.** Where a structure has exactly one
+stereogenic element — one stereocentre, or one double bond that could be cis or
+trans — both isomers are built, given 3D coordinates and drawn as ball-and-stick
+models side by side. They share a single rotation, because the pair only reads
+as mirror images if you can turn them together and watch one fail to sit on top
+of the other. With two or more stereo elements there are up to 2ⁿ isomers and no
+pair to single out, so nothing is offered rather than something arbitrary.
 
 Whatever the route in, the result is enriched from PubChem, so a condensed
 formula comes back with its IUPAC name and a name comes back with its
@@ -84,6 +94,7 @@ shareable and keeps the page working without client-side JavaScript.
 | `src/lib/dictionary.ts` | trivial and trade names |
 | `src/lib/resolve.ts` | the resolution cascade and network lookups |
 | `src/lib/depict.ts` | SMILES → SVG and property sheet |
+| `src/lib/stereo.ts` | stereoisomer enumeration and 3D coordinates |
 | `src/app/api/resolve` | JSON API: `/api/resolve?q=CH3CH2COOH` |
 | `src/app/api/svg` | the structure as a downloadable SVG |
 
@@ -94,3 +105,14 @@ estimates from OpenChemLib's models, not measurements. The offline name parser
 covers introductory nomenclature only and defers to OPSIN for anything harder.
 Where an input does not fix stereochemistry, the page says so rather than
 quietly drawing one enantiomer.
+
+Isomer lists come from PubChem's holdings, which for a larger formula is fewer
+than the number that could exist on paper: C₆H₁₄O has 39 constitutional isomers
+in principle and 32 on file. Charged species and co-crystals that happen to
+share an atom count are filtered out, and enantiomers and isotopologues are
+collapsed, so the list counts structures rather than records.
+
+The dictionary's stereochemistry is checked against PubChem by
+`scripts/check-stereochemistry.mjs`, which compares InChIKey blocks so a wrong
+configuration is caught without a right one being overwritten by a vaguer
+record.

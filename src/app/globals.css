@@ -14,6 +14,7 @@
   --bg: #fbfaf8;
   --surface: #ffffff;
   --surface-2: #f4f2ee;
+  --surface-2-solid: #f4f2ee;
   --border: #e5e0d7;
   --border-strong: #cec7ba;
   --text: #1c1a17;
@@ -35,6 +36,8 @@
   --mol-p: #c2610c;
   --mol-i: #6b21a8;
   --mol-x: #57534e;
+  --mol-c: #3f3a34;
+  --mol-h: #b9b2a6;
 
   color-scheme: light;
 }
@@ -64,6 +67,8 @@
   --mol-p: #ffab4d;
   --mol-i: #c99bf5;
   --mol-x: #a8aeab;
+  --mol-c: #8b938f;
+  --mol-h: #e6e8e7;
 
   color-scheme: dark;
 }

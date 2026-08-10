@@ -1,6 +1,6 @@
 import "server-only";
 
-import { canDepict, constitutionKey, openValenceCount } from "./depict";
+import { canDepict, constitutionKey, hasFormalCharge, openValenceCount } from "./depict";
 import { normalizeInput, normalizeName } from "./normalize";
 import { parseCondensed } from "./condensed";
 import { parseIupacName } from "./iupac";
@@ -274,39 +274,10 @@ async function fromPubChemInchi(value: string): Promise<Resolution | null> {
  */
 async function fromMolecularFormula(input: string): Promise<Resolution | null> {
   const formula = input.replace(/\s+/g, "");
-  if (!/^(?:[A-Z][a-z]?\d*)+$/.test(formula)) return null;
-  if (!/\d/.test(formula)) return null;
+  if (!isMolecularFormula(formula)) return null;
 
-  const url = `${PUBCHEM_URL}/fastformula/${encodeURIComponent(formula)}/property/Title,SMILES/JSON?MaxRecords=30`;
-  const rows = await fetchJson<{
-    PropertyTable?: { Properties?: Array<{ CID: number; Title?: string; SMILES?: string }> };
-  }>(url);
-  const properties = rows?.PropertyTable?.Properties?.filter((p) => p.SMILES) ?? [];
-  if (properties.length === 0) return null;
-
-  // One entry per distinct connectivity: the search returns each enantiomer
-  // and each labelled isotopologue separately, which is not what "isomers of
-  // this formula" means to someone typing a formula in.
-  const seen = new Set<string>();
-  const candidates: NonNullable<Resolution["candidates"]> = [];
-  for (const property of properties) {
-    const smiles = property.SMILES as string;
-    // Records like "cyclobutane monohydrate" add up to the same formula but
-    // are mixtures, not isomers of a single molecule.
-    if (smiles.includes(".")) continue;
-    const key = constitutionKey(smiles);
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    candidates.push({ title: property.Title ?? "", smiles, cid: property.CID });
-  }
+  const candidates = await isomersOfFormula(formula, 24);
   if (candidates.length === 0) return null;
-
-  // Records PubChem has no name for are the obscure ones; lead with something
-  // recognisable, since the first candidate is the structure that gets drawn.
-  candidates.sort((a, b) => Number(Boolean(b.title)) - Number(Boolean(a.title)));
-  for (const candidate of candidates) {
-    if (!candidate.title) candidate.title = `CID ${candidate.cid}`;
-  }
 
   return {
     smiles: candidates[0].smiles,
@@ -353,6 +324,70 @@ async function enrich(resolution: Resolution): Promise<Resolution> {
     inchiKey: resolution.inchiKey ?? data.InChIKey,
     cid: resolution.cid ?? data.CID,
   };
+}
+
+export interface Isomer {
+  title: string;
+  smiles: string;
+  cid?: number;
+}
+
+function isMolecularFormula(formula: string): boolean {
+  return /^(?:[A-Z][a-z]?\d*)+$/.test(formula) && /\d/.test(formula);
+}
+
+/** Isomer lists do not change, so they are worth holding onto between requests. */
+const isomerCache = new Map<string, Isomer[]>();
+
+/**
+ * Every structure PubChem knows with a given molecular formula, one entry per
+ * distinct connectivity.
+ *
+ * The raw search is not a list of isomers: it returns each enantiomer, each
+ * deuterated variant and each co-crystal separately, so C6H14O comes back as
+ * hundreds of records for a few dozen actual structures. Collapsing on
+ * connectivity is what turns it into the answer to "what else has this
+ * formula".
+ */
+export async function isomersOfFormula(formula: string, limit: number): Promise<Isomer[]> {
+  if (!isMolecularFormula(formula)) return [];
+
+  const cacheKey = `${formula}:${limit}`;
+  const cached = isomerCache.get(cacheKey);
+  if (cached) return cached;
+
+  // Ask for far more records than are wanted, since most collapse away.
+  const url = `${PUBCHEM_URL}/fastformula/${encodeURIComponent(formula)}/property/Title,SMILES/JSON?MaxRecords=${Math.min(300, limit * 8)}`;
+  const rows = await fetchJson<{
+    PropertyTable?: { Properties?: Array<{ CID: number; Title?: string; SMILES?: string }> };
+  }>(url);
+  const properties = rows?.PropertyTable?.Properties?.filter((p) => p.SMILES) ?? [];
+
+  const seen = new Set<string>();
+  const isomers: Isomer[] = [];
+  for (const property of properties) {
+    const smiles = property.SMILES as string;
+    // Records like "cyclobutane monohydrate" add up to the same formula but
+    // are mixtures, not isomers of a single molecule; ylides and other charged
+    // species share the atom count without being what the question means.
+    if (smiles.includes(".")) continue;
+    if (hasFormalCharge(smiles)) continue;
+    const key = constitutionKey(smiles);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    isomers.push({ title: property.Title ?? "", smiles, cid: property.CID });
+  }
+
+  // Records PubChem has no name for are the obscure ones; lead with something
+  // recognisable, since the first isomer is the one that gets drawn large.
+  isomers.sort((a, b) => Number(Boolean(b.title)) - Number(Boolean(a.title)));
+  for (const isomer of isomers) {
+    if (!isomer.title) isomer.title = `CID ${isomer.cid}`;
+  }
+
+  const trimmed = isomers.slice(0, limit);
+  if (trimmed.length > 0) isomerCache.set(cacheKey, trimmed);
+  return trimmed;
 }
 
 // --- network helpers -------------------------------------------------------
