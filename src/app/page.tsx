@@ -1,69 +1,215 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import { SearchForm } from "@/components/SearchForm";
+import { StructureView } from "@/components/StructureView";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { DepictionError, depict, type DisplayOptions } from "@/lib/depict";
+import { ResolveError, resolveQuery } from "@/lib/resolve";
+
+export const dynamic = "force-dynamic";
+
+const EXAMPLES: Array<{ query: string; note: string }> = [
+  { query: "CH₃CH₂CH₂CH₂CH₂–", note: "condensed formula for a group" },
+  { query: "2-methylbutan-1-ol", note: "IUPAC name" },
+  { query: "(CH₃)₃COH", note: "branches in parentheses" },
+  { query: "caffeine", note: "common name" },
+  { query: "CH₃(CH₂)₁₆COOH", note: "repeat units" },
+  { query: "hexa-2,4-diene", note: "locants and unsaturation" },
+  { query: "CC(=O)Oc1ccccc1C(=O)O", note: "SMILES" },
+  { query: "C₄H₁₀O", note: "ambiguous molecular formula" },
+];
+
+export default async function Page({ searchParams }: PageProps<"/">) {
+  const params = await searchParams;
+  const query = firstValue(params.q)?.trim() ?? "";
+  const display: DisplayOptions = {
+    showHydrogens: firstValue(params.h) === "1",
+    showCarbons: firstValue(params.c) === "1",
+    showAtomNumbers: firstValue(params.n) === "1",
+    showStereoLabels: firstValue(params.s) === "1",
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
+      <header className="flex items-center justify-between gap-4">
+        <Link href="/" className="group flex items-baseline gap-2">
+          <span className="text-xl font-semibold tracking-tight text-text">orgchem</span>
+          <span className="hidden text-sm text-text-dim sm:inline">
+            type anything, see the structure
+          </span>
+        </Link>
+        <ThemeToggle />
+      </header>
+
+      <SearchForm initialQuery={query} />
+
+      {query ? (
+        <Result query={query} display={display} />
+      ) : (
+        <Landing />
+      )}
+
+      <footer className="mt-auto pt-6 text-xs text-text-faint">
+        Names resolved with{" "}
+        <a
+          className="hover:text-text-dim hover:underline"
+          href="https://github.com/dan2097/opsin"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          OPSIN
+        </a>{" "}
+        and{" "}
+        <a
+          className="hover:text-text-dim hover:underline"
+          href="https://pubchem.ncbi.nlm.nih.gov/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          PubChem
+        </a>
+        ; structures drawn with{" "}
+        <a
+          className="hover:text-text-dim hover:underline"
+          href="https://github.com/cheminfo/openchemlib-js"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          OpenChemLib
+        </a>
+        . Predicted properties are estimates, not measurements.
+      </footer>
     </div>
   );
+}
+
+async function Result({ query, display }: { query: string; display: DisplayOptions }) {
+  let resolution;
+  try {
+    resolution = await resolveQuery(query);
+  } catch (error) {
+    return (
+      <Problem
+        title={error instanceof ResolveError ? error.message : "Something went wrong."}
+        hint={error instanceof ResolveError ? error.hint : undefined}
+      />
+    );
+  }
+
+  let depiction;
+  try {
+    depiction = depict(resolution.smiles, display);
+  } catch (error) {
+    return (
+      <Problem
+        title="That resolved to a structure that could not be drawn."
+        hint={error instanceof DepictionError ? error.message : undefined}
+      />
+    );
+  }
+
+  return (
+    <div className="grid gap-4">
+      <StructureView
+        query={query}
+        resolution={resolution}
+        depiction={depiction}
+        display={display}
+      />
+      {resolution.candidates && resolution.candidates.length > 1 && (
+        <Candidates candidates={resolution.candidates} />
+      )}
+    </div>
+  );
+}
+
+function Candidates({
+  candidates,
+}: {
+  candidates: NonNullable<Awaited<ReturnType<typeof resolveQuery>>["candidates"]>;
+}) {
+  return (
+    <section className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow)] sm:p-5">
+      <h2 className="text-sm font-medium text-text">Other structures with this formula</h2>
+      <p className="mt-1 text-sm text-text-dim">
+        A molecular formula counts atoms; it does not say how they are joined.
+      </p>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {candidates.slice(1).map((candidate) => (
+          <li key={candidate.smiles}>
+            <Link
+              href={`/?q=${encodeURIComponent(`smiles:${candidate.smiles}`)}`}
+              className="inline-block rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
+            >
+              {candidate.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function Problem({ title, hint }: { title: string; hint?: string }) {
+  return (
+    <section className="rounded-2xl border border-border bg-surface p-5 shadow-[var(--shadow)] sm:p-6">
+      <p className="text-text">{title}</p>
+      {hint && <p className="mt-2 text-sm text-text-dim">{hint}</p>}
+      <ExampleList className="mt-5" />
+    </section>
+  );
+}
+
+function Landing() {
+  return (
+    <section className="grid gap-6">
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-[var(--shadow)] sm:p-6">
+        <h2 className="text-sm font-medium text-text">What it understands</h2>
+        <ul className="mt-3 grid gap-2 text-sm text-text-dim sm:grid-cols-2">
+          <li>
+            <strong className="font-medium text-text">Condensed formulas</strong> — the way
+            structures get written by hand, including branches, repeat units and open valences.
+          </li>
+          <li>
+            <strong className="font-medium text-text">IUPAC names</strong> — locants, multipliers,
+            unsaturation, functional-group suffixes, stereodescriptors.
+          </li>
+          <li>
+            <strong className="font-medium text-text">Common and trade names</strong> — from
+            acetone to amoxicillin.
+          </li>
+          <li>
+            <strong className="font-medium text-text">SMILES and InChI</strong> — pasted straight
+            in, or prefixed with <code className="font-mono text-text">smiles:</code> to be sure.
+          </li>
+        </ul>
+        <ExampleList className="mt-6" />
+      </div>
+    </section>
+  );
+}
+
+function ExampleList({ className = "" }: { className?: string }) {
+  return (
+    <div className={className}>
+      <p className="text-xs font-medium tracking-wide text-text-faint uppercase">Try one</p>
+      <ul className="mt-2 flex flex-wrap gap-2">
+        {EXAMPLES.map((example) => (
+          <li key={example.query}>
+            <Link
+              href={`/?q=${encodeURIComponent(example.query)}`}
+              title={example.note}
+              className="inline-block rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm text-text-dim transition-colors hover:border-accent hover:text-text"
+            >
+              {example.query}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function firstValue(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
 }

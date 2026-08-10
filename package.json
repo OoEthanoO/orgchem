@@ -6,12 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npm run test:condensed && npm run test:iupac && npm run test:dictionary && npm run test:depict",
+    "test:condensed": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-condensed.mjs",
+    "test:iupac": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-iupac.mjs",
+    "test:dictionary": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-dictionary.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/check-formulas.mjs",
+    "test:depict": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-depict.mjs > /dev/null && echo 'depiction ok'"
   },
   "dependencies": {
     "next": "16.3.0",
+    "openchemlib": "^9.24.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

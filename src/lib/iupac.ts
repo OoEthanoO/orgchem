@@ -1,0 +1,518 @@
+/**
+ * A local, substitutive-nomenclature parser for systematic IUPAC names.
+ *
+ * OPSIN is the authority for name-to-structure and is tried first, so this
+ * exists to keep the app answering when the network is slow or unreachable,
+ * and to make the common classroom names resolve without a round trip. It
+ * covers what an introductory organic course uses:
+ *
+ *   substituent prefixes with locants and multipliers   2,3-dimethylbutane
+ *   chains and rings                                    cyclohexane
+ *   unsaturation                                        hexa-2,4-diene
+ *   principal characteristic groups                     hexan-1-ol
+ *   substituent groups                                  pentan-1-yl
+ *   simple esters and benzene derivatives               methyl butanoate
+ *
+ * It deliberately does not attempt fused polycyclics, bridged systems,
+ * stereodescriptors or complex bracketed substituents; those fall through to
+ * OPSIN. Anything it cannot parse with confidence throws.
+ */
+
+const STEMS: Array<[string, number]> = [
+  ["henicos", 21],
+  ["heneicos", 21],
+  ["nonadec", 19],
+  ["octadec", 18],
+  ["heptadec", 17],
+  ["hexadec", 16],
+  ["pentadec", 15],
+  ["tetradec", 14],
+  ["tridec", 13],
+  ["dodec", 12],
+  ["undec", 11],
+  ["eicos", 20],
+  ["icos", 20],
+  ["dec", 10],
+  ["non", 9],
+  ["oct", 8],
+  ["hept", 7],
+  ["hex", 6],
+  ["pent", 5],
+  ["but", 4],
+  ["prop", 3],
+  ["eth", 2],
+  ["meth", 1],
+];
+
+const MULTIPLIERS: Record<string, number> = {
+  di: 2,
+  bis: 2,
+  tri: 3,
+  tris: 3,
+  tetra: 4,
+  tetrakis: 4,
+  penta: 5,
+  hexa: 6,
+  hepta: 7,
+  octa: 8,
+  nona: 9,
+  deca: 10,
+};
+
+/** Substituent prefixes. `order` 2 means the group is doubly bonded (oxo). */
+const PREFIXES: Array<[string, { smiles: string; order?: number }]> = [
+  ["trifluoromethyl", { smiles: "C(F)(F)F" }],
+  ["trichloromethyl", { smiles: "C(Cl)(Cl)Cl" }],
+  ["hydroxymethyl", { smiles: "CO" }],
+  ["cyclopropyl", { smiles: "C1CC1" }],
+  ["cyclobutyl", { smiles: "C1CCC1" }],
+  ["cyclopentyl", { smiles: "C1CCCC1" }],
+  ["cyclohexyl", { smiles: "C1CCCCC1" }],
+  ["isopropyl", { smiles: "C(C)C" }],
+  ["isobutyl", { smiles: "CC(C)C" }],
+  ["isopentyl", { smiles: "CCC(C)C" }],
+  ["isoamyl", { smiles: "CCC(C)C" }],
+  ["neopentyl", { smiles: "CC(C)(C)C" }],
+  ["sec-butyl", { smiles: "C(C)CC" }],
+  ["tert-butyl", { smiles: "C(C)(C)C" }],
+  ["tertbutyl", { smiles: "C(C)(C)C" }],
+  ["t-butyl", { smiles: "C(C)(C)C" }],
+  ["methoxy", { smiles: "OC" }],
+  ["ethoxy", { smiles: "OCC" }],
+  ["propoxy", { smiles: "OCCC" }],
+  ["butoxy", { smiles: "OCCCC" }],
+  ["phenoxy", { smiles: "Oc1ccccc1" }],
+  ["benzyloxy", { smiles: "OCc1ccccc1" }],
+  ["methylthio", { smiles: "SC" }],
+  ["carboxy", { smiles: "C(=O)O" }],
+  ["carbamoyl", { smiles: "C(N)=O" }],
+  ["formyl", { smiles: "C=O" }],
+  ["acetyl", { smiles: "C(C)=O" }],
+  ["benzoyl", { smiles: "C(=O)c1ccccc1" }],
+  ["phenyl", { smiles: "c1ccccc1" }],
+  ["benzyl", { smiles: "Cc1ccccc1" }],
+  ["naphthyl", { smiles: "c1ccc2ccccc2c1" }],
+  ["methyl", { smiles: "C" }],
+  ["ethenyl", { smiles: "C=C" }],
+  ["ethynyl", { smiles: "C#C" }],
+  ["ethyl", { smiles: "CC" }],
+  ["propenyl", { smiles: "C=CC" }],
+  ["propyl", { smiles: "CCC" }],
+  ["butyl", { smiles: "CCCC" }],
+  ["pentyl", { smiles: "CCCCC" }],
+  ["hexyl", { smiles: "CCCCCC" }],
+  ["heptyl", { smiles: "CCCCCCC" }],
+  ["octyl", { smiles: "CCCCCCCC" }],
+  ["vinyl", { smiles: "C=C" }],
+  ["allyl", { smiles: "CC=C" }],
+  ["fluoro", { smiles: "F" }],
+  ["chloro", { smiles: "Cl" }],
+  ["bromo", { smiles: "Br" }],
+  ["iodo", { smiles: "I" }],
+  ["hydroxy", { smiles: "O" }],
+  ["sulfanyl", { smiles: "S" }],
+  ["mercapto", { smiles: "S" }],
+  ["amino", { smiles: "N" }],
+  ["nitroso", { smiles: "N=O" }],
+  ["nitro", { smiles: "[N+](=O)[O-]" }],
+  ["cyano", { smiles: "C#N" }],
+  ["oxo", { smiles: "O", order: 2 }],
+  ["keto", { smiles: "O", order: 2 }],
+  ["thioxo", { smiles: "S", order: 2 }],
+];
+
+/**
+ * Principal characteristic groups. `onChain` groups modify a chain carbon that
+ * already exists; `addsCarbon` groups bring their own carbon atom.
+ */
+type Suffix = {
+  /** Branches added to the carbon at the suffix locant. */
+  branches: Array<{ smiles: string; order: number }>;
+  /** Where the locant defaults when the name omits it. */
+  defaultLocant?: number;
+  /** The group supplies its own carbon (carboxylic acid, carbonitrile). */
+  addsCarbon?: boolean;
+  /** Marks an open valence rather than adding atoms (-yl). */
+  openValence?: boolean;
+  /** The alkyl half of an ester bonds through an added oxygen. */
+  ester?: boolean;
+};
+
+const SUFFIXES: Array<[string, Suffix]> = [
+  ["carboxylic acid", { branches: [{ smiles: "C(=O)O", order: 1 }], addsCarbon: true }],
+  ["carbaldehyde", { branches: [{ smiles: "C=O", order: 1 }], addsCarbon: true }],
+  ["carbonitrile", { branches: [{ smiles: "C#N", order: 1 }], addsCarbon: true }],
+  ["oic acid", { branches: [{ smiles: "O", order: 2 }, { smiles: "O", order: 1 }] }],
+  ["dioic acid", { branches: [{ smiles: "O", order: 2 }, { smiles: "O", order: 1 }] }],
+  ["oate", { branches: [{ smiles: "O", order: 2 }], ester: true }],
+  ["nitrile", { branches: [{ smiles: "N", order: 3 }] }],
+  ["amide", { branches: [{ smiles: "O", order: 2 }, { smiles: "N", order: 1 }] }],
+  ["amine", { branches: [{ smiles: "N", order: 1 }] }],
+  ["thiol", { branches: [{ smiles: "S", order: 1 }] }],
+  ["one", { branches: [{ smiles: "O", order: 2 }], defaultLocant: 2 }],
+  ["ol", { branches: [{ smiles: "O", order: 1 }] }],
+  ["al", { branches: [{ smiles: "O", order: 2 }] }],
+  ["yl", { branches: [], openValence: true }],
+];
+
+/** Aromatic parents, given as a ring template with numbered attachment points. */
+type AromaticParent = {
+  /** Ring atoms in locant order, as SMILES atom tokens. */
+  ring: string[];
+  /** Branches already present on the parent (the OH of phenol). */
+  fixed?: Array<{ locant: number; smiles: string; order: number }>;
+};
+
+const AROMATIC_PARENTS: Record<string, AromaticParent> = {
+  benzene: { ring: ["c", "c", "c", "c", "c", "c"] },
+  phenol: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "O", order: 1 }],
+  },
+  aniline: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "N", order: 1 }],
+  },
+  toluene: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C", order: 1 }],
+  },
+  benzaldehyde: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C=O", order: 1 }],
+  },
+  "benzoic acid": {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C(=O)O", order: 1 }],
+  },
+  pyridine: { ring: ["n", "c", "c", "c", "c", "c"] },
+};
+
+/** Alkyl groups that can name the ester half of `<alkyl> <parent>oate`. */
+const ESTER_ALKYLS: Record<string, string> = {
+  methyl: "C",
+  ethyl: "CC",
+  propyl: "CCC",
+  isopropyl: "C(C)C",
+  butyl: "CCCC",
+  isobutyl: "CC(C)C",
+  "tert-butyl": "C(C)(C)C",
+  pentyl: "CCCCC",
+  phenyl: "c1ccccc1",
+  benzyl: "Cc1ccccc1",
+  vinyl: "C=C",
+  allyl: "CC=C",
+};
+
+/** Substituent groups named without a parsable chain stem. */
+const RADICAL_GROUPS: Record<string, string> = {
+  isopropyl: "C[CH]C",
+  isobutyl: "[CH2]C(C)C",
+  isopentyl: "[CH2]CC(C)C",
+  isoamyl: "[CH2]CC(C)C",
+  neopentyl: "[CH2]C(C)(C)C",
+  "sec-butyl": "C[CH]CC",
+  "tert-butyl": "C[C](C)C",
+  tertbutyl: "C[C](C)C",
+  "t-butyl": "C[C](C)C",
+  phenyl: "[c]1ccccc1",
+  benzyl: "[CH2]c1ccccc1",
+  vinyl: "[CH]=C",
+  ethenyl: "[CH]=C",
+  allyl: "[CH2]C=C",
+  ethynyl: "[C]#C",
+  formyl: "[CH]=O",
+  acetyl: "C[C]=O",
+  carboxy: "[C](=O)O",
+  cyclopropyl: "[CH]1CC1",
+  cyclobutyl: "[CH]1CCC1",
+  cyclopentyl: "[CH]1CCCC1",
+  cyclohexyl: "[CH]1CCCCC1",
+};
+
+class NameError extends Error {}
+
+const BOND_SYMBOL: Record<number, string> = { 1: "", 2: "=", 3: "#" };
+
+type Branch = { smiles: string; order: number };
+
+type BuildAtom = {
+  sym: string;
+  branches: Branch[];
+  /** Bond order to the next atom in the chain; 0 for the last one. */
+  next: number;
+  /** True when the atom carries an unfilled valence (-yl). */
+  open: boolean;
+  /** Ring closure digit emitted after this atom, if any. */
+  ring: number;
+};
+
+export interface NameResult {
+  smiles: string;
+  openValences: number;
+}
+
+/** Parse a systematic name into SMILES. Throws when the name is not covered. */
+export function parseIupacName(input: string): NameResult {
+  const name = cleanName(input);
+  if (!name) throw new NameError("empty");
+
+  // Esters are written as two words: "methyl butanoate". The acyl half is
+  // built with only its double-bonded oxygen, and the alkyl half is written
+  // first so the ester oxygen ends up between them.
+  const words = name.split(" ");
+  if (words.length === 2 && words[1].endsWith("oate")) {
+    const alkyl = ESTER_ALKYLS[words[0]];
+    if (alkyl) {
+      const acyl = parseSingleName(words[1]);
+      return { smiles: `${alkyl}O${acyl.smiles}`, openValences: 0 };
+    }
+  }
+
+  return parseSingleName(name);
+}
+
+/** Strip the decorations this parser deliberately ignores. */
+function cleanName(input: string): string {
+  let s = input.toLowerCase().trim();
+  // Stereodescriptors and configurational prefixes: (2R,3S)-, (E)-, cis-, D-.
+  s = s.replace(/^\(([0-9rsezRSEZ,'\s+-]|alpha|beta)*\)-/g, "");
+  s = s.replace(/^(cis|trans|syn|anti|d|l|dl|r|s|e|z|n|o|p|m|meso)-/g, "");
+  s = s.replace(/\((\d*[rsez])\)-/g, "");
+  s = s.replace(/\s+/g, " ");
+  return s.trim();
+}
+
+function parseSingleName(name: string): NameResult {
+  const { prefixes, rest } = peelPrefixes(name);
+
+  const aromatic = matchAromaticParent(rest);
+  if (aromatic) return buildAromatic(aromatic.parent, prefixes);
+
+  // Substituent groups whose names have no chain stem to parse (isopropyl).
+  if (prefixes.length === 0) {
+    const radical = RADICAL_GROUPS[rest];
+    if (radical) return { smiles: radical, openValences: 1 };
+  }
+
+  const parent = parseParent(rest);
+  return buildChain(parent, prefixes);
+}
+
+type PrefixInstance = { locant: number | null; smiles: string; order: number };
+
+/**
+ * Consume `2,3-dimethyl`-style substituent prefixes from the front of the name
+ * until what remains is the parent hydride.
+ */
+function peelPrefixes(name: string): { prefixes: PrefixInstance[]; rest: string } {
+  const prefixes: PrefixInstance[] = [];
+  let rest = name;
+
+  for (;;) {
+    const locantMatch = /^-?(\d+(?:,\d+)*)-?/.exec(rest);
+    const locantText = locantMatch?.[1];
+    const after = locantMatch ? rest.slice(locantMatch[0].length) : rest.replace(/^-/, "");
+
+    const multiplierMatch = /^(tetrakis|tetra|tris|bis|penta|hexa|hepta|octa|nona|deca|tri|di)/.exec(
+      after,
+    );
+    const withoutMultiplier = multiplierMatch ? after.slice(multiplierMatch[0].length) : after;
+
+    const found = PREFIXES.find(([p]) => withoutMultiplier.startsWith(p));
+    if (!found) {
+      // A multiplier that is not followed by a substituent belongs to the
+      // parent instead ("2,4-dienol"), so stop here.
+      break;
+    }
+
+    const [prefixName, spec] = found;
+    const locants = locantText ? locantText.split(",").map(Number) : [];
+    const count = multiplierMatch ? MULTIPLIERS[multiplierMatch[0]] : 1;
+    const pending: PrefixInstance[] = [];
+    for (let k = 0; k < count; k++) {
+      pending.push({
+        locant: locants[k] ?? locants[0] ?? null,
+        smiles: spec.smiles,
+        order: spec.order ?? 1,
+      });
+    }
+
+    const remainder = withoutMultiplier.slice(prefixName.length).replace(/^-/, "");
+    // "pentyl" on its own is a parent hydride with a -yl ending, not a prefix
+    // with nothing after it, so leave it for the parent parser.
+    if (!remainder) break;
+    prefixes.push(...pending);
+    rest = remainder;
+  }
+
+  return { prefixes, rest };
+}
+
+function matchAromaticParent(rest: string): { parent: AromaticParent } | null {
+  const parent = AROMATIC_PARENTS[rest];
+  return parent ? { parent } : null;
+}
+
+type Parent = {
+  size: number;
+  ring: boolean;
+  doubleBonds: number[];
+  tripleBonds: number[];
+  suffix: Suffix | null;
+  suffixLocants: number[];
+};
+
+/** Parse `cyclohexane`, `hexa-2,4-dien-1-ol`, `pentan-1-yl` and friends. */
+function parseParent(input: string): Parent {
+  let rest = input;
+  const ring = rest.startsWith("cyclo");
+  if (ring) rest = rest.slice("cyclo".length);
+
+  const stem = STEMS.find(([s]) => rest.startsWith(s));
+  if (!stem) throw new NameError(`no parent chain in "${input}"`);
+  rest = rest.slice(stem[0].length);
+  const size = stem[1];
+
+  const doubleBonds: number[] = [];
+  const tripleBonds: number[] = [];
+
+  // Unsaturation: `an`, `-2-en`, `a-2,4-dien`, `-1,3-diyn`.
+  for (;;) {
+    const m = /^a?-?(\d+(?:,\d+)*)?-?(tetra|penta|tri|di)?(an|en|yn)/.exec(rest);
+    if (!m) break;
+    rest = rest.slice(m[0].length);
+    if (m[3] === "an") continue;
+    const locants = m[1] ? m[1].split(",").map(Number) : [1];
+    const count = m[2] ? MULTIPLIERS[m[2]] : 1;
+    for (let k = 0; k < count; k++) {
+      const locant = locants[k] ?? locants[0];
+      (m[3] === "en" ? doubleBonds : tripleBonds).push(locant);
+    }
+  }
+
+  // What remains is the principal characteristic group. The stem's terminal
+  // "e" survives when the suffix is written with a locant ("ethane-1,2-diol").
+  if (rest === "e" || rest === "") {
+    return { size, ring, doubleBonds, tripleBonds, suffix: null, suffixLocants: [] };
+  }
+  rest = rest.replace(/^e(?=[a-z0-9-])/, "");
+
+  const sm = /^-?(\d+(?:,\d+)*)?-?(tetra|penta|tri|di)?(.*)$/.exec(rest);
+  if (!sm) throw new NameError(`unparsed ending "${rest}"`);
+  const suffixEntry = SUFFIXES.find(([s]) => sm[3] === s);
+  if (!suffixEntry) throw new NameError(`unknown ending "${sm[3]}"`);
+
+  const [, suffix] = suffixEntry;
+  const count = sm[2] ? MULTIPLIERS[sm[2]] : 1;
+  // "hexanedioic acid" names both chain ends without writing the locants.
+  const implied = count === 2 && !suffix.defaultLocant ? [1, size] : [suffix.defaultLocant ?? 1];
+  const locants = sm[1] ? sm[1].split(",").map(Number) : implied;
+  const suffixLocants: number[] = [];
+  for (let k = 0; k < count; k++) suffixLocants.push(locants[k] ?? locants[0]);
+
+  return { size, ring, doubleBonds, tripleBonds, suffix, suffixLocants };
+}
+
+function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
+  const { size, ring, suffix } = parent;
+  const atoms: BuildAtom[] = Array.from({ length: size }, () => ({
+    sym: "C",
+    branches: [],
+    next: 1,
+    open: false,
+    ring: 0,
+  }));
+  atoms[atoms.length - 1].next = 0;
+
+  for (const locant of parent.doubleBonds) setBond(atoms, locant, 2, ring);
+  for (const locant of parent.tripleBonds) setBond(atoms, locant, 3, ring);
+
+  for (const p of prefixes) {
+    const index = (p.locant ?? 1) - 1;
+    if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
+    atoms[index].branches.push({ smiles: p.smiles, order: p.order });
+  }
+
+  let openValences = 0;
+  if (suffix) {
+    for (const locant of parent.suffixLocants) {
+      const index = locant - 1;
+      if (index < 0 || index >= atoms.length) {
+        throw new NameError(`locant ${locant} out of range`);
+      }
+      if (suffix.openValence) {
+        atoms[index].open = true;
+        openValences++;
+      } else {
+        for (const b of suffix.branches) atoms[index].branches.push({ ...b });
+      }
+    }
+  }
+
+  if (ring) {
+    atoms[0].ring = 1;
+    atoms[atoms.length - 1].ring = 1;
+  }
+
+  return { smiles: emit(atoms, ring), openValences };
+}
+
+function buildAromatic(parent: AromaticParent, prefixes: PrefixInstance[]): NameResult {
+  const atoms: BuildAtom[] = parent.ring.map((sym) => ({
+    sym,
+    branches: [],
+    next: 1,
+    open: false,
+    ring: 0,
+  }));
+  atoms[atoms.length - 1].next = 0;
+  atoms[0].ring = 1;
+  atoms[atoms.length - 1].ring = 1;
+
+  for (const f of parent.fixed ?? []) {
+    atoms[f.locant - 1].branches.push({ smiles: f.smiles, order: f.order });
+  }
+  for (const p of prefixes) {
+    const index = (p.locant ?? 1) - 1;
+    if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
+    atoms[index].branches.push({ smiles: p.smiles, order: p.order });
+  }
+
+  return { smiles: emit(atoms, true), openValences: 0 };
+}
+
+function setBond(atoms: BuildAtom[], locant: number, order: number, ring: boolean): void {
+  const index = locant - 1;
+  if (index < 0 || index >= atoms.length) throw new NameError(`locant ${locant} out of range`);
+  if (index === atoms.length - 1) {
+    if (!ring) throw new NameError(`no bond starts at position ${locant}`);
+    return; // the ring-closing bond; left single for simplicity
+  }
+  atoms[index].next = order;
+}
+
+/** Serialise the built chain or ring to SMILES. */
+function emit(atoms: BuildAtom[], ring: boolean): string {
+  let out = "";
+  for (let i = 0; i < atoms.length; i++) {
+    const a = atoms[i];
+    if (i > 0) out += BOND_SYMBOL[atoms[i - 1].next];
+
+    if (a.open) {
+      const used =
+        (i > 0 ? atoms[i - 1].next : 0) +
+        a.next +
+        (ring && (i === 0 || i === atoms.length - 1) ? 1 : 0) +
+        a.branches.reduce((sum, b) => sum + b.order, 0);
+      const h = Math.max(0, 4 - used - 1);
+      out += `[${a.sym}${h === 0 ? "" : h === 1 ? "H" : `H${h}`}]`;
+    } else {
+      out += a.sym;
+    }
+
+    if (a.ring) out += String(a.ring);
+    for (const b of a.branches) out += `(${BOND_SYMBOL[b.order]}${b.smiles})`;
+  }
+  return out;
+}

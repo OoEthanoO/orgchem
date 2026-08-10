@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# orgchem
 
-## Getting Started
+Type anything that names or describes an organic compound, and see its structure.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+CH₃CH₂CH₂CH₂CH₂–        →  the pentyl group
+2-methylbutan-1-ol      →  the alcohol
+(CH₃)₃COH               →  tert-butanol
+caffeine                →  1,3,7-trimethylpurine-2,6-dione
+C₄H₁₀O                  →  all seven isomers
+CC(=O)Oc1ccccc1C(=O)O   →  aspirin
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running it
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Then open http://localhost:3000. `npm test` runs the parser suites; `npm run build` produces a production build.
 
-## Learn More
+## What it accepts
 
-To learn more about Next.js, take a look at the following resources:
+**Condensed structural formulas** — the notation people actually write by hand.
+This is the part no name-to-structure service handles, so it is parsed here
+(`src/lib/condensed.ts`). It understands branches `CH₃CH(CH₃)CH₃`, repeat units
+`CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, bond symbols
+`CH₃CH=CHCH₃`, abbreviations `tBuOH`, `PhCH₂COOH`, `CF₃COOH`, and open valences.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The parser is valence driven, which is what lets it settle the notation's
+ambiguities without guessing:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Input | Question | Resolved by |
+| --- | --- | --- |
+| `CH₃CH(CH₃)CH₃` vs `CH₃(CH₂)₃CH₃` | is `(X)n` a branch or a repeat unit? | the CH has spare valence and CH₃ is monovalent, so it branches; the CH₃ is saturated and CH₂ is divalent, so it repeats |
+| `CH₃CHOHCH₃` vs `CH₃CH₂OH` | does OH continue the chain or hang off it? | OH cannot carry what follows, so mid-formula it must branch |
+| `CH₃CH₂CH₂CH₂CH₂` | molecule or substituent group? | the last CH₂ has one bond spare, so it is the pentyl group — the dash a chemist writes is confirmation, not information |
 
-## Deploy on Vercel
+**IUPAC names** go to [OPSIN](https://github.com/dan2097/opsin), with a local
+parser (`src/lib/iupac.ts`) covering chains, rings, locants, multipliers,
+unsaturation and the common suffixes so the app still answers when the network
+does not.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Common and trade names** come from a local dictionary of ~260 compounds first,
+then [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**SMILES** is accepted directly, and `smiles:`, `name:`, `formula:` or `inchi:`
+prefixes force a particular reading.
+
+**Molecular formulas** are treated as the ambiguous things they are: `C₅H₁₂`
+does not name a structure, so the isomers are listed rather than one being
+picked silently.
+
+Whatever the route in, the result is enriched from PubChem, so a condensed
+formula comes back with its IUPAC name and a name comes back with its
+identifiers.
+
+## How it fits together
+
+```
+input → normalize → dictionary → condensed formula → SMILES
+                  → OPSIN ∥ local IUPAC parser
+                  → molecular formula (isomer list) → PubChem name
+                  → PubChem enrichment → OpenChemLib → SVG + properties
+```
+
+Each stage is strict enough to fall through rather than guess, and a stage only
+wins if what it produced is a structure that actually parses.
+
+Rendering and property prediction use
+[OpenChemLib](https://github.com/cheminfo/openchemlib-js) on the server — it is
+a megabyte of compiled Java, so the page ships finished SVG rather than a
+chemistry engine. Bond colours are emitted as CSS custom properties so one
+drawing works in both themes.
+
+The query and the display options live in the URL, which makes results
+shareable and keeps the page working without client-side JavaScript.
+
+| Path | |
+| --- | --- |
+| `src/lib/condensed.ts` | condensed structural formula → SMILES |
+| `src/lib/iupac.ts` | offline systematic-name parser |
+| `src/lib/dictionary.ts` | trivial and trade names |
+| `src/lib/resolve.ts` | the resolution cascade and network lookups |
+| `src/lib/depict.ts` | SMILES → SVG and property sheet |
+| `src/app/api/resolve` | JSON API: `/api/resolve?q=CH3CH2COOH` |
+| `src/app/api/svg` | the structure as a downloadable SVG |
+
+## Caveats
+
+Predicted properties (cLogP, polar surface area, hydrogen-bond counts) are
+estimates from OpenChemLib's models, not measurements. The offline name parser
+covers introductory nomenclature only and defers to OPSIN for anything harder.
+Where an input does not fix stereochemistry, the page says so rather than
+quietly drawing one enantiomer.
