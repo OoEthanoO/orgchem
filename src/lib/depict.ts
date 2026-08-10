@@ -42,6 +42,8 @@ export interface Depiction {
   canonicalSmiles: string;
   /** Stereocentres the input left unspecified. */
   undefinedStereocentres: number;
+  /** Double bonds whose cis/trans geometry the input left unspecified. */
+  undefinedDoubleBonds: number;
   /** Unfilled valences: non-zero means this is a substituent group. */
   openValences: number;
   properties: Property[];
@@ -111,6 +113,16 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
     }
   }
 
+  // A double bond whose geometry is undefined is drawn by the depictor as two
+  // crossed lines. That is a real convention, but it reads as a broken bond
+  // rather than as information, so the bond is drawn plainly and the missing
+  // geometry is reported in words alongside the drawing.
+  for (let bond = 0; bond < drawing.getAllBonds(); bond++) {
+    if (drawing.getBondType(bond) === OCL.Molecule.cBondTypeCross) {
+      drawing.setBondType(bond, OCL.Molecule.cBondTypeDouble);
+    }
+  }
+
   const svg = themeSvg(
     drawing.toSVG(760, 520, "structure", {
       autoCrop: true,
@@ -139,6 +151,7 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
     weight: formatNumber(formulaInfo.relativeWeight, 2),
     canonicalSmiles: molecule.toSmiles(),
     undefinedStereocentres: countUndefinedStereocentres(molecule),
+    undefinedDoubleBonds: countUndefinedDoubleBonds(molecule),
     openValences: countOpenValences(molecule),
     properties,
     composition,
@@ -164,6 +177,15 @@ function countUndefinedStereocentres(molecule: OCL.Molecule): number {
  * from whichever stage resolved it — `pentan-1-yl` is a substituent group
  * whether it arrived as a name or as `CH3CH2CH2CH2CH2-`.
  */
+/** Double bonds that could be cis or trans, where the input said neither. */
+function countUndefinedDoubleBonds(molecule: OCL.Molecule): number {
+  let count = 0;
+  for (let bond = 0; bond < molecule.getAllBonds(); bond++) {
+    if (molecule.getBondType(bond) === OCL.Molecule.cBondTypeCross) count++;
+  }
+  return count;
+}
+
 export function openValenceCount(smiles: string): number {
   try {
     return countOpenValences(OCL.Molecule.fromSmiles(smiles));

@@ -22,16 +22,20 @@ const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound";
 
 const skeleton = (inchiKey) => inchiKey.split("-")[0];
 
-/** Names whose entry has stereocentres but no configuration written down. */
+/**
+ * Entries with stereochemistry left unwritten: a stereocentre with no
+ * configuration, or a double bond that could be cis or trans and says neither
+ * (the depictor draws those crossed).
+ */
 function needsUpgrade(smiles) {
   const molecule = OCL.Molecule.fromSmiles(smiles);
-  const total = molecule.getStereoCenterCount();
-  if (total === 0) return false;
-  let unknown = 0;
   for (let atom = 0; atom < molecule.getAtoms(); atom++) {
-    if (molecule.isAtomStereoCenter(atom) && molecule.isAtomConfigurationUnknown(atom)) unknown++;
+    if (molecule.isAtomStereoCenter(atom) && molecule.isAtomConfigurationUnknown(atom)) return true;
   }
-  return unknown > 0;
+  for (let bond = 0; bond < molecule.getAllBonds(); bond++) {
+    if (molecule.getBondType(bond) === OCL.Molecule.cBondTypeCross) return true;
+  }
+  return false;
 }
 
 async function pubchem(path, body) {
@@ -64,8 +68,12 @@ for (const [name, smiles] of Object.entries(DICTIONARY)) {
     skipped.push(`${name}: different skeleton (${ours.MolecularFormula} vs ${theirs.MolecularFormula})`);
     continue;
   }
-  if (!/[@]/.test(theirs.SMILES)) {
+  if (!/[@/\\]/.test(theirs.SMILES)) {
     skipped.push(`${name}: PubChem has no configuration either`);
+    continue;
+  }
+  if (needsUpgrade(theirs.SMILES) && !needsUpgrade(smiles)) {
+    skipped.push(`${name}: PubChem's record is less specific`);
     continue;
   }
   upgrades.push([name, smiles, theirs.SMILES]);

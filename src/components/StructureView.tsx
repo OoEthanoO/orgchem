@@ -53,11 +53,12 @@ export function StructureView({ query, resolution, depiction, display }: Props) 
           </Note>
         )}
 
-        {depiction.undefinedStereocentres > 0 && (
+        {(depiction.undefinedStereocentres > 0 || depiction.undefinedDoubleBonds > 0) && (
           <Note title="Configuration not specified.">
-            {depiction.undefinedStereocentres === 1
-              ? "This structure has a stereocentre, but the input did not say which of the two mirror images is meant."
-              : `This structure has ${depiction.undefinedStereocentres} stereocentres whose configuration the input did not fix.`}
+            {describeUndefinedStereochemistry(
+              depiction.undefinedStereocentres,
+              depiction.undefinedDoubleBonds,
+            )}
           </Note>
         )}
 
@@ -125,6 +126,30 @@ export function StructureView({ query, resolution, depiction, display }: Props) 
       </aside>
     </div>
   );
+}
+
+/**
+ * Says what the input left open, in the terms a chemist would use. Both kinds
+ * of missing stereochemistry mean the drawing stands for more than one real
+ * compound, which is worth stating rather than leaving to be noticed.
+ */
+function describeUndefinedStereochemistry(centres: number, doubleBonds: number): string {
+  const parts: string[] = [];
+  if (centres > 0) {
+    parts.push(
+      centres === 1
+        ? "a stereocentre whose configuration the input did not fix"
+        : `${centres} stereocentres whose configuration the input did not fix`,
+    );
+  }
+  if (doubleBonds > 0) {
+    parts.push(
+      doubleBonds === 1
+        ? "a double bond that could be cis or trans"
+        : `${doubleBonds} double bonds that could each be cis or trans`,
+    );
+  }
+  return `This structure has ${parts.join(", and ")}, so the drawing stands for more than one compound.`;
 }
 
 function Note({ title, children }: { title: string; children: React.ReactNode }) {

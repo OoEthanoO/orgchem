@@ -59,6 +59,15 @@ const CASES = [
   ["2-methylprop-1-ene", "CC(C)=C"],
 ];
 
+// Names the parser must refuse rather than answer by guessing. Placing an
+// unlocanted substituent at position 1 would build a different compound.
+const REJECT = [
+  "methylpropene",
+  "methylpropane",
+  "chloropropane",
+  "ethylhexane",
+];
+
 let pass = 0;
 const failures = [];
 
@@ -75,7 +84,16 @@ for (const [name, reference] of CASES) {
   }
 }
 
-console.log(`${pass}/${CASES.length} passed`);
+for (const name of REJECT) {
+  try {
+    const got = parseIupacName(name);
+    failures.push(`${name}: should have been refused, got ${got.smiles}`);
+  } catch {
+    pass++;
+  }
+}
+
+console.log(`${pass}/${CASES.length + REJECT.length} passed`);
 if (failures.length) {
   console.log("\nFAILURES:\n  " + failures.join("\n  "));
   process.exit(1);

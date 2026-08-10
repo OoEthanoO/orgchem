@@ -27,6 +27,7 @@ export async function GET(request: Request) {
       inputSmiles: resolution.smiles,
       formula: depiction.formulaPlain,
       undefinedStereocentres: depiction.undefinedStereocentres,
+      undefinedDoubleBonds: depiction.undefinedDoubleBonds,
       molecularWeight: Number(depiction.weight),
       source: resolution.source,
       interpretation: resolution.interpretation,

@@ -429,6 +429,14 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
   for (const locant of parent.tripleBonds) setBond(atoms, locant, 3, ring);
 
   for (const p of prefixes) {
+    // A substituent written without a locant cannot be placed by guessing.
+    // "methylpropene" is isobutylene, but assuming position 1 would build
+    // but-2-ene — a different compound with a name of its own. On a chain of
+    // three or more carbons the position matters, so the name goes to a
+    // resolver that knows the convention instead.
+    if (p.locant === null && atoms.length > 2) {
+      throw new NameError("substituent has no locant and the position is not forced");
+    }
     const index = (p.locant ?? 1) - 1;
     if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
     atoms[index].branches.push({ smiles: p.smiles, order: p.order });
