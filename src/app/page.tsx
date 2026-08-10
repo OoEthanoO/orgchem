@@ -49,7 +49,38 @@ export default async function Page({ searchParams }: PageProps<"/">) {
         <Landing />
       )}
 
-      <footer className="mt-auto pt-6 text-xs text-text-faint">
+      <footer className="mt-auto grid gap-2 pt-6 text-xs text-text-faint">
+        <p>
+          Built by{" "}
+          <a
+            className="text-text-dim hover:text-text hover:underline"
+            href="https://www.ethanyanxu.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Ethan Yan Xu
+          </a>
+          . More work at{" "}
+          <a
+            className="text-text-dim hover:text-text hover:underline"
+            href="https://www.ethanyanxu.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            ethanyanxu.com
+          </a>{" "}
+          and{" "}
+          <a
+            className="text-text-dim hover:text-text hover:underline"
+            href="https://map.ethanyanxu.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            map.ethanyanxu.com
+          </a>
+          .
+        </p>
+        <p>
         Names resolved with{" "}
         <a
           className="hover:text-text-dim hover:underline"
@@ -78,6 +109,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
           OpenChemLib
         </a>
         . Predicted properties are estimates, not measurements.
+        </p>
       </footer>
     </div>
   );
