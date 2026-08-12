@@ -427,6 +427,12 @@ function themeSvg(svg: string, scale = DISPLAY_SCALE, maxHeight = MAX_DISPLAY_HE
   // measured when placing the text, so it has to survive into the rendering.
   out = out.replace(/<text /g, '<text xml:space="preserve" ');
 
+  // The depictor ships a <style> block scoped to the drawing's own id. Its
+  // rules live in the stylesheet instead, so the block is dead weight — and
+  // its text is read out by anything that walks the DOM for content, which
+  // means a screen reader announcing "#structure text font-family sans-serif".
+  out = out.replace(/\s*<style>[\s\S]*?<\/style>/, "");
+
   // Invisible hit-test shapes are only useful to an editor.
   out = out.replace(/\s*<(line|circle)[^>]*class="event"[^>]*\/>/g, "");
 

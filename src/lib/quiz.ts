@@ -36,15 +36,41 @@ export const CATEGORIES: Category[] = [
 
 export const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
 
-export interface Question {
+/**
+ * The two directions naming can be practised in. Reading a structure and
+ * writing a structure are different skills, and the second is the one a
+ * multiple choice can test without asking anyone to draw.
+ */
+export type QuizMode = "name" | "structure";
+
+export const QUIZ_MODES: QuizMode[] = ["name", "structure"];
+
+interface QuestionBase {
   /** Index into the bank: the answer stays on the server. */
   id: number;
   category: string;
   difficulty: Difficulty;
-  svg: string;
   formula: string;
   hints: string[];
 }
+
+/** Here is a structure — what is it called? */
+export interface NameQuestion extends QuestionBase {
+  mode: "name";
+  svg: string;
+}
+
+/** Here is a name — which of these is it? */
+export interface StructureQuestion extends QuestionBase {
+  mode: "structure";
+  name: string;
+  choices: Array<{ id: number; svg: string }>;
+}
+
+export type Question = NameQuestion | StructureQuestion;
+
+/** How many structures to offer in the multiple choice. */
+const CHOICE_COUNT = 4;
 
 export interface Verdict {
   correct: boolean;
@@ -81,13 +107,11 @@ export function countFor(category: string | null, difficulty: Difficulty | null)
  * does not repeat itself.
  */
 export function pickQuestion(
+  mode: QuizMode,
   category: string | null,
   difficulty: Difficulty | null,
   exclude: number[] = [],
 ): Question | null {
-  const pool = bankFor(category, difficulty);
-  if (pool.length === 0) return null;
-
   const excluded = new Set(exclude);
   const matching: number[] = [];
   const unseen: number[] = [];
@@ -96,24 +120,126 @@ export function pickQuestion(
     matching.push(index);
     if (!excluded.has(index)) unseen.push(index);
   });
+  if (matching.length === 0) return null;
 
   // Once every question in the pool has been asked, start over rather than
   // running out.
-  const choices = unseen.length > 0 ? unseen : matching;
-  const id = choices[Math.floor(Math.random() * choices.length)];
-  return describe(id, QUIZ_BANK[id]);
+  const pool = unseen.length > 0 ? unseen : matching;
+  const id = pool[Math.floor(Math.random() * pool.length)];
+  return mode === "structure" ? describeChoice(id) : describeName(id);
 }
 
-function describe(id: number, question: BankQuestion): Question {
+function describeName(id: number): NameQuestion {
+  const question = QUIZ_BANK[id];
   const drawing = depict(question.smiles, DEFAULT_DISPLAY);
   return {
+    mode: "name",
     id,
     category: question.category,
     difficulty: question.difficulty,
     svg: drawing.svg,
     formula: drawing.formulaPlain,
-    hints: hintsFor(question, drawing.formulaPlain),
+    hints: hintsFor(question, drawing.formulaPlain, "name"),
   };
+}
+
+function describeChoice(id: number): StructureQuestion {
+  const question = QUIZ_BANK[id];
+  const formula = formulaOf(id);
+  const options = [id, ...distractorsFor(id)];
+  shuffle(options);
+
+  return {
+    mode: "structure",
+    id,
+    category: question.category,
+    difficulty: question.difficulty,
+    name: question.name,
+    formula,
+    hints: hintsFor(question, formula, "structure"),
+    choices: options.map((choice) => ({
+      id: choice,
+      svg: depict(QUIZ_BANK[choice].smiles, DEFAULT_DISPLAY).svg,
+    })),
+  };
+}
+
+/** Molecular formulas, worked out once so distractors can be found by them. */
+const FORMULA_INDEX = (() => {
+  const byFormula = new Map<string, number[]>();
+  const formulas: string[] = [];
+  QUIZ_BANK.forEach((question, index) => {
+    let formula = "";
+    try {
+      formula = depict(question.smiles, DEFAULT_DISPLAY).formulaPlain;
+    } catch {
+      formula = "";
+    }
+    formulas[index] = formula;
+    if (!formula) return;
+    const bucket = byFormula.get(formula);
+    if (bucket) bucket.push(index);
+    else byFormula.set(formula, [index]);
+  });
+  return { byFormula, formulas };
+})();
+
+function formulaOf(id: number): string {
+  return FORMULA_INDEX.formulas[id] ?? "";
+}
+
+/**
+ * The wrong answers to show alongside the right one.
+ *
+ * A distractor is only worth offering if it could plausibly be the compound
+ * named, so true isomers come first: same formula, different connectivity, and
+ * telling them apart is exactly the skill being practised. Only when there are
+ * not enough of those does it fall back to structures of a similar size from
+ * the same topic.
+ */
+function distractorsFor(id: number): number[] {
+  const wanted = CHOICE_COUNT - 1;
+  const question = QUIZ_BANK[id];
+  const chosen: number[] = [];
+  const taken = new Set([id]);
+
+  const take = (candidates: number[]) => {
+    const shuffled = [...candidates];
+    shuffle(shuffled);
+    for (const candidate of shuffled) {
+      if (chosen.length >= wanted) return;
+      if (taken.has(candidate)) continue;
+      taken.add(candidate);
+      chosen.push(candidate);
+    }
+  };
+
+  take((FORMULA_INDEX.byFormula.get(formulaOf(id)) ?? []).filter((index) => index !== id));
+
+  if (chosen.length < wanted) {
+    const size = QUIZ_BANK[id].smiles.length;
+    take(
+      QUIZ_BANK.map((_, index) => index)
+        .filter((index) => QUIZ_BANK[index].category === question.category)
+        .sort(
+          (a, b) =>
+            Math.abs(QUIZ_BANK[a].smiles.length - size) -
+            Math.abs(QUIZ_BANK[b].smiles.length - size),
+        )
+        .slice(0, 12),
+    );
+  }
+
+  if (chosen.length < wanted) take(QUIZ_BANK.map((_, index) => index));
+
+  return chosen;
+}
+
+function shuffle<T>(items: T[]): void {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
 }
 
 /** Substituent prefixes worth naming in a hint, longest first. */
@@ -170,16 +296,23 @@ const FAMILY_HINTS: Array<[RegExp, string]> = [
   [/ene$/, "an alkene"],
   [/yne$/, "an alkyne"],
   [/benzene$|phenol$|aniline$|toluene$|benzoic acid$|benzaldehyde$/, "an aromatic compound"],
+  // These have to be tried before the plain alkane ending they both share.
+  [/(chloro|bromo|fluoro|iodo)[a-z]*ane$/, "a haloalkane"],
+  [/(methoxy|ethoxy|propoxy|butoxy)[a-z]*ane$/, "an ether"],
   [/ane$/, "an alkane"],
 ];
 
 /**
  * Three hints that give away progressively more: what kind of compound it is,
- * then how big the parent is and what hangs off it, then the name with only
- * its numbers removed. The last one leaves exactly the part that naming
- * practice is about — working out the locants.
+ * then how big the parent is and what hangs off it, then the part that is
+ * actually being tested.
+ *
+ * That last hint differs by direction. Naming a structure, the hard part is
+ * the locants, so it shows the name with only its numbers removed. Picking a
+ * structure, the name is already on screen — so the useful hint is what to
+ * count on each option to tell them apart.
  */
-function hintsFor(question: BankQuestion, formula: string): string[] {
+function hintsFor(question: BankQuestion, formula: string, mode: QuizMode): string[] {
   const name = question.name;
   const hints: string[] = [];
 
@@ -198,8 +331,17 @@ function hintsFor(question: BankQuestion, formula: string): string[] {
       : `${parent} There are no substituent prefixes to place.`,
   );
 
-  // Everything but the numbers: the skeleton of the name, minus the locants.
-  hints.push(`The name is "${name.replace(/\d/g, "?")}" — only the numbers are missing.`);
+  if (mode === "name") {
+    hints.push(`The name is "${name.replace(/\d/g, "?")}" — only the numbers are missing.`);
+    return hints;
+  }
+
+  const locants = [...new Set(name.match(/\d/g) ?? [])].sort();
+  hints.push(
+    locants.length > 0
+      ? `Number the parent chain of each option and look at position${locants.length > 1 ? "s" : ""} ${listOf(locants)} — only one option has everything in the right place.`
+      : "There are no locants to check, so tell the options apart by their skeletons alone.",
+  );
 
   return hints;
 }
@@ -289,6 +431,44 @@ function substituentsIn(name: string): string[] {
 function listOf(items: string[]): string {
   if (items.length === 1) return items[0];
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/**
+ * Mark a chosen structure. The comparison is by structure rather than by id, so
+ * a distractor that happens to be the same compound would still count.
+ */
+export function checkChoice(id: number, choice: number): Verdict {
+  const question = QUIZ_BANK[id];
+  if (!question) {
+    return {
+      correct: false,
+      outcome: "unreadable",
+      message: "That question is no longer available.",
+      answer: "",
+    };
+  }
+
+  // A choice outside the offered set is the "show me" button, not a guess.
+  const picked = QUIZ_BANK[choice];
+  if (!picked) {
+    return {
+      correct: false,
+      outcome: "different-compound",
+      message: "Here is the answer.",
+      answer: question.name,
+    };
+  }
+
+  const correct = structureKey(picked.smiles) === structureKey(question.smiles);
+  return {
+    correct,
+    outcome: correct ? "correct" : "different-compound",
+    message: correct
+      ? "Correct."
+      : "That is a different compound — compare where the groups sit along the chain.",
+    answer: question.name,
+    named: correct ? undefined : picked.name,
+  };
 }
 
 /** Mark an answer by resolving it and comparing structures. */

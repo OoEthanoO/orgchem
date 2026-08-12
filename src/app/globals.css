@@ -109,8 +109,21 @@ body {
   height: auto;
 }
 
+/*
+ * These rules come from the <style> block the depictor embeds in every drawing,
+ * which is stripped on the way out: the same declarations once here serve all
+ * of them, and keep the SVG free of text that is not part of the structure.
+ */
 .structure svg text {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.structure svg line {
+  stroke-linecap: round;
+}
+
+.structure svg polygon {
+  stroke-linejoin: round;
 }
 
 input:focus-visible,

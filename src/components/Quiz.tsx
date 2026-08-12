@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { Category, Difficulty, Question, Verdict } from "@/lib/quiz";
+import type { Category, Difficulty, Question, QuizMode, Verdict } from "@/lib/quiz";
 
 import { Formula } from "./Formula";
 
@@ -31,6 +31,7 @@ export function Quiz({
   /** Question counts by "category:difficulty", with "*" meaning unfiltered. */
   availability: Record<string, number>;
 }) {
+  const [mode, setMode] = useState<QuizMode>("name");
   const [category, setCategory] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [round, setRound] = useState(0);
@@ -50,7 +51,12 @@ export function Quiz({
 
   // Clearing the old question belongs to whatever asked for a new one, so the
   // effect below only has to write in what comes back.
-  function requestQuestion(nextCategory: string | null, nextDifficulty: Difficulty | null) {
+  function requestQuestion(
+    nextCategory: string | null,
+    nextDifficulty: Difficulty | null,
+    nextMode: QuizMode = mode,
+  ) {
+    setMode(nextMode);
     setCategory(nextCategory);
     setDifficulty(nextDifficulty);
     setQuestion(null);
@@ -63,7 +69,7 @@ export function Quiz({
 
   useEffect(() => {
     const controller = new AbortController();
-    const params = new URLSearchParams();
+    const params = new URLSearchParams({ mode });
     if (category) params.set("category", category);
     if (difficulty) params.set("difficulty", difficulty);
     if (seen.current.length) params.set("seen", seen.current.slice(-40).join(","));
@@ -84,7 +90,7 @@ export function Quiz({
       });
 
     return () => controller.abort();
-  }, [category, difficulty, round]);
+  }, [mode, category, difficulty, round]);
 
   // Put the cursor where it is needed so a run can be done from the keyboard.
   useEffect(() => {
@@ -118,6 +124,33 @@ export function Quiz({
     }
   }
 
+  async function choose(choice: number) {
+    if (!question || question.mode !== "structure" || verdict) return;
+    setChecking(true);
+    try {
+      const response = await fetch("/api/quiz", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: question.id, choice }),
+      });
+      const result: Verdict = await response.json();
+      setVerdict(result);
+      setScore((current) => {
+        const streak = result.correct ? current.streak + 1 : 0;
+        return {
+          correct: current.correct + (result.correct ? 1 : 0),
+          asked: current.asked + 1,
+          streak,
+          best: Math.max(current.best, streak),
+        };
+      });
+    } catch {
+      setError("Could not check that answer.");
+    } finally {
+      setChecking(false);
+    }
+  }
+
   async function giveUp() {
     if (!question || verdict) return;
     setScore((current) => ({ ...current, asked: current.asked + 1, streak: 0 }));
@@ -126,7 +159,11 @@ export function Quiz({
         method: "POST",
         headers: { "content-type": "application/json" },
         // A blank answer asks the server for the name without scoring a try.
-        body: JSON.stringify({ id: question.id, answer: "" }),
+        body: JSON.stringify(
+          question.mode === "structure"
+            ? { id: question.id, choice: -1 }
+            : { id: question.id, answer: "" },
+        ),
       });
       const result: Verdict = await response.json();
       setVerdict({ ...result, message: "Here is the name." });
@@ -139,20 +176,26 @@ export function Quiz({
     <div className="grid gap-4">
       <Filters
         categories={categories}
+        mode={mode}
         category={category}
         difficulty={difficulty}
         availability={availability}
+        onMode={(value) => requestQuestion(category, difficulty, value)}
         onCategory={(value) => requestQuestion(value, difficulty)}
         onDifficulty={(value) => requestQuestion(category, value)}
       />
 
       <section className="overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow)]">
         <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
-          <h2 className="text-sm font-medium text-text">Name this compound</h2>
+          <h2 className="text-sm font-medium text-text">
+            {mode === "structure" ? "Which one is this?" : "Name this compound"}
+          </h2>
           <p className="text-xs text-text-faint">
             {score.asked > 0
               ? `${score.correct}/${score.asked} correct · streak ${score.streak}${score.best > 1 ? ` · best ${score.best}` : ""}`
-              : "Type the IUPAC name and press Enter"}
+              : mode === "structure"
+                ? "Pick the structure the name describes"
+                : "Type the IUPAC name and press Enter"}
           </p>
         </header>
 
@@ -164,58 +207,124 @@ export function Quiz({
           </div>
         ) : (
           <>
-            <div
-              className="structure flex min-h-[14rem] items-center justify-center bg-surface p-4 sm:min-h-[16rem] sm:p-6"
-              dangerouslySetInnerHTML={{ __html: question.svg }}
-            />
+            {question.mode === "name" ? (
+              /*
+                Labelled as an image so it is not read out as loose atom labels
+                — but the label deliberately stops at the formula, since the
+                name is the answer.
+              */
+              <div
+                role="img"
+                aria-label={`Structure to name. Molecular formula ${question.formula}.`}
+                className="structure flex min-h-[14rem] items-center justify-center bg-surface p-4 sm:min-h-[16rem] sm:p-6"
+                dangerouslySetInnerHTML={{ __html: question.svg }}
+              />
+            ) : (
+              <div className="px-4 py-5 sm:px-5">
+                <p className="text-center text-lg font-medium text-text sm:text-xl">
+                  {question.name}
+                </p>
+                <ul className="mt-4 grid grid-cols-2 gap-3">
+                  {question.choices.map((choice, index) => {
+                    const picked = verdict !== null;
+                    return (
+                      <li key={choice.id}>
+                        <button
+                          type="button"
+                          disabled={picked || checking}
+                          onClick={() => void choose(choice.id)}
+                          aria-label={`Option ${index + 1}`}
+                          className={`w-full rounded-xl border p-2 transition-colors ${
+                            picked
+                              ? "border-border bg-surface-2 opacity-70"
+                              : "border-border bg-surface-2 hover:border-accent"
+                          }`}
+                        >
+                          <div
+                            aria-hidden="true"
+                            className="structure flex h-28 items-center justify-center sm:h-32"
+                            dangerouslySetInnerHTML={{ __html: choice.svg }}
+                          />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
 
             <div className="border-t border-border px-4 py-3 sm:px-5">
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  if (verdict) requestQuestion(category, difficulty);
-                  else void submit();
-                }}
-                className="flex flex-wrap items-center gap-2"
-              >
-                <input
-                  ref={inputRef}
-                  value={answer}
-                  onChange={(event) => setAnswer(event.target.value)}
-                  readOnly={Boolean(verdict)}
-                  placeholder="e.g. 2-methylbutan-1-ol"
-                  aria-label="IUPAC name"
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2 px-3 py-2 text-base text-text placeholder:text-text-faint focus:border-accent focus:outline-none"
-                />
-                {verdict ? (
-                  <button
-                    type="submit"
-                    className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-                  >
-                    Next
-                  </button>
-                ) : (
-                  <>
+              {question.mode === "name" ? (
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    if (verdict) requestQuestion(category, difficulty);
+                    else void submit();
+                  }}
+                  className="flex flex-wrap items-center gap-2"
+                >
+                  <input
+                    ref={inputRef}
+                    value={answer}
+                    onChange={(event) => setAnswer(event.target.value)}
+                    readOnly={Boolean(verdict)}
+                    placeholder="e.g. 2-methylbutan-1-ol"
+                    aria-label="IUPAC name"
+                    autoComplete="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2 px-3 py-2 text-base text-text placeholder:text-text-faint focus:border-accent focus:outline-none"
+                  />
+                  {verdict ? (
                     <button
                       type="submit"
-                      disabled={checking || !answer.trim()}
-                      className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                      className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                     >
-                      {checking ? "Checking…" : "Check"}
+                      Next
                     </button>
+                  ) : (
+                    <>
+                      <button
+                        type="submit"
+                        disabled={checking || !answer.trim()}
+                        className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                      >
+                        {checking ? "Checking…" : "Check"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void giveUp()}
+                        className="rounded-xl border border-border px-3 py-2 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
+                      >
+                        Show me
+                      </button>
+                    </>
+                  )}
+                </form>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  {verdict ? (
                     <button
                       type="button"
-                      onClick={() => void giveUp()}
-                      className="rounded-xl border border-border px-3 py-2 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
+                      onClick={() => requestQuestion(category, difficulty)}
+                      className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                     >
-                      Show me
+                      Next
                     </button>
-                  </>
-                )}
-              </form>
+                  ) : (
+                    <>
+                      <p className="flex-1 text-sm text-text-dim">Pick the matching structure.</p>
+                      <button
+                        type="button"
+                        onClick={() => void giveUp()}
+                        className="rounded-xl border border-border px-3 py-2 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
+                      >
+                        Show me
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
 
               {!verdict && (
                 <Hints
@@ -225,7 +334,7 @@ export function Quiz({
                 />
               )}
 
-              {verdict && <Feedback verdict={verdict} formula={question.formula} />}
+              {verdict && <Feedback verdict={verdict} formula={question.formula} mode={question.mode} />}
             </div>
           </>
         )}
@@ -236,22 +345,38 @@ export function Quiz({
 
 function Filters({
   categories,
+  mode,
   category,
   difficulty,
   availability,
+  onMode,
   onCategory,
   onDifficulty,
 }: {
   categories: Category[];
+  mode: QuizMode;
   category: string | null;
   difficulty: Difficulty | null;
   availability: Record<string, number>;
+  onMode: (value: QuizMode) => void;
   onCategory: (value: string | null) => void;
   onDifficulty: (value: Difficulty | null) => void;
 }) {
   const count = (c: string | null, d: Difficulty | null) => availability[`${c ?? "*"}:${d ?? "*"}`] ?? 0;
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow)] sm:p-5">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-xs font-medium tracking-wide text-text-faint uppercase">
+          Task
+        </span>
+        <Chip active={mode === "name"} onClick={() => onMode("name")}>
+          Name the structure
+        </Chip>
+        <Chip active={mode === "structure"} onClick={() => onMode("structure")}>
+          Find the structure
+        </Chip>
+      </div>
+
       <div className="flex flex-wrap items-center gap-2">
         <span className="mr-1 text-xs font-medium tracking-wide text-text-faint uppercase">
           Topic
@@ -370,7 +495,15 @@ function Hints({
   );
 }
 
-function Feedback({ verdict, formula }: { verdict: Verdict; formula: string }) {
+function Feedback({
+  verdict,
+  formula,
+  mode,
+}: {
+  verdict: Verdict;
+  formula: string;
+  mode: QuizMode;
+}) {
   const tone =
     verdict.outcome === "correct"
       ? "border-accent bg-accent-soft"
@@ -387,9 +520,12 @@ function Feedback({ verdict, formula }: { verdict: Verdict; formula: string }) {
         {verdict.message}
       </p>
       {verdict.named && (
-        <p className="mt-1 text-sm text-text-dim">You named {verdict.named}.</p>
+        <p className="mt-1 text-sm text-text-dim">
+          {mode === "structure" ? "You picked " : "You named "}
+          {verdict.named}.
+        </p>
       )}
-      {verdict.answer && (
+      {verdict.answer && !verdict.correct && (
         <p className="mt-1 text-sm text-text-dim">
           The answer is <span className="font-medium text-text">{verdict.answer}</span> (
           <Formula formula={formula} />

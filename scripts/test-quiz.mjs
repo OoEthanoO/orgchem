@@ -7,13 +7,13 @@
 import * as OCL from "openchemlib";
 
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
-import { CATEGORIES, DIFFICULTIES, countFor, pickQuestion } from "../src/lib/quiz.ts";
+import { CATEGORIES, DIFFICULTIES, QUIZ_MODES, checkChoice, countFor, pickQuestion } from "../src/lib/quiz.ts";
 
 /** Pull one specific question out by narrowing until only it can be chosen. */
 function describeById(index) {
   const entry = QUIZ_BANK[index];
   const others = QUIZ_BANK.map((_, i) => i).filter((i) => i !== index);
-  const picked = pickQuestion(entry.category, entry.difficulty, others);
+  const picked = pickQuestion("name", entry.category, entry.difficulty, others);
   return picked?.id === index ? picked : null;
 }
 
@@ -22,6 +22,12 @@ let pass = 0;
 const check = (name, ok) => (ok ? pass++ : failures.push(name));
 
 const categoryIds = new Set(CATEGORIES.map((c) => c.id));
+
+const formulaOfEntry = (index) => {
+  const molecule = OCL.Molecule.fromSmiles(QUIZ_BANK[index].smiles);
+  return molecule.getMolecularFormula().formula;
+};
+const formulaMatches = (a, b) => formulaOfEntry(a) === formulaOfEntry(b);
 
 const PREFIX_WORDS = ["trifluoromethyl","cyclohexyl","cyclopentyl","isopropyl","methoxy","ethoxy","propoxy","phenyl","benzyl","methyl","ethyl","propyl","butyl","fluoro","chloro","bromo","iodo","hydroxy","amino","nitro","cyano","oxo"];
 
@@ -63,7 +69,7 @@ const inconsistent = [];
 for (const category of [null, ...categoryIds]) {
   for (const difficulty of [null, ...DIFFICULTIES]) {
     const count = countFor(category, difficulty);
-    const picked = pickQuestion(category, difficulty, []);
+    const picked = pickQuestion("name", category, difficulty, []);
     if ((count > 0) !== (picked !== null)) {
       inconsistent.push(`${category ?? "any"}/${difficulty ?? "any"}: count ${count}, picked ${picked !== null}`);
     }
@@ -84,7 +90,7 @@ check("every topic has questions", barren.length === 0);
 if (barren.length) failures.push(`empty topics: ${barren.join(", ")}`);
 
 // A question must never carry its own answer to the browser.
-const sample = pickQuestion(null, null, []);
+const sample = pickQuestion("name", null, null, []);
 check("a question can be drawn", Boolean(sample?.svg));
 check("the question does not leak the answer", sample !== null && !("name" in sample));
 check("the question comes with hints", (sample?.hints.length ?? 0) === 3);
@@ -97,6 +103,7 @@ check(
 const withLocants = QUIZ_BANK.findIndex((q) => /\d/.test(q.name));
 if (withLocants >= 0) {
   const question = pickQuestion(
+    "name",
     QUIZ_BANK[withLocants].category,
     QUIZ_BANK[withLocants].difficulty,
     [],
@@ -106,8 +113,8 @@ if (withLocants >= 0) {
 
 // Asking repeatedly with everything excluded still returns something.
 const all = QUIZ_BANK.map((_, index) => index);
-check("exhausting the pool starts over rather than failing", pickQuestion(null, null, all) !== null);
-check("an impossible selection returns nothing", pickQuestion("no-such-category", null, []) === null);
+check("exhausting the pool starts over rather than failing", pickQuestion("name", null, null, all) !== null);
+check("an impossible selection returns nothing", pickQuestion("name", "no-such-category", null, []) === null);
 
 // The substituent hint must name what the compound actually carries. A plain
 // substring test gets this wrong both ways: "methyl" ends with "ethyl", and
@@ -159,6 +166,59 @@ for (const [index, entry] of QUIZ_BANK.entries()) {
 }
 check(`parent hints name the parent (${parentsChecked} checked)`, parentProblems.length === 0);
 if (parentProblems.length) failures.push(...parentProblems.slice(0, 5));
+
+// --- the multiple-choice direction -----------------------------------------
+const choiceProblems = [];
+let choicesChecked = 0;
+for (let attempt = 0; attempt < 60; attempt++) {
+  const question = pickQuestion("structure", null, null, []);
+  if (!question || question.mode !== "structure") {
+    choiceProblems.push("pickQuestion did not return a structure question");
+    break;
+  }
+  choicesChecked++;
+
+  if (question.choices.length !== 4) choiceProblems.push(`${question.name}: ${question.choices.length} choices`);
+  const ids = question.choices.map((choice) => choice.id);
+  if (new Set(ids).size !== ids.length) choiceProblems.push(`${question.name}: a choice is repeated`);
+  if (!ids.includes(question.id)) choiceProblems.push(`${question.name}: the answer is not among the choices`);
+  if (question.choices.some((choice) => !choice.svg)) choiceProblems.push(`${question.name}: a choice has no drawing`);
+  if ("smiles" in question || "answer" in question) choiceProblems.push(`${question.name}: payload leaks the answer`);
+
+  // Every distractor must be a genuinely different compound, and exactly one
+  // choice must mark as correct.
+  const correct = ids.filter((id) => checkChoice(question.id, id).correct);
+  if (correct.length !== 1) choiceProblems.push(`${question.name}: ${correct.length} choices mark as correct`);
+
+  // The name shown must not be blank, and "show me" must reveal it.
+  if (!question.name?.trim()) choiceProblems.push(`question ${question.id}: no name shown`);
+  const revealed = checkChoice(question.id, -1);
+  if (revealed.correct || revealed.answer !== question.name) {
+    choiceProblems.push(`${question.name}: "show me" did not reveal the answer`);
+  }
+}
+check(`multiple choice is well formed (${choicesChecked} sampled)`, choiceProblems.length === 0);
+if (choiceProblems.length) failures.push(...[...new Set(choiceProblems)].slice(0, 5));
+
+// Distractors are only worth offering if they could plausibly be the compound
+// named, so most should be true isomers of it.
+let sameFormula = 0;
+let totalDistractors = 0;
+for (let attempt = 0; attempt < 40; attempt++) {
+  const question = pickQuestion("structure", null, null, []);
+  if (question?.mode !== "structure") continue;
+  for (const choice of question.choices) {
+    if (choice.id === question.id) continue;
+    totalDistractors++;
+    if (QUIZ_BANK[choice.id] && formulaMatches(choice.id, question.id)) sameFormula++;
+  }
+}
+check(
+  `most distractors are true isomers (${sameFormula}/${totalDistractors})`,
+  totalDistractors > 0 && sameFormula / totalDistractors > 0.5,
+);
+
+check("both modes are offered", QUIZ_MODES.length === 2);
 
 console.log(`${pass}/${pass + failures.length} passed  (${QUIZ_BANK.length} questions)`);
 if (failures.length) {

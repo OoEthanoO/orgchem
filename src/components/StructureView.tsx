@@ -41,8 +41,15 @@ export function StructureView({ query, resolution, depiction, display, isomers }
           </span>
         </header>
 
-        {/* The SVG is generated on the server by OpenChemLib. */}
+        {/*
+          The SVG is generated on the server by OpenChemLib. `role="img"` on the
+          wrapper makes assistive technology treat the drawing as one image with
+          the label below, instead of walking its atom labels and reading out
+          "O O O O H".
+        */}
         <div
+          role="img"
+          aria-label={`Structure of ${heading}, molecular formula ${spellFormula(depiction.formulaPlain)}`}
           className="structure flex min-h-[15rem] items-center justify-center overflow-x-auto bg-surface p-4 sm:min-h-[20rem] sm:p-6"
           dangerouslySetInnerHTML={{ __html: depiction.svg }}
         />
@@ -169,6 +176,17 @@ function describeUndefinedStereochemistry(centres: number, doubleBonds: number):
     );
   }
   return `This structure has ${parts.join(", and ")}, so the drawing stands for more than one compound.`;
+}
+
+/**
+ * A molecular formula as words. Read character by character, "C9H8O4" comes out
+ * as an unbroken run of letters and digits; spacing the elements apart lets a
+ * screen reader say "C 9, H 8, O 4".
+ */
+function spellFormula(formula: string): string {
+  return formula.replace(/([A-Z][a-z]?)(\d*)/g, (_match, element, count) =>
+    count ? `${element} ${count}, ` : `${element}, `,
+  ).replace(/,\s*$/, "");
 }
 
 function Note({ title, children }: { title: string; children: React.ReactNode }) {

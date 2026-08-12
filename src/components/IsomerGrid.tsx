@@ -46,7 +46,12 @@ export async function IsomerGrid({ formula, current }: { formula: string; curren
                   : "border-border bg-surface-2 hover:border-border-strong"
               }`}
             >
+              {/*
+                The card's own text already names the compound, so the drawing
+                is decorative here and repeating it would just be noise.
+              */}
               <div
+                aria-hidden="true"
                 className="structure flex h-24 items-center justify-center px-2 pt-3"
                 {...(card.svg ? { dangerouslySetInnerHTML: { __html: card.svg } } : {})}
               />
