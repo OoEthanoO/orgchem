@@ -3,6 +3,7 @@ import "server-only";
 import { canDepict, constitutionKey, hasFormalCharge, openValenceCount } from "./depict";
 import { normalizeInput, normalizeName } from "./normalize";
 import { parseCondensed } from "./condensed";
+import { applyDescriptor } from "./stereo";
 import { parseIupacName } from "./iupac";
 import { lookupDictionary } from "./dictionary";
 
@@ -159,21 +160,42 @@ function fromDictionary(input: string): Resolution | null {
   };
 }
 
+/** A CIP descriptor written in front of a formula: (E)-, (Z)-, (R)-, (S)-. */
+const LEADING_DESCRIPTOR = /^\(\s*([EZRS])\s*\)\s*-\s*/i;
+
 function fromCondensed(input: string): Resolution | null {
+  const descriptor = LEADING_DESCRIPTOR.exec(input)?.[1];
+  const formula = descriptor ? input.replace(LEADING_DESCRIPTOR, "") : input;
+
+  let parsed;
   try {
-    const parsed = parseCondensed(input);
-    return {
-      smiles: parsed.smiles,
-      source: "condensed",
-      interpretation:
-        parsed.openValences > 0
-          ? "Read as a condensed formula for a substituent group"
-          : "Read as a condensed structural formula",
-      openValences: parsed.openValences,
-    };
+    parsed = parseCondensed(formula);
   } catch {
     return null;
   }
+
+  // A condensed formula cannot express configuration, so a descriptor in front
+  // of it is the only place the stereochemistry can come from.
+  const configured = descriptor ? applyDescriptor(parsed.smiles, descriptor) : null;
+  if (descriptor && !configured) {
+    return {
+      smiles: parsed.smiles,
+      source: "condensed",
+      interpretation: `Read as a condensed structural formula — (${descriptor.toUpperCase()}) could not be placed, since the structure has no single stereogenic element for it to describe`,
+      openValences: parsed.openValences,
+    };
+  }
+
+  return {
+    smiles: configured ?? parsed.smiles,
+    source: "condensed",
+    interpretation: configured
+      ? `Read as a condensed structural formula with (${descriptor?.toUpperCase()}) configuration`
+      : parsed.openValences > 0
+        ? "Read as a condensed formula for a substituent group"
+        : "Read as a condensed structural formula",
+    openValences: parsed.openValences,
+  };
 }
 
 /**

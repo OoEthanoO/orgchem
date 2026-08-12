@@ -42,7 +42,15 @@ export default async function Page({ searchParams }: PageProps<"/">) {
             type anything, see the structure
           </span>
         </Link>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/practice"
+            className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text"
+          >
+            Practice naming
+          </Link>
+          <ThemeToggle />
+        </div>
       </header>
 
       <SearchForm initialQuery={query} />

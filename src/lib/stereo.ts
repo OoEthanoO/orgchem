@@ -225,6 +225,40 @@ export function stereoPair(smiles: string): StereoPair | null {
   };
 }
 
+/**
+ * Apply a CIP descriptor written in front of a structure, as in
+ * `(E)-CH3CH=C(Cl)CH2O`.
+ *
+ * A condensed formula has no way to express configuration, so the descriptor
+ * carries it — but only where there is a single stereogenic element for it to
+ * refer to. With more than one the descriptor would need a locant, and locants
+ * mean nothing in a formula that was never numbered, so nothing is applied.
+ */
+export function applyDescriptor(smiles: string, descriptor: string): string | null {
+  const wanted = descriptor.toUpperCase();
+  const kind: Element["kind"] | null =
+    wanted === "E" || wanted === "Z"
+      ? "double bond"
+      : wanted === "R" || wanted === "S"
+        ? "stereocentre"
+        : null;
+  if (!kind) return null;
+
+  let element: Element | null;
+  try {
+    element = soleStereoElement(smiles);
+  } catch {
+    return null;
+  }
+  if (!element || element.kind !== kind) return null;
+
+  for (const parity of [1, 2]) {
+    const candidate = configure(smiles, element, parity);
+    if (candidate && descriptorOf(candidate, kind) === wanted) return candidate;
+  }
+  return null;
+}
+
 function safeIdCode(smiles: string): string | null {
   try {
     return fresh(smiles).getIDCode();

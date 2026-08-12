@@ -19,7 +19,7 @@ export async function StereoSection({ smiles }: { smiles: string }) {
         <h2 className="text-sm font-medium text-text">
           Both stereoisomers, in three dimensions
         </h2>
-        <p className="text-xs text-text-faint">Drag either model to turn both</p>
+        <p className="text-xs text-text-faint">Drag each model to turn it</p>
       </div>
 
       <p className="mt-1 max-w-2xl text-sm text-text-dim">

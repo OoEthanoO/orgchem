@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npm run test:condensed && npm run test:iupac && npm run test:dictionary && npm run test:depict && npm run test:stereo",
+    "test": "npm run test:condensed && npm run test:iupac && npm run test:dictionary && npm run test:depict && npm run test:stereo && npm run test:rotation && npm run test:quiz",
     "test:condensed": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-condensed.mjs",
     "test:iupac": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-iupac.mjs",
     "test:dictionary": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-dictionary.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/check-formulas.mjs",
     "test:depict": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-depict.mjs > /dev/null && echo 'depiction ok'",
-    "test:stereo": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-stereo.mjs"
+    "test:stereo": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-stereo.mjs",
+    "test:rotation": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-rotation.mjs",
+    "test:quiz": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-quiz.mjs"
   },
   "dependencies": {
     "next": "16.3.0",

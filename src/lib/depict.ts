@@ -80,6 +80,18 @@ export function thumbnail(smiles: string): string | null {
   }
 }
 
+/**
+ * A canonical key for the whole structure, stereochemistry included.
+ * `toSmiles()` is not canonical, so it cannot be compared directly.
+ */
+export function structureKey(smiles: string): string | null {
+  try {
+    return OCL.Molecule.fromSmiles(smiles).getIDCode();
+  } catch {
+    return null;
+  }
+}
+
 /** Whether any atom carries a formal charge. */
 export function hasFormalCharge(smiles: string): boolean {
   try {
@@ -148,10 +160,14 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
     drawing.inventCoordinates({ keepHydrogens: true });
   }
   if (options.showCarbons) {
-    // The depictor has no "label every atom" switch, but a custom label is
-    // always drawn, so carbons get one that spells out what they already are.
+    // The depictor has no "label every atom" switch. A custom label is always
+    // drawn — but it discards one that merely repeats the element symbol, so a
+    // bare "C" is silently ignored. Padding defeats that check, and the spaces
+    // are symmetric so the glyph still lands on the atom's centre. With a label
+    // present the depictor also shortens the bonds to make room, which is what
+    // makes the result look drawn rather than overprinted.
     for (let atom = 0; atom < drawing.getAllAtoms(); atom++) {
-      if (drawing.getAtomicNo(atom) === 6) drawing.setAtomCustomLabel(atom, "C");
+      if (drawing.getAtomicNo(atom) === 6) drawing.setAtomCustomLabel(atom, " C ");
     }
   }
 
@@ -178,9 +194,12 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
       suppressCIPParity: !options.showStereoLabels,
       noStereoProblem: true,
       strokeWidth: 1.7,
-      // With every hydrogen spelled out there are three times as many labels
-      // competing for the same bond lengths, so they need to be smaller.
-      factorTextSize: options.showHydrogens ? 0.8 : 1.1,
+      // Labels are drawn inside the bonds, which the depictor shortens to make
+      // room. At the default bond length a fully labelled skeleton leaves only
+      // a few pixels of line between one label and the next, so both label-
+      // heavy modes ask for longer bonds and smaller text; the drawing is
+      // scaled back to a readable size afterwards either way.
+      ...labelSpacing(options),
       showAtomNumber: options.showAtomNumbers,
       noImplicitAtomLabelColors: false,
     }),
@@ -245,6 +264,20 @@ function countOpenValences(molecule: OCL.Molecule): number {
     if (radical !== 0) count += radical === OCL.Molecule.cAtomRadicalStateT ? 2 : 1;
   }
   return count;
+}
+
+/**
+ * Bond length and text size for the current display mode, chosen to keep a
+ * roughly constant ratio of bond to label so the skeleton stays readable
+ * however many atoms are named.
+ */
+function labelSpacing(options: DisplayOptions): {
+  maxAVBL?: number;
+  factorTextSize: number;
+} {
+  if (options.showCarbons) return { maxAVBL: 110, factorTextSize: 0.55 };
+  if (options.showHydrogens) return { maxAVBL: 60, factorTextSize: 0.7 };
+  return { factorTextSize: 1.1 };
 }
 
 /** Number of disconnected components: a salt or hydrate has more than one. */
@@ -380,6 +413,10 @@ const COLOR_VARIABLES: Record<string, string> = {
 
 function themeSvg(svg: string, scale = DISPLAY_SCALE, maxHeight = MAX_DISPLAY_HEIGHT): string {
   let out = svg;
+
+  // The padding on carbon labels is load-bearing: it is what the depictor
+  // measured when placing the text, so it has to survive into the rendering.
+  out = out.replace(/<text /g, '<text xml:space="preserve" ');
 
   // Invisible hit-test shapes are only useful to an editor.
   out = out.replace(/\s*<(line|circle)[^>]*class="event"[^>]*\/>/g, "");
