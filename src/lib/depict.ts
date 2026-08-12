@@ -61,6 +61,7 @@ export function thumbnail(smiles: string): string | null {
   try {
     const molecule = OCL.Molecule.fromSmiles(smiles);
     if (molecule.getAllAtoms() === 0) return null;
+    drawUndefinedBondsPlainly(molecule);
     return themeSvg(
       molecule.toSVG(420, 300, `t${Math.random().toString(36).slice(2, 9)}`, {
         autoCrop: true,
@@ -171,15 +172,7 @@ export function depict(smiles: string, options: DisplayOptions = DEFAULT_DISPLAY
     }
   }
 
-  // A double bond whose geometry is undefined is drawn by the depictor as two
-  // crossed lines. That is a real convention, but it reads as a broken bond
-  // rather than as information, so the bond is drawn plainly and the missing
-  // geometry is reported in words alongside the drawing.
-  for (let bond = 0; bond < drawing.getAllBonds(); bond++) {
-    if (drawing.getBondType(bond) === OCL.Molecule.cBondTypeCross) {
-      drawing.setBondType(bond, OCL.Molecule.cBondTypeDouble);
-    }
-  }
+  drawUndefinedBondsPlainly(drawing);
 
   const svg = themeSvg(
     drawing.toSVG(760, 520, "structure", {
@@ -240,6 +233,22 @@ function countUndefinedStereocentres(molecule: OCL.Molecule): number {
  * from whichever stage resolved it — `pentan-1-yl` is a substituent group
  * whether it arrived as a name or as `CH3CH2CH2CH2CH2-`.
  */
+/**
+ * Draw a double bond of undefined geometry as an ordinary double bond.
+ *
+ * The depictor crosses the two strokes to mark the geometry as unknown. It is
+ * a real convention, but it reads as a broken bond rather than as information,
+ * so every drawing says it in words instead — which means every drawing has to
+ * apply this, thumbnails included.
+ */
+function drawUndefinedBondsPlainly(molecule: OCL.Molecule): void {
+  for (let bond = 0; bond < molecule.getAllBonds(); bond++) {
+    if (molecule.getBondType(bond) === OCL.Molecule.cBondTypeCross) {
+      molecule.setBondType(bond, OCL.Molecule.cBondTypeDouble);
+    }
+  }
+}
+
 /** Double bonds that could be cis or trans, where the input said neither. */
 function countUndefinedDoubleBonds(molecule: OCL.Molecule): number {
   let count = 0;
