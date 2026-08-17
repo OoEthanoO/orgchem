@@ -7,7 +7,8 @@ import type { Category, Difficulty, Question, QuizMode, Verdict } from "@/lib/qu
 import { Formula } from "./Formula";
 
 /**
- * A naming drill: the structure is shown, you type its IUPAC name.
+ * A naming drill, run in either direction: the structure is shown and you type
+ * its IUPAC name, or the name is shown and you pick the structure out of four.
  *
  * Hints are revealed one at a time and on request, so the question stays a
  * question for as long as the reader wants it to.
@@ -103,6 +104,32 @@ export function Quiz({
     if (question && !verdict) inputRef.current?.focus();
   }, [question, verdict]);
 
+  // The multiple choice has nothing to type into, so without this it is the
+  // one direction that needs a mouse. The number keys pick an option and Enter
+  // moves on, which is what the typed direction already does with its form.
+  useEffect(() => {
+    if (!question || question.mode !== "structure") return;
+    const options = question.choices.length;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (verdict) {
+        if (event.key === "Enter") requestQuestion(category, difficulty);
+        return;
+      }
+      const position = Number(event.key) - 1;
+      if (Number.isInteger(position) && position >= 0 && position < options) {
+        event.preventDefault();
+        void choose(position);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // No dependency list: the handler closes over most of the state there is,
+    // and a stale one would answer the previous question.
+  });
+
   function mark(request: object): Promise<Verdict> {
     return fetch("/api/quiz", {
       method: "POST",
@@ -190,7 +217,7 @@ export function Quiz({
             {score.asked > 0
               ? `${score.correct}/${score.asked} correct · streak ${score.streak}${score.best > 1 ? ` · best ${score.best}` : ""}`
               : mode === "structure"
-                ? "Pick the structure the name describes"
+                ? "Pick the structure the name describes, by click or number key"
                 : "Type the IUPAC name and press Enter"}
           </p>
         </header>
@@ -247,6 +274,15 @@ export function Quiz({
                                   : "border-border bg-surface-2 hover:border-accent"
                           }`}
                         >
+                          {/* The number the key press refers to. */}
+                          <span
+                            aria-hidden="true"
+                            className={`block text-left text-xs tabular-nums ${
+                              answered ? "text-text-faint" : "text-text-dim"
+                            }`}
+                          >
+                            {index + 1}
+                          </span>
                           <div
                             aria-hidden="true"
                             className="structure flex h-28 items-center justify-center sm:h-32"
@@ -329,7 +365,9 @@ export function Quiz({
                     </button>
                   ) : (
                     <>
-                      <p className="flex-1 text-sm text-text-dim">Pick the matching structure.</p>
+                      <p className="flex-1 text-sm text-text-dim">
+                        Pick the matching structure, or press 1–{question.choices.length}.
+                      </p>
                       <button
                         type="button"
                         onClick={() => void giveUp()}

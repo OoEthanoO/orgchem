@@ -7,7 +7,8 @@ import { CATEGORIES, DIFFICULTIES, countFor } from "@/lib/quiz";
 
 export const metadata: Metadata = {
   title: "orgchem — naming practice",
-  description: "See a structure, name it. IUPAC naming drills by topic and difficulty.",
+  description:
+    "See a structure, name it — or read a name and find it. IUPAC naming drills by topic and difficulty.",
 };
 
 export default function PracticePage() {
@@ -44,8 +45,9 @@ export default function PracticePage() {
       </header>
 
       <p className="text-sm text-text-dim">
-        {total} structures, each with a name checked against two independent systems. Any name that
-        identifies the right compound is accepted — not just the one on file.
+        {total} structures, each with a name checked against two independent systems. Name one, or
+        find one from its name. Any name that identifies the right compound is accepted — not just
+        the one on file.
       </p>
 
       <Quiz categories={CATEGORIES} availability={availability} />
