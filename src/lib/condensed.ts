@@ -529,7 +529,7 @@ function parseChain(src: string, pieces: string[], continues = false): Frag {
     }
 
     // --- a group -----------------------------------------------------------
-    const matched = matchGroup(src, i);
+    const matched = readGroup(src, i, cur, pendingBond, leadingBranches.length);
     if (!matched) throw new ParseError(`unrecognised at "${src.slice(i, i + 6)}"`);
     const { template, text } = matched;
     i = matched.next;
@@ -693,7 +693,45 @@ function readCount(src: string, i: number): { count: number; next: number } {
 
 type Match = { template: Template; text: string; next: number };
 
-function matchGroup(src: string, i: number): Match | null {
+/**
+ * The next group, read as an abbreviation where one fits and as plain atoms
+ * where it does not.
+ *
+ * An abbreviation is one letter sequence standing for several atoms, so it
+ * competes with reading those letters one at a time, and greed alone picks
+ * wrong: `CHO` is the aldehyde in CH3CHO and CH followed by O in
+ * (CH3)2CHOCH(CH3)2. Valence settles it here as it does everywhere else — the
+ * aldehyde has one bond to give, and where it stands in the ether it would
+ * have to give three: one to each isopropyl already written and one to the
+ * chain it has to carry on.
+ *
+ * Only a group with a single attachment point is second-guessed, and only when
+ * the count is one short of impossible, so the reading changes where it cannot
+ * have been right rather than wherever another reading exists.
+ */
+function readGroup(
+  src: string,
+  i: number,
+  cur: Slot | null,
+  bond: number,
+  pending: number,
+): Match | null {
+  const matched = matchGroup(src, i);
+  if (!matched || matched.template.head !== matched.template.tail) return matched;
+
+  const after = readCount(src, matched.next).next;
+  const moreFollows = /[A-Za-z([]/.test(src.slice(after));
+  // A group the current atom can hang the rest of the chain off is a branch,
+  // and a branch is never asked to carry anything.
+  const canBranch = cur !== null && cur.cap > bond;
+  const demanded =
+    (cur === null ? pending : bond) + (moreFollows && !canBranch ? 1 : 0);
+
+  if (matched.template.headCap >= demanded) return matched;
+  return matchGroup(src, i, true) ?? matched;
+}
+
+function matchGroup(src: string, i: number, plainAtomsOnly = false): Match | null {
   const rest = src.slice(i);
 
   // Reversed left-hand groups always begin with H, which no forward group does.
@@ -716,7 +754,7 @@ function matchGroup(src: string, i: number): Match | null {
     // formic acid and HCHO is methanal. Taken instead as the hydrogen count of
     // the atom after it — which is what the H2N of H2NCH2COOH is — the group
     // behind it is never looked for, and HCOOH comes out as CH-O-OH.
-    const behind = matchMacro(rest.slice(1));
+    const behind = plainAtomsOnly ? null : matchMacro(rest.slice(1));
     if (behind && behind.template.headCap > 0) {
       return {
         template: { ...behind.template, headCap: behind.template.headCap - 1 },
@@ -743,7 +781,7 @@ function matchGroup(src: string, i: number): Match | null {
     if (template) return { template, text: cn[0], next: i + cn[0].length };
   }
 
-  const macro = matchMacro(rest);
+  const macro = plainAtomsOnly ? null : matchMacro(rest);
   if (macro) return { template: macro.template, text: macro.name, next: i + macro.name.length };
 
   // Nitrile, but only where it terminates the formula: elsewhere CN is C then N.

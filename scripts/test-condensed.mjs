@@ -91,6 +91,12 @@ const CASES = [
   // hangs off it rather than ending the chain.
   ["HOCH2(CHOH)4CHO", "OCC(O)C(O)C(O)C(O)C=O", 0],
   ["CH3(CHCH3)CH3", "CC(C)C", 0],
+  // An abbreviation is only read as one where it has the bonds to be one:
+  // CHO is the aldehyde in CH3CHO and CH then O in the ether below.
+  ["(CH3)2CHOCH(CH3)2", "CC(C)OC(C)C", 0],
+  ["CH3CH(CH3)CHO", "CC(C)C=O", 0],
+  ["CH3CHNO2CH3", "CC(C)[N+](=O)[O-]", 0],
+  ["OHCCH2CHO", "O=CCC=O", 0],
   // A charge written at the end, against the open valence a dash otherwise
   // marks: the O of CH3COO- has no room for another hydrogen, the CH2 of
   // CH3CH2CH2CH2CH2- does.
