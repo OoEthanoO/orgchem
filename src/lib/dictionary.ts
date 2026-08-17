@@ -215,7 +215,11 @@ export const DICTIONARY: Record<string, string> = {
   naproxen: "C[C@@H](C1=CC2=C(C=C1)C=C(C=C2)OC)C(=O)O",
   caffeine: "Cn1cnc2c1c(=O)n(C)c(=O)n2C",
   nicotine: "CN1CCC[C@H]1c1cccnc1",
-  theobromine: "Cn1cnc2[nH]c(=O)n(C)c(=O)c12",
+  // The three dimethylxanthines differ only in which two nitrogens carry the
+  // methyls, and caffeine above is all three of them.
+  theobromine: "Cn1cnc2c1c(=O)[nH]c(=O)n2C",
+  theophylline: "Cn1c(=O)n(C)c2[nH]cnc2c1=O",
+  paraxanthine: "Cn1cnc2[nH]c(=O)n(C)c(=O)c12",
   penicillin: "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C",
   "penicillin g": "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C",
   amoxicillin: "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)[C@@H](C3=CC=C(C=C3)O)N)C(=O)O)C",

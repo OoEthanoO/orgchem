@@ -182,7 +182,12 @@ in principle and 32 on file. Charged species and co-crystals that happen to
 share an atom count are filtered out, and enantiomers and isotopologues are
 collapsed, so the list counts structures rather than records.
 
-The dictionary's stereochemistry is checked against PubChem by
-`scripts/check-stereochemistry.mjs`, which compares InChIKey blocks so a wrong
-configuration is caught without a right one being overwritten by a vaguer
-record.
+The dictionary is checked against PubChem by two scripts, both comparing
+InChIKey blocks. `scripts/check-stereochemistry.mjs` catches a configuration
+that is wrong, without a right one being overwritten by a vaguer record.
+`scripts/check-dictionary.mjs` catches the worse thing underneath it — the
+wrong skeleton for the name, which nothing else here can notice, since the app
+draws whatever the dictionary says and PubChem then confirms the compound it
+was actually given. It found `theobromine` holding paraxanthine, its
+1,7-isomer; the formula spot-check could not have, because the three
+dimethylxanthines share one.
