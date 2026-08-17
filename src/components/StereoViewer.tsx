@@ -58,6 +58,20 @@ const VIEW = 260;
 const SPIN_RATE = 0.0004;
 const SPIN_DURATION_MS = 9000;
 const DRAG_RATE = 0.01;
+/**
+ * How far an arrow key turns a model, in the pixels of drag it stands for:
+ * about ten degrees, so a key can be held down to turn it steadily and tapped
+ * to line two models up.
+ */
+const KEY_STEP = 18;
+
+/** Which way each arrow key turns a model, as the drag it stands for. */
+const KEY_TURNS: Record<string, [number, number]> = {
+  ArrowLeft: [-KEY_STEP, 0],
+  ArrowRight: [KEY_STEP, 0],
+  ArrowUp: [0, -KEY_STEP],
+  ArrowDown: [0, KEY_STEP],
+};
 
 export function StereoViewer({ isomers }: { isomers: StereoIsomer[] }) {
   const [rotations, setRotations] = useState<Mat3[]>(() => isomers.map(() => INITIAL_VIEW));
@@ -98,6 +112,19 @@ export function StereoViewer({ isomers }: { isomers: StereoIsomer[] }) {
     );
   }
 
+  /**
+   * The arrow keys turn the focused model, which is the whole point of the
+   * section for anyone not using a pointer: comparing two configurations means
+   * turning one of them.
+   */
+  function turnByKey(index: number, key: string): boolean {
+    const move = KEY_TURNS[key];
+    if (!move) return false;
+    setSpinning(false);
+    turn(index, move[0], move[1]);
+    return true;
+  }
+
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -118,7 +145,14 @@ export function StereoViewer({ isomers }: { isomers: StereoIsomer[] }) {
               viewBox={`0 0 ${VIEW} ${VIEW}`}
               className="w-full cursor-grab touch-none select-none active:cursor-grabbing"
               role="img"
-              aria-label={`Three-dimensional model of the ${isomer.label} isomer`}
+              aria-label={`Three-dimensional model of the ${isomer.label} isomer. Turn it with the arrow keys.`}
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.metaKey || event.ctrlKey || event.altKey) return;
+                // Only once it has turned something: an arrow key that did not
+                // is the page's to scroll with.
+                if (turnByKey(index, event.key)) event.preventDefault();
+              }}
               onPointerDown={(event) => {
                 setSpinning(false);
                 dragging.current = { index, x: event.clientX, y: event.clientY };

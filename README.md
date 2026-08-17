@@ -61,8 +61,9 @@ the other 31 structures with the formula C₆H₁₄O.
 **Stereochemistry gets three dimensions.** Where a structure has exactly one
 stereogenic element — one stereocentre, or one double bond that could be cis or
 trans — both isomers are built, given 3D coordinates and drawn as ball-and-stick
-models side by side. Each turns independently, so one can be brought into the
-orientation that makes the comparison you want. With two or more stereo elements
+models side by side. Each turns independently — by drag, or by tabbing to it
+and using the arrow keys — so one can be brought into the orientation that
+makes the comparison you want. With two or more stereo elements
 there are up to 2ⁿ isomers and no pair to single out, so nothing is offered
 rather than something arbitrary.
 
