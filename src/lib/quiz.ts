@@ -618,6 +618,20 @@ export async function checkAnswer(id: number, answer: string): Promise<Verdict> 
     }
   }
 
+  // The other direction: the answer says more than the drawing does. It is
+  // still the right compound and marking it wrong would be pedantic, but a
+  // descriptor the structure never fixed is worth pointing out, because the
+  // habit it comes from is reading configuration into a drawing that has none.
+  const asserted = !questionHasStereo ? descriptorAsserted(resolved.smiles) : null;
+  if (asserted) {
+    return {
+      correct: true,
+      outcome: "correct",
+      message: `That is the compound — though nothing in the drawing fixes ${asserted}, so the name for it is ${question.name}.`,
+      answer: question.name,
+    };
+  }
+
   return {
     correct: true,
     outcome: "correct",
@@ -628,4 +642,18 @@ export async function checkAnswer(id: number, answer: string): Promise<Verdict> 
     }`,
     answer: question.name,
   };
+}
+
+/**
+ * What a name asserts that the drawing it was given cannot show.
+ *
+ * A stereocentre with no wedge or hash on it is not one enantiomer, and a
+ * double bond drawn with two plain strokes is not the E isomer — the depictor
+ * would cross those strokes to say so, and the lookup page says it in a note
+ * beside the drawing. A question is just the drawing, so it is said here.
+ */
+function descriptorAsserted(smiles: string): string | null {
+  if (/[/\\]/.test(smiles)) return "cis or trans";
+  if (/@/.test(smiles)) return "which enantiomer it is";
+  return null;
 }

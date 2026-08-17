@@ -18,7 +18,11 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:3000. `npm test` runs the parser suites; `npm run build` produces a production build.
+Then open http://localhost:3000. `npm test` runs the parser suites offline;
+`npm run test:live` runs the two that need the app up — what the resolver does
+with anything typed into a search box, and how a typed answer is marked, both
+of which go out to OPSIN and PubChem. `npm run build` produces a production
+build.
 
 ## What it accepts
 
