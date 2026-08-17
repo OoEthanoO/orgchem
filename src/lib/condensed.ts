@@ -192,6 +192,16 @@ const MACROS: Array<[string, Template]> = [
       at: 1,
     }),
   ],
+  // Sulfinyl. Sulfur is divalent in the capacity table, as it usually is, so
+  // without this the S and the O of CH3SOCH3 are strung into a chain and
+  // dimethyl sulfoxide comes back as methyl methanesulfenate.
+  [
+    "SO",
+    tpl(() => [atom("S"), raw("(=O)")], 0, 0, 2, 2, {
+      toks: () => [raw("O="), atom("S")],
+      at: 1,
+    }),
+  ],
   [
     "CF3",
     uni(() => [atom("C"), raw("(F)(F)F")], 0, {

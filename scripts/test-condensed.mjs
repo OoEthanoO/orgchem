@@ -91,6 +91,11 @@ const CASES = [
   // hangs off it rather than ending the chain.
   ["HOCH2(CHOH)4CHO", "OCC(O)C(O)C(O)C(O)C=O", 0],
   ["CH3(CHCH3)CH3", "CC(C)C", 0],
+  // Sulfur written past its usual valence.
+  ["CH3SOCH3", "CS(C)=O", 0],
+  ["(CH3)2SO", "CS(C)=O", 0],
+  ["CH3SO2CH3", "CS(C)(=O)=O", 0],
+  ["CH3SOH", "CSO", 0],
 ];
 
 // Strings that must NOT parse, so they fall through to the name resolvers.
