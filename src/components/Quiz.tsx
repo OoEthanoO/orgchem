@@ -41,6 +41,10 @@ export function Quiz({
   const [verdict, setVerdict] = useState<Verdict | null>(null);
   const [checking, setChecking] = useState(false);
   const [hintsShown, setHintsShown] = useState(0);
+  /** Which option was clicked, so the marked-up choices can say so. */
+  const [picked, setPicked] = useState<number | null>(null);
+  /** Whether the answer was asked for rather than attempted. */
+  const [revealed, setRevealed] = useState(false);
   const [score, setScore] = useState<Score>(EMPTY_SCORE);
   const seen = useRef<number[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +67,8 @@ export function Quiz({
     setError(null);
     setVerdict(null);
     setAnswer("");
+    setPicked(null);
+    setRevealed(false);
     setHintsShown(0);
     setRound((current) => current + 1);
   }
@@ -97,26 +103,32 @@ export function Quiz({
     if (question && !verdict) inputRef.current?.focus();
   }, [question, verdict]);
 
+  function mark(request: object): Promise<Verdict> {
+    return fetch("/api/quiz", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id: question?.id, ...request }),
+    }).then((response) => response.json() as Promise<Verdict>);
+  }
+
+  function record(result: Verdict) {
+    setVerdict(result);
+    setScore((current) => {
+      const streak = result.correct ? current.streak + 1 : 0;
+      return {
+        correct: current.correct + (result.correct ? 1 : 0),
+        asked: current.asked + 1,
+        streak,
+        best: Math.max(current.best, streak),
+      };
+    });
+  }
+
   async function submit() {
     if (!question || checking || verdict || !answer.trim()) return;
     setChecking(true);
     try {
-      const response = await fetch("/api/quiz", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: question.id, answer }),
-      });
-      const result: Verdict = await response.json();
-      setVerdict(result);
-      setScore((current) => {
-        const streak = result.correct ? current.streak + 1 : 0;
-        return {
-          correct: current.correct + (result.correct ? 1 : 0),
-          asked: current.asked + 1,
-          streak,
-          best: Math.max(current.best, streak),
-        };
-      });
+      record(await mark({ answer }));
     } catch {
       setError("Could not check that answer.");
     } finally {
@@ -124,26 +136,13 @@ export function Quiz({
     }
   }
 
-  async function choose(choice: number) {
-    if (!question || question.mode !== "structure" || verdict) return;
+  /** A structure is answered by its position among the options shown. */
+  async function choose(position: number) {
+    if (!question || question.mode !== "structure" || checking || verdict) return;
+    setPicked(position);
     setChecking(true);
     try {
-      const response = await fetch("/api/quiz", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: question.id, choice }),
-      });
-      const result: Verdict = await response.json();
-      setVerdict(result);
-      setScore((current) => {
-        const streak = result.correct ? current.streak + 1 : 0;
-        return {
-          correct: current.correct + (result.correct ? 1 : 0),
-          asked: current.asked + 1,
-          streak,
-          best: Math.max(current.best, streak),
-        };
-      });
+      record(await mark({ choice: position, nonce: question.nonce }));
     } catch {
       setError("Could not check that answer.");
     } finally {
@@ -153,20 +152,17 @@ export function Quiz({
 
   async function giveUp() {
     if (!question || verdict) return;
+    setRevealed(true);
     setScore((current) => ({ ...current, asked: current.asked + 1, streak: 0 }));
     try {
-      const response = await fetch("/api/quiz", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        // A blank answer asks the server for the name without scoring a try.
-        body: JSON.stringify(
-          question.mode === "structure"
-            ? { id: question.id, choice: -1 }
-            : { id: question.id, answer: "" },
-        ),
-      });
-      const result: Verdict = await response.json();
-      setVerdict({ ...result, message: "Here is the name." });
+      // A position no option has, or a blank name, asks the server to give the
+      // answer away without it counting as a try.
+      const result = await mark(
+        question.mode === "structure"
+          ? { choice: -1, nonce: question.nonce }
+          : { answer: "" },
+      );
+      setVerdict(question.mode === "structure" ? result : { ...result, message: "Here is the name." });
     } catch {
       setError("Could not fetch the answer.");
     }
@@ -226,18 +222,29 @@ export function Quiz({
                 </p>
                 <ul className="mt-4 grid grid-cols-2 gap-3">
                   {question.choices.map((choice, index) => {
-                    const picked = verdict !== null;
+                    // Once it is over, the right structure is the point: it is
+                    // marked whether or not it was the one chosen, since seeing
+                    // which drawing the name belonged to is the whole lesson.
+                    const answered = verdict !== null;
+                    const isAnswer = answered && verdict.correctChoice === index;
+                    const isMistake = answered && picked === index && !isAnswer;
                     return (
-                      <li key={choice.id}>
+                      <li key={index}>
                         <button
                           type="button"
-                          disabled={picked || checking}
-                          onClick={() => void choose(choice.id)}
-                          aria-label={`Option ${index + 1}`}
+                          disabled={answered || checking}
+                          onClick={() => void choose(index)}
+                          aria-label={`Option ${index + 1}${
+                            isAnswer ? ", the answer" : isMistake ? ", the one you picked" : ""
+                          }`}
                           className={`w-full rounded-xl border p-2 transition-colors ${
-                            picked
-                              ? "border-border bg-surface-2 opacity-70"
-                              : "border-border bg-surface-2 hover:border-accent"
+                            isAnswer
+                              ? "border-accent bg-accent-soft"
+                              : isMistake
+                                ? "border-[var(--warn)] bg-surface-2"
+                                : answered
+                                  ? "border-border bg-surface-2 opacity-50"
+                                  : "border-border bg-surface-2 hover:border-accent"
                           }`}
                         >
                           <div
@@ -245,6 +252,15 @@ export function Quiz({
                             className="structure flex h-28 items-center justify-center sm:h-32"
                             dangerouslySetInnerHTML={{ __html: choice.svg }}
                           />
+                          {(isAnswer || isMistake) && (
+                            <p
+                              className={`pt-1 text-xs font-medium ${
+                                isAnswer ? "text-accent-text" : "text-[var(--warn)]"
+                              }`}
+                            >
+                              {isAnswer ? "The answer" : "Your pick"}
+                            </p>
+                          )}
                         </button>
                       </li>
                     );
@@ -334,7 +350,14 @@ export function Quiz({
                 />
               )}
 
-              {verdict && <Feedback verdict={verdict} formula={question.formula} mode={question.mode} />}
+              {verdict && (
+                <Feedback
+                  verdict={verdict}
+                  formula={question.formula}
+                  mode={question.mode}
+                  revealed={revealed}
+                />
+              )}
             </div>
           </>
         )}
@@ -499,10 +522,13 @@ function Feedback({
   verdict,
   formula,
   mode,
+  revealed,
 }: {
   verdict: Verdict;
   formula: string;
   mode: QuizMode;
+  /** The answer was asked for, so there is no attempt to judge. */
+  revealed: boolean;
 }) {
   const tone =
     verdict.outcome === "correct"
@@ -514,9 +540,11 @@ function Feedback({
   return (
     <div className={`mt-3 rounded-xl border px-3 py-2.5 ${tone}`}>
       <p className="text-sm text-text">
-        <span className="font-medium">
-          {verdict.outcome === "correct" ? "Correct. " : "Not quite. "}
-        </span>
+        {!revealed && (
+          <span className="font-medium">
+            {verdict.outcome === "correct" ? "Correct. " : "Not quite. "}
+          </span>
+        )}
         {verdict.message}
       </p>
       {verdict.named && (
@@ -525,13 +553,25 @@ function Feedback({
           {verdict.named}.
         </p>
       )}
-      {verdict.answer && !verdict.correct && (
-        <p className="mt-1 text-sm text-text-dim">
-          The answer is <span className="font-medium text-text">{verdict.answer}</span> (
-          <Formula formula={formula} />
-          ).
-        </p>
-      )}
+      {/*
+        Naming a structure, the answer is the name. Finding a structure, the
+        name was the question — so what is worth saying is which drawing it
+        turned out to be, and the marked option says that already.
+      */}
+      {verdict.answer &&
+        !verdict.correct &&
+        (mode === "structure" ? (
+          <p className="mt-1 text-sm text-text-dim">
+            It is the structure marked above (<Formula formula={formula} />
+            ).
+          </p>
+        ) : (
+          <p className="mt-1 text-sm text-text-dim">
+            The answer is <span className="font-medium text-text">{verdict.answer}</span> (
+            <Formula formula={formula} />
+            ).
+          </p>
+        ))}
     </div>
   );
 }

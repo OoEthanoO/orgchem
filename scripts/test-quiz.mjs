@@ -170,6 +170,7 @@ if (parentProblems.length) failures.push(...parentProblems.slice(0, 5));
 // --- the multiple-choice direction -----------------------------------------
 const choiceProblems = [];
 let choicesChecked = 0;
+let sameUnderAnyNonce = 0;
 for (let attempt = 0; attempt < 60; attempt++) {
   const question = pickQuestion("structure", null, null, []);
   if (!question || question.mode !== "structure") {
@@ -179,39 +180,67 @@ for (let attempt = 0; attempt < 60; attempt++) {
   choicesChecked++;
 
   if (question.choices.length !== 4) choiceProblems.push(`${question.name}: ${question.choices.length} choices`);
-  const ids = question.choices.map((choice) => choice.id);
-  if (new Set(ids).size !== ids.length) choiceProblems.push(`${question.name}: a choice is repeated`);
-  if (!ids.includes(question.id)) choiceProblems.push(`${question.name}: the answer is not among the choices`);
   if (question.choices.some((choice) => !choice.svg)) choiceProblems.push(`${question.name}: a choice has no drawing`);
   if ("smiles" in question || "answer" in question) choiceProblems.push(`${question.name}: payload leaks the answer`);
 
-  // Every distractor must be a genuinely different compound, and exactly one
-  // choice must mark as correct.
-  const correct = ids.filter((id) => checkChoice(question.id, id).correct);
-  if (correct.length !== 1) choiceProblems.push(`${question.name}: ${correct.length} choices mark as correct`);
+  // The options are drawings and a position each. Anything that told them
+  // apart — a bank index above all, since the right one is the question's own
+  // id — would put the answer in the browser before the question was tried.
+  const described = question.choices.flatMap((choice) => Object.keys(choice));
+  if (described.some((key) => key !== "svg")) {
+    choiceProblems.push(`${question.name}: choices carry ${[...new Set(described)].join(", ")}`);
+  }
+  const drawings = question.choices.map((choice) => choice.svg);
+  if (new Set(drawings).size !== drawings.length) choiceProblems.push(`${question.name}: a choice is repeated`);
 
-  // The name shown must not be blank, and "show me" must reveal it.
+  // Exactly one position must mark as correct, and it must be the one the
+  // verdict points the reader at.
+  const positions = question.choices.map((_, position) => position);
+  const marked = positions.map((position) => checkChoice(question.id, position, question.nonce));
+  const correct = marked.filter((verdict) => verdict.correct);
+  if (correct.length !== 1) choiceProblems.push(`${question.name}: ${correct.length} choices mark as correct`);
+  const pointed = new Set(marked.map((verdict) => verdict.correctChoice));
+  if (pointed.size !== 1 || !marked[[...pointed][0]]?.correct) {
+    choiceProblems.push(`${question.name}: correctChoice does not point at the right option`);
+  }
+
+  // Marking has to survive the round trip through the client, which sends back
+  // a position and a nonce and nothing else.
+  const rebuilt = checkChoice(question.id, [...pointed][0], question.nonce);
+  if (!rebuilt.correct) choiceProblems.push(`${question.name}: the option list did not rebuild`);
+  // Not an error in itself — one arrangement in four puts the answer back in
+  // the same place — but every nonce agreeing would mean it is not being used.
+  const otherNonce = checkChoice(question.id, [...pointed][0], `${question.nonce}x`);
+  if (otherNonce.correctChoice === [...pointed][0]) sameUnderAnyNonce++;
+
+  // The name shown must not be blank, and "show me" must reveal the structure.
   if (!question.name?.trim()) choiceProblems.push(`question ${question.id}: no name shown`);
-  const revealed = checkChoice(question.id, -1);
-  if (revealed.correct || revealed.answer !== question.name) {
+  const revealed = checkChoice(question.id, -1, question.nonce);
+  if (revealed.correct || revealed.answer !== question.name || revealed.correctChoice !== [...pointed][0]) {
     choiceProblems.push(`${question.name}: "show me" did not reveal the answer`);
   }
 }
+check("the nonce decides the arrangement", sameUnderAnyNonce < choicesChecked);
 check(`multiple choice is well formed (${choicesChecked} sampled)`, choiceProblems.length === 0);
 if (choiceProblems.length) failures.push(...[...new Set(choiceProblems)].slice(0, 5));
 
 // Distractors are only worth offering if they could plausibly be the compound
 // named, so most should be true isomers of it.
+// The distractors are only named by marking a pick, which is all the browser
+// can learn about them either.
+const bankByName = new Map(QUIZ_BANK.map((entry, index) => [entry.name, index]));
 let sameFormula = 0;
 let totalDistractors = 0;
 for (let attempt = 0; attempt < 40; attempt++) {
   const question = pickQuestion("structure", null, null, []);
   if (question?.mode !== "structure") continue;
-  for (const choice of question.choices) {
-    if (choice.id === question.id) continue;
+  question.choices.forEach((_, position) => {
+    const verdict = checkChoice(question.id, position, question.nonce);
+    if (verdict.correct) return;
     totalDistractors++;
-    if (QUIZ_BANK[choice.id] && formulaMatches(choice.id, question.id)) sameFormula++;
-  }
+    const distractor = bankByName.get(verdict.named);
+    if (distractor !== undefined && formulaMatches(distractor, question.id)) sameFormula++;
+  });
 }
 check(
   `most distractors are true isomers (${sameFormula}/${totalDistractors})`,

@@ -15,8 +15,8 @@ import {
  * never reaches the browser until the question has been attempted.
  *
  *   GET  /api/quiz?mode=structure&category=alcohols&difficulty=easy&seen=3,17
- *   POST /api/quiz   { id, answer }   a typed name
- *   POST /api/quiz   { id, choice }   a chosen structure
+ *   POST /api/quiz   { id, answer }          a typed name
+ *   POST /api/quiz   { id, choice, nonce }   a structure, by its position
  */
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  let body: { id?: unknown; answer?: unknown; choice?: unknown };
+  let body: { id?: unknown; answer?: unknown; choice?: unknown; nonce?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -47,13 +47,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Pass the question id." }, { status: 400 });
   }
 
-  // A chosen structure is marked locally; a typed name has to be resolved.
+  // A chosen structure is marked locally; a typed name has to be resolved. The
+  // choice is a position among the options, which only means anything
+  // alongside the nonce those options were built from.
   if (body.choice !== undefined) {
     const choice = Number(body.choice);
-    if (!Number.isInteger(choice)) {
+    if (!Number.isInteger(choice) || typeof body.nonce !== "string") {
       return NextResponse.json({ error: "Pass the chosen structure." }, { status: 400 });
     }
-    return NextResponse.json(checkChoice(id, choice));
+    return NextResponse.json(checkChoice(id, choice, body.nonce));
   }
 
   const answer = typeof body.answer === "string" ? body.answer : "";

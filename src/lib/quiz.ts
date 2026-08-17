@@ -60,11 +60,23 @@ export interface NameQuestion extends QuestionBase {
   svg: string;
 }
 
-/** Here is a name — which of these is it? */
+/**
+ * Here is a name — which of these is it?
+ *
+ * The choices are drawings and nothing else. Sending the bank index of each
+ * one would hand over the answer, since the index of the right structure is
+ * the question's own id, so an answer names the option by its position and the
+ * server rebuilds the same list to mark it. The nonce is what makes that
+ * possible without either storing the list or fixing it: the options are drawn
+ * from it, so the same question asked twice is shuffled differently and both
+ * times can still be marked.
+ */
 export interface StructureQuestion extends QuestionBase {
   mode: "structure";
   name: string;
-  choices: Array<{ id: number; svg: string }>;
+  /** Regenerates the option list when the answer comes back. */
+  nonce: string;
+  choices: Array<{ svg: string }>;
 }
 
 export type Question = NameQuestion | StructureQuestion;
@@ -81,6 +93,8 @@ export interface Verdict {
   answer: string;
   /** What the submitted name actually describes, when it describes something. */
   named?: string;
+  /** Which option was the right one, so a multiple choice can point at it. */
+  correctChoice?: number;
 }
 
 function matches(
@@ -146,8 +160,7 @@ function describeName(id: number): NameQuestion {
 function describeChoice(id: number): StructureQuestion {
   const question = QUIZ_BANK[id];
   const formula = formulaOf(id);
-  const options = [id, ...distractorsFor(id)];
-  shuffle(options);
+  const nonce = Math.random().toString(36).slice(2, 10);
 
   return {
     mode: "structure",
@@ -156,24 +169,60 @@ function describeChoice(id: number): StructureQuestion {
     difficulty: question.difficulty,
     name: question.name,
     formula,
+    nonce,
     hints: hintsFor(question, formula, "structure"),
-    choices: options.map((choice) => ({
-      id: choice,
+    choices: optionsFor(id, nonce).map((choice) => ({
       svg: depict(QUIZ_BANK[choice].smiles, DEFAULT_DISPLAY).svg,
     })),
   };
 }
 
-/** Molecular formulas, worked out once so distractors can be found by them. */
-const FORMULA_INDEX = (() => {
+/**
+ * The options for a question, in the order they are shown.
+ *
+ * Every choice the arrangement involves — which distractors, in what order —
+ * is drawn from a generator seeded with the question and its nonce, so the
+ * list is a function of those two and nothing else. That is what lets the
+ * server mark a position later without having stored what it sent.
+ */
+function optionsFor(id: number, nonce: string): number[] {
+  const random = seededRandom(`${id}:${nonce}`);
+  const options = [id, ...distractorsFor(id, random)];
+  shuffle(options, random);
+  return options;
+}
+
+/** A generator that gives the same sequence every time for a given seed. */
+function seededRandom(seed: string): () => number {
+  let state = 0x811c9dc5;
+  for (let index = 0; index < seed.length; index++) {
+    state = Math.imul(state ^ seed.charCodeAt(index), 0x01000193);
+  }
+  return () => {
+    state = Math.imul(state ^ (state >>> 15), state | 1);
+    state ^= state + Math.imul(state ^ (state >>> 7), state | 61);
+    return ((state ^ (state >>> 14)) >>> 0) / 0x100000000;
+  };
+}
+
+/**
+ * Every entry drawn once: its formula, so distractors can be found by it, and
+ * a fingerprint of the drawing, so two that look the same are never offered
+ * together.
+ */
+const BANK_INDEX = (() => {
   const byFormula = new Map<string, number[]>();
   const formulas: string[] = [];
+  const drawings: string[] = [];
   QUIZ_BANK.forEach((question, index) => {
     let formula = "";
     try {
-      formula = depict(question.smiles, DEFAULT_DISPLAY).formulaPlain;
+      const drawing = depict(question.smiles, DEFAULT_DISPLAY);
+      formula = drawing.formulaPlain;
+      drawings[index] = fingerprint(drawing.svg);
     } catch {
       formula = "";
+      drawings[index] = `unrenderable:${index}`;
     }
     formulas[index] = formula;
     if (!formula) return;
@@ -181,11 +230,20 @@ const FORMULA_INDEX = (() => {
     if (bucket) bucket.push(index);
     else byFormula.set(formula, [index]);
   });
-  return { byFormula, formulas };
+  return { byFormula, formulas, drawings };
 })();
 
+/** A short digest of a string, for comparing two drawings cheaply. */
+function fingerprint(text: string): string {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < text.length; index++) {
+    hash = Math.imul(hash ^ text.charCodeAt(index), 0x01000193);
+  }
+  return (hash >>> 0).toString(36);
+}
+
 function formulaOf(id: number): string {
-  return FORMULA_INDEX.formulas[id] ?? "";
+  return BANK_INDEX.formulas[id] ?? "";
 }
 
 /**
@@ -196,25 +254,35 @@ function formulaOf(id: number): string {
  * telling them apart is exactly the skill being practised. Only when there are
  * not enough of those does it fall back to structures of a similar size from
  * the same topic.
+ *
+ * One kind of candidate is refused outright: one that is drawn exactly like the
+ * answer. A double bond whose geometry the structure leaves open is drawn as
+ * the plain double bond it is, which is the same picture as its E isomer, so
+ * but-2-ene and (E)-but-2-ene would otherwise appear side by side as two
+ * identical drawings, one of them marked wrong.
  */
-function distractorsFor(id: number): number[] {
+function distractorsFor(id: number, random: () => number): number[] {
   const wanted = CHOICE_COUNT - 1;
   const question = QUIZ_BANK[id];
   const chosen: number[] = [];
   const taken = new Set([id]);
+  const drawings = new Set([BANK_INDEX.drawings[id]]);
 
   const take = (candidates: number[]) => {
     const shuffled = [...candidates];
-    shuffle(shuffled);
+    shuffle(shuffled, random);
     for (const candidate of shuffled) {
       if (chosen.length >= wanted) return;
       if (taken.has(candidate)) continue;
       taken.add(candidate);
+      const drawing = BANK_INDEX.drawings[candidate];
+      if (drawings.has(drawing)) continue;
+      drawings.add(drawing);
       chosen.push(candidate);
     }
   };
 
-  take((FORMULA_INDEX.byFormula.get(formulaOf(id)) ?? []).filter((index) => index !== id));
+  take((BANK_INDEX.byFormula.get(formulaOf(id)) ?? []).filter((index) => index !== id));
 
   if (chosen.length < wanted) {
     const size = QUIZ_BANK[id].smiles.length;
@@ -235,9 +303,9 @@ function distractorsFor(id: number): number[] {
   return chosen;
 }
 
-function shuffle<T>(items: T[]): void {
+function shuffle<T>(items: T[], random: () => number): void {
   for (let i = items.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(random() * (i + 1));
     [items[i], items[j]] = [items[j], items[i]];
   }
 }
@@ -434,10 +502,12 @@ function listOf(items: string[]): string {
 }
 
 /**
- * Mark a chosen structure. The comparison is by structure rather than by id, so
- * a distractor that happens to be the same compound would still count.
+ * Mark a chosen structure, named by its position among the options shown.
+ *
+ * The comparison is by structure rather than by position, so a distractor that
+ * happened to be the same compound would still count.
  */
-export function checkChoice(id: number, choice: number): Verdict {
+export function checkChoice(id: number, choice: number, nonce: string): Verdict {
   const question = QUIZ_BANK[id];
   if (!question) {
     return {
@@ -448,14 +518,18 @@ export function checkChoice(id: number, choice: number): Verdict {
     };
   }
 
-  // A choice outside the offered set is the "show me" button, not a guess.
-  const picked = QUIZ_BANK[choice];
+  const options = optionsFor(id, nonce);
+  const correctChoice = options.indexOf(id);
+
+  // A position outside the offered set is the "show me" button, not a guess.
+  const picked = QUIZ_BANK[options[choice]];
   if (!picked) {
     return {
       correct: false,
       outcome: "different-compound",
-      message: "Here is the answer.",
+      message: "Here is the structure it describes.",
       answer: question.name,
+      correctChoice,
     };
   }
 
@@ -464,10 +538,11 @@ export function checkChoice(id: number, choice: number): Verdict {
     correct,
     outcome: correct ? "correct" : "different-compound",
     message: correct
-      ? "Correct."
+      ? "That is the structure the name describes."
       : "That is a different compound — compare where the groups sit along the chain.",
     answer: question.name,
     named: correct ? undefined : picked.name,
+    correctChoice,
   };
 }
 
@@ -546,7 +621,11 @@ export async function checkAnswer(id: number, answer: string): Promise<Verdict> 
   return {
     correct: true,
     outcome: "correct",
-    message: "Correct.",
+    message: `That names the structure shown${
+      cleaned.toLowerCase() === question.name.toLowerCase()
+        ? "."
+        : `, which is on file as ${question.name}.`
+    }`,
     answer: question.name,
   };
 }
