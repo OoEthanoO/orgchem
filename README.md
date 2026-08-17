@@ -46,8 +46,10 @@ ambiguities without guessing:
 
 **IUPAC names** go to [OPSIN](https://github.com/dan2097/opsin), with a local
 parser (`src/lib/iupac.ts`) covering chains, rings, locants, multipliers,
-unsaturation and the common suffixes so the app still answers when the network
-does not.
+unsaturation, substituents on nitrogen and the common suffixes so the app still
+answers when the network does not. Every name in the question bank that this
+parser will answer is checked against the structure OPSIN gave for it, so the
+two never disagree where they overlap.
 
 **Common and trade names** come from a local dictionary of ~260 compounds first,
 then [PubChem](https://pubchem.ncbi.nlm.nih.gov/).

@@ -272,9 +272,20 @@ export function parseIupacName(input: string): NameResult {
   return parseSingleName(name);
 }
 
+/**
+ * Stands in for a nitrogen locant while the rest of the name is lowercased.
+ * Not a character any name can contain, so nothing else can be mistaken for it.
+ */
+const N_LOCANT = "@";
+
 /** Strip the decorations this parser deliberately ignores. */
 function cleanName(input: string): string {
-  let s = input.toLowerCase().trim();
+  // An uppercase N in front of a substituent is a locant — it says the group
+  // sits on the nitrogen — where a lowercase one means "normal", as in
+  // n-butanol. Only the case tells them apart, so the locant is marked before
+  // lowercasing loses it and the strip below takes N-ethylethanamine for a
+  // plain ethylethanamine.
+  let s = input.trim().replace(/\bN(?=[,-])/g, N_LOCANT).toLowerCase();
   // Stereodescriptors and configurational prefixes: (2R,3S)-, (E)-, cis-, D-.
   s = s.replace(/^\(([0-9rsezRSEZ,'\s+-]|alpha|beta)*\)-/g, "");
   s = s.replace(/^(cis|trans|syn|anti|d|l|dl|r|s|e|z|n|o|p|m|meso)-/g, "");
@@ -299,7 +310,10 @@ function parseSingleName(name: string): NameResult {
   return buildChain(parent, prefixes);
 }
 
-type PrefixInstance = { locant: number | null; smiles: string; order: number };
+/** A position on the parent chain, or the nitrogen of its characteristic group. */
+type Locant = number | typeof N_LOCANT;
+
+type PrefixInstance = { locant: Locant | null; smiles: string; order: number };
 
 /**
  * Consume `2,3-dimethyl`-style substituent prefixes from the front of the name
@@ -310,7 +324,9 @@ function peelPrefixes(name: string): { prefixes: PrefixInstance[]; rest: string 
   let rest = name;
 
   for (;;) {
-    const locantMatch = /^-?(\d+(?:,\d+)*)-?/.exec(rest);
+    const locantMatch = new RegExp(`^-?((?:\\d+|\\${N_LOCANT})(?:,(?:\\d+|\\${N_LOCANT}))*)-?`).exec(
+      rest,
+    );
     const locantText = locantMatch?.[1];
     const after = locantMatch ? rest.slice(locantMatch[0].length) : rest.replace(/^-/, "");
 
@@ -327,7 +343,9 @@ function peelPrefixes(name: string): { prefixes: PrefixInstance[]; rest: string 
     }
 
     const [prefixName, spec] = found;
-    const locants = locantText ? locantText.split(",").map(Number) : [];
+    const locants: Locant[] = locantText
+      ? locantText.split(",").map((text) => (text === N_LOCANT ? N_LOCANT : Number(text)))
+      : [];
     const count = multiplierMatch ? MULTIPLIERS[multiplierMatch[0]] : 1;
     const pending: PrefixInstance[] = [];
     for (let k = 0; k < count; k++) {
@@ -414,8 +432,46 @@ function parseParent(input: string): Parent {
   return { size, ring, doubleBonds, tripleBonds, suffix, suffixLocants };
 }
 
+/**
+ * A branch that can carry substituents written on the nitrogen: the N of an
+ * amine or an amide, which is emitted as part of that group rather than as an
+ * atom of the parent chain.
+ */
+function carriesNitrogenSubstituents(branch: { smiles: string; order: number }): boolean {
+  return branch.smiles === "N" && branch.order === 1;
+}
+
+/** `N` with what an N-methyl or an N,N-dimethyl hangs off it. */
+function withNitrogenSubstituents(substituents: PrefixInstance[]): string {
+  return `N${substituents.map((s) => `(${s.smiles})`).join("")}`;
+}
+
+/**
+ * The chain position a substituent names. Nitrogen locants are taken out
+ * before this is reached, so anything left that is not a number is a
+ * substituent written without a locant, which falls to the first position.
+ */
+function chainIndex(locant: Locant | null): number {
+  return (typeof locant === "number" ? locant : 1) - 1;
+}
+
 function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
   const { size, ring, suffix } = parent;
+  // A substituent on the nitrogen is not a position on the chain, so it is
+  // taken out before the chain positions are filled and spliced into the
+  // characteristic group instead. Where there is no nitrogen to take it, or
+  // more than one and nothing to say which is meant, the name is refused
+  // rather than the group put somewhere plausible.
+  const nitrogenSubstituents = prefixes.filter((p) => p.locant === N_LOCANT);
+  prefixes = prefixes.filter((p) => p.locant !== N_LOCANT);
+  if (nitrogenSubstituents.length > 0) {
+    if (!suffix?.branches.some(carriesNitrogenSubstituents) || suffix.openValence) {
+      throw new NameError("nothing for an N- substituent to sit on");
+    }
+    if (parent.suffixLocants.length > 1) {
+      throw new NameError("more than one nitrogen and nothing to say which is meant");
+    }
+  }
   const atoms: BuildAtom[] = Array.from({ length: size }, () => ({
     sym: "C",
     branches: [],
@@ -437,7 +493,7 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
     if (p.locant === null && atoms.length > 2) {
       throw new NameError("substituent has no locant and the position is not forced");
     }
-    const index = (p.locant ?? 1) - 1;
+    const index = chainIndex(p.locant);
     if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
     atoms[index].branches.push({ smiles: p.smiles, order: p.order });
   }
@@ -453,7 +509,13 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
         atoms[index].open = true;
         openValences++;
       } else {
-        for (const b of suffix.branches) atoms[index].branches.push({ ...b });
+        for (const b of suffix.branches) {
+          const smiles =
+            nitrogenSubstituents.length > 0 && carriesNitrogenSubstituents(b)
+              ? withNitrogenSubstituents(nitrogenSubstituents)
+              : b.smiles;
+          atoms[index].branches.push({ ...b, smiles });
+        }
       }
     }
   }
@@ -478,11 +540,24 @@ function buildAromatic(parent: AromaticParent, prefixes: PrefixInstance[]): Name
   atoms[0].ring = 1;
   atoms[atoms.length - 1].ring = 1;
 
-  for (const f of parent.fixed ?? []) {
-    atoms[f.locant - 1].branches.push({ smiles: f.smiles, order: f.order });
+  // As on a chain: an N- substituent belongs to the nitrogen the parent
+  // carries — the one aniline is named for — not to a ring position.
+  const nitrogenSubstituents = prefixes.filter((p) => p.locant === N_LOCANT);
+  prefixes = prefixes.filter((p) => p.locant !== N_LOCANT);
+  const fixed = parent.fixed ?? [];
+  if (nitrogenSubstituents.length > 0 && !fixed.some(carriesNitrogenSubstituents)) {
+    throw new NameError("nothing for an N- substituent to sit on");
+  }
+
+  for (const f of fixed) {
+    const smiles =
+      nitrogenSubstituents.length > 0 && carriesNitrogenSubstituents(f)
+        ? withNitrogenSubstituents(nitrogenSubstituents)
+        : f.smiles;
+    atoms[f.locant - 1].branches.push({ smiles, order: f.order });
   }
   for (const p of prefixes) {
-    const index = (p.locant ?? 1) - 1;
+    const index = chainIndex(p.locant);
     if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
     atoms[index].branches.push({ smiles: p.smiles, order: p.order });
   }
