@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { Quiz } from "@/components/Quiz";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -50,7 +51,14 @@ export default function PracticePage() {
         the one on file.
       </p>
 
-      <Quiz categories={CATEGORIES} availability={availability} />
+      {/*
+        The drill reads its selection from the query string, which the page
+        around it does not need: everything above and below here is the same
+        whatever is being practised, so it stays prerendered while this waits.
+      */}
+      <Suspense fallback={<div className="h-[28rem] animate-pulse rounded-2xl bg-surface-2" />}>
+        <Quiz categories={CATEGORIES} availability={availability} />
+      </Suspense>
 
       <footer className="mt-auto pt-6 text-xs text-text-faint">
         Answers are marked by resolving what you type back into a structure and comparing it with

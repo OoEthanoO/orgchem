@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import type { Category, Difficulty, Question, QuizMode, Verdict } from "@/lib/quiz";
@@ -12,6 +13,12 @@ import { Formula } from "./Formula";
  *
  * Hints are revealed one at a time and on request, so the question stays a
  * question for as long as the reader wants it to.
+ *
+ * What is being drilled lives in the URL, as the lookup page's query does, so
+ * a selection can be linked to: /practice?mode=structure&topic=alcohols&level=easy
+ * sets someone down in front of exactly that. The questions themselves cannot
+ * be in there — they are drawn fresh — so it is the drill that is shared, not
+ * a particular run of it.
  */
 
 const DIFFICULTY_LABELS: Record<Difficulty, string> = {
@@ -32,9 +39,14 @@ export function Quiz({
   /** Question counts by "category:difficulty", with "*" meaning unfiltered. */
   availability: Record<string, number>;
 }) {
-  const [mode, setMode] = useState<QuizMode>("name");
-  const [category, setCategory] = useState<string | null>(null);
-  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
+  // The URL is read once, to start from. After that the selection is state and
+  // the URL is kept in step with it, rather than the other way round: a drill
+  // in progress should not be restarted by the address bar.
+  const searchParams = useSearchParams();
+  const [selection] = useState(() => readSelection(searchParams, categories, availability));
+  const [mode, setMode] = useState<QuizMode>(selection.mode);
+  const [category, setCategory] = useState<string | null>(selection.category);
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(selection.difficulty);
   const [round, setRound] = useState(0);
   const [question, setQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +84,7 @@ export function Quiz({
     setRevealed(false);
     setHintsShown(0);
     setRound((current) => current + 1);
+    writeSelection(nextMode, nextCategory, nextDifficulty);
   }
 
   useEffect(() => {
@@ -402,6 +415,54 @@ export function Quiz({
       </section>
     </div>
   );
+}
+
+interface Selection {
+  mode: QuizMode;
+  category: string | null;
+  difficulty: Difficulty | null;
+}
+
+/**
+ * The drill a URL asks for.
+ *
+ * Anything unrecognised is dropped, and so is a combination the bank cannot
+ * fill: a link to a topic that has nothing hard in it should land on the
+ * topic rather than on an error, since the topic is the more specific ask.
+ */
+function readSelection(
+  params: URLSearchParams,
+  categories: Category[],
+  availability: Record<string, number>,
+): Selection {
+  const level = params.get("level");
+  const topic = params.get("topic");
+  const count = (c: string | null, d: Difficulty | null) => availability[`${c ?? "*"}:${d ?? "*"}`] ?? 0;
+
+  let category = categories.some((item) => item.id === topic) ? topic : null;
+  let difficulty = level && level in DIFFICULTY_LABELS ? (level as Difficulty) : null;
+  if (count(category, difficulty) === 0) {
+    difficulty = null;
+    if (count(category, null) === 0) category = null;
+  }
+
+  return { mode: params.get("mode") === "structure" ? "structure" : "name", category, difficulty };
+}
+
+/** Keep the URL showing what is being drilled, without reloading anything. */
+function writeSelection(
+  mode: QuizMode,
+  category: string | null,
+  difficulty: Difficulty | null,
+): void {
+  const params = new URLSearchParams();
+  if (mode !== "name") params.set("mode", mode);
+  if (category) params.set("topic", category);
+  if (difficulty) params.set("level", difficulty);
+  const query = params.toString();
+  // Replaced rather than pushed: the back button should leave the drill, not
+  // walk back through every filter touched on the way into it.
+  window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
 }
 
 function Filters({

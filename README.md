@@ -101,6 +101,13 @@ and `propan-2-ol` all pass. It also tells a near miss from a real one: naming
 the right skeleton with the wrong configuration is reported as that, not simply
 marked wrong.
 
+What is being drilled lives in the URL, as the lookup page's query does, so a
+selection can be handed to someone:
+`/practice?mode=structure&topic=alcohols&level=easy` sets them down in front of
+exactly that. Anything the bank cannot fill is dropped rather than becoming an
+error. The multiple choice is answerable from the keyboard — the number keys
+pick an option, Enter moves on — as the typed direction already was.
+
 The answer stays on the server in both directions. An option is identified only
 by its position, and the server rebuilds the same list from the question and a
 nonce sent with it — so nothing in the question distinguishes the right drawing
