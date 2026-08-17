@@ -19,10 +19,10 @@ npm run dev
 ```
 
 Then open http://localhost:3000. `npm test` runs the parser suites offline;
-`npm run test:live` runs the two that need the app up — what the resolver does
-with anything typed into a search box, and how a typed answer is marked, both
-of which go out to OPSIN and PubChem. `npm run build` produces a production
-build.
+`npm run test:live` runs the three that need the app up — which reading of an
+input wins, what the resolver does with anything typed into a search box, and
+how a typed answer is marked, all of which go out to OPSIN and PubChem.
+`npm run build` produces a production build.
 
 ## What it accepts
 
@@ -56,6 +56,14 @@ then [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
 
 **SMILES** is accepted directly, and `smiles:`, `name:`, `formula:` or `inchi:`
 prefixes force a particular reading.
+
+A structure written with no hydrogens in it at all is read as SMILES before
+anything else, because condensed notation exists to write the hydrogens out.
+The two readings otherwise collide silently: `CCO` is ethanol as SMILES and
+acetaldehyde as a condensed formula — C followed by the carbonyl abbreviation —
+`CC(C)C` is isobutane or a chain of four carbons, and `C1CCCCC1` cyclohexane or
+hexane. Both readings of each draw perfectly well, so which stage is asked
+first is the whole answer.
 
 **Molecular formulas** are treated as the ambiguous things they are: `C₅H₁₂`
 does not name a structure, so the isomers are listed rather than one being
@@ -135,8 +143,8 @@ stereochemistry) rather than assigned by hand.
 ## How it fits together
 
 ```
-input → normalize → dictionary → condensed formula → SMILES
-                  → OPSIN ∥ local IUPAC parser
+input → normalize → dictionary → SMILES without hydrogens → condensed formula
+                  → SMILES → OPSIN ∥ local IUPAC parser
                   → molecular formula (isomer list) → PubChem name
                   → PubChem enrichment → OpenChemLib → SVG + properties
 ```

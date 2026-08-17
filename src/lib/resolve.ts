@@ -84,6 +84,10 @@ export async function resolveQuery(raw: string): Promise<Resolution> {
 
   const attempts: Array<() => Promise<Resolution | null> | Resolution | null> = [
     () => fromDictionary(input),
+    // Before the condensed reading, because it would take these first and both
+    // readings parse into something drawable, so nothing downstream could tell
+    // that the wrong one had won.
+    () => fromHydrogenlessSmiles(input),
     () => fromCondensed(input),
     () => fromSmiles(input),
     () => fromName(input),
@@ -202,6 +206,30 @@ function fromCondensed(input: string): Resolution | null {
  * SMILES is only accepted when the string carries syntax that a name or a
  * condensed formula never has, or when nothing else claimed it first.
  */
+/**
+ * SMILES written plainly enough that the condensed parser would take it first
+ * and read it as something else.
+ *
+ * Condensed notation exists to write the hydrogens out — CH3CH2OH — so a
+ * structure with not one hydrogen in it is not condensed notation, whatever
+ * else it may be. Both readings of `CCO` parse and both draw: as SMILES it is
+ * ethanol, and read as a condensed formula it is C followed by the carbonyl
+ * abbreviation, which is acetaldehyde. `CC(C)C` is isobutane or a chain of
+ * four carbons, `C1CCCCC1` cyclohexane or hexane. Each pair is two different
+ * compounds and the stage asked first wins, so the order has to be decided
+ * here rather than by which parser is more willing.
+ *
+ * Only element symbols count as plain. A lowercase letter outside Cl and Br is
+ * either an abbreviation — Ph, Bn, Me, which are condensed notation and mean
+ * nothing in SMILES — or an aromatic atom, which is distinctive enough that
+ * the ordinary SMILES stage already claims it.
+ */
+function fromHydrogenlessSmiles(input: string): Resolution | null {
+  if (/H/.test(input)) return null;
+  if (/[a-z]/.test(input.replace(/Cl|Br/g, ""))) return null;
+  return fromSmiles(input, true);
+}
+
 function fromSmiles(input: string, force = false): Resolution | null {
   const distinctive = /[[\]@\\/%]|(?:^|[^A-Za-z])[bcnops](?:[0-9(]|$)|\d(?=[A-Za-z(])/.test(input);
   if (!force && !distinctive) return null;
