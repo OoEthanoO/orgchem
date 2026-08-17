@@ -357,6 +357,22 @@ const FORMULA_SPECIALS: Record<string, Template> = {
   C6H6: tpl(() => [atom("c"), raw("1ccccc1")], 0, 0, 0, 0),
 };
 
+/**
+ * Whether a string is element symbols and counts and nothing else — a
+ * molecular formula, as far as its spelling can say.
+ *
+ * `Bn` and `Ph` and `Me` are shaped exactly like element symbols and are not
+ * elements, so a caller weighing up whether it has been handed a formula has
+ * to be told which symbols mean an atom here.
+ */
+export function isElementFormula(text: string): boolean {
+  if (!/^(?:[A-Z][a-z]?\d*)+$/.test(text)) return false;
+  for (const [, symbol] of text.matchAll(/([A-Z][a-z]?)\d*/g)) {
+    if (VALENCE[symbol] === undefined) return false;
+  }
+  return true;
+}
+
 class ParseError extends Error {}
 
 const BOND_SYMBOL: Record<number, string> = { 1: "", 2: "=", 3: "#" };

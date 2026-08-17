@@ -285,8 +285,31 @@ export const DICTIONARY: Record<string, string> = {
   o3: "[O-][O+]=O",
   "sulfur dioxide": "O=S=O",
   so2: "O=S=O",
+  "sulfur trioxide": "O=S(=O)=O",
+  so3: "O=S(=O)=O",
   "nitrous oxide": "[N-]=[N+]=O",
   "laughing gas": "[N-]=[N+]=O",
+  "carbon disulfide": "S=C=S",
+  cs2: "S=C=S",
+  // The elements as they actually exist. Without these, O2 is two oxygens for
+  // the formula lookup to go and find, and NO is read as SMILES for an N
+  // bonded to an O, which is hydroxylamine.
+  oxygen: "O=O",
+  o2: "O=O",
+  nitrogen: "N#N",
+  n2: "N#N",
+  hydrogen: "[H][H]",
+  h2: "[H][H]",
+  fluorine: "FF",
+  f2: "FF",
+  chlorine: "ClCl",
+  cl2: "ClCl",
+  bromine: "BrBr",
+  br2: "BrBr",
+  iodine: "II",
+  i2: "II",
+  "nitric oxide": "[N]=O",
+  no: "[N]=O",
 };
 
 /** Canonical lookup key: lowercase, single-spaced, no surrounding punctuation. */

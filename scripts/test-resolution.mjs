@@ -46,6 +46,20 @@ const CASES = [
   // The dictionary comes first, so a name that is also a structure is a name.
   ["CO", "dictionary", "[C-]#[O+]"],
   ["aspirin", "dictionary", "CC(=O)Oc1ccccc1C(=O)O"],
+  ["O2", "dictionary", "O=O"],
+  ["N2", "dictionary", "N#N"],
+  ["CS2", "dictionary", "S=C=S"],
+
+  // A molecular formula states its hydrogens, so a structural reading that
+  // had to invent some is refused and the formula lookup answers instead.
+  // Where the reading does add up — every valence filled by what was written —
+  // it stands.
+  ["S8", "formula", null],
+  ["P4", "formula", null],
+  ["CH4", "condensed", "C"],
+  ["CH2Cl2", "condensed", "ClCCl"],
+  ["PCl3", "condensed", "ClP(Cl)Cl"],
+  ["SOCl2", "condensed", "O=S(Cl)Cl"],
 
   // Names, and formulas, which name a set rather than a structure.
   ["2-methylbutan-1-ol", "opsin", "CCC(C)CO"],

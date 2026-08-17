@@ -126,6 +126,34 @@ export function constitutionKey(smiles: string): string | null {
 }
 
 /**
+ * Whether a structure is exactly the formula that was written, hydrogens
+ * included.
+ *
+ * A formula written as element counts alone states its hydrogens: `O2` says
+ * there are none. A structural reading fills a leftover valence with hydrogen
+ * without being asked, so `O2` comes back as O-O, which is hydrogen peroxide,
+ * and `CS2` as C-S-S, which is a thiol. Counting the atoms of what was built
+ * catches every one of those, whatever the parser did to get there.
+ */
+export function matchesFormula(smiles: string, formula: string): boolean {
+  let built;
+  try {
+    built = OCL.Molecule.fromSmiles(smiles).getMolecularFormula().formula;
+  } catch {
+    return false;
+  }
+  const counts = (text: string) =>
+    new Map(parseComposition(text).map((part) => [part.element, part.count]));
+  const ours = counts(built);
+  const written = counts(formula);
+  if (ours.size !== written.size) return false;
+  for (const [element, count] of written) {
+    if (ours.get(element) !== count) return false;
+  }
+  return true;
+}
+
+/**
  * Whether a SMILES string actually parses. The resolver uses this to reject a
  * guess before committing to it — `C4H10O` looks enough like SMILES to fool a
  * syntax check, but it is a molecular formula and has to fall through.

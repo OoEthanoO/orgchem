@@ -1,8 +1,14 @@
 import "server-only";
 
-import { canDepict, constitutionKey, hasFormalCharge, openValenceCount } from "./depict";
+import {
+  canDepict,
+  constitutionKey,
+  hasFormalCharge,
+  matchesFormula,
+  openValenceCount,
+} from "./depict";
 import { normalizeInput, normalizeName } from "./normalize";
-import { parseCondensed } from "./condensed";
+import { isElementFormula, parseCondensed } from "./condensed";
 import { applyDescriptor } from "./stereo";
 import { parseIupacName } from "./iupac";
 import { lookupDictionary } from "./dictionary";
@@ -167,6 +173,24 @@ function fromDictionary(input: string): Resolution | null {
 /** A CIP descriptor written in front of a formula: (E)-, (Z)-, (R)-, (S)-. */
 const LEADING_DESCRIPTOR = /^\(\s*([EZRS])\s*\)\s*-\s*/i;
 
+/**
+ * Whether a string is a molecular formula: element symbols and counts, each
+ * element named once.
+ *
+ * Naming one twice is structural information rather than a count — the C of
+ * CH3CH2OH appears twice because the formula is saying where they are — which
+ * is the same reasoning the isomer lookup uses to decide what a formula is.
+ */
+function namesEachElementOnce(text: string): boolean {
+  if (!isElementFormula(text)) return false;
+  const seen = new Set<string>();
+  for (const [, element] of text.matchAll(/([A-Z][a-z]?)\d*/g)) {
+    if (seen.has(element)) return false;
+    seen.add(element);
+  }
+  return true;
+}
+
 function fromCondensed(input: string): Resolution | null {
   const descriptor = LEADING_DESCRIPTOR.exec(input)?.[1];
   const formula = descriptor ? input.replace(LEADING_DESCRIPTOR, "") : input;
@@ -177,6 +201,13 @@ function fromCondensed(input: string): Resolution | null {
   } catch {
     return null;
   }
+
+  // A molecular formula states its hydrogens. Reading one as a structure fills
+  // any valence left over with hydrogen instead, which turns O2 into O-O —
+  // hydrogen peroxide, two atoms heavier than what was asked for — and CS2
+  // into a thiol. Where the reading does not add up to the formula it came
+  // from, it is the wrong reading.
+  if (namesEachElementOnce(formula) && !matchesFormula(parsed.smiles, formula)) return null;
 
   // A condensed formula cannot express configuration, so a descriptor in front
   // of it is the only place the stereochemistry can come from.

@@ -29,6 +29,9 @@ const DELIBERATE = {
   ribose:
     "PubChem's record is the pyranose; the furanose is the ring in RNA and the one worth drawing",
   co: "PubChem reads the name as the element cobalt",
+  no: "PubChem reads the name as the element nobelium",
+  "nitric oxide":
+    "the entry is PubChem's own SMILES for the name; asked to read it back, PubChem fills the radical's spare valence with a hydrogen and answers nitroxyl",
 };
 
 const constitution = (key) => key.split("-")[0];
