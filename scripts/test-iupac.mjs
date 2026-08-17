@@ -64,15 +64,39 @@ const CASES = [
   ["octadecanoic acid", "CCCCCCCCCCCCCCCCCC(=O)O"],
   ["cyclohexanol", "OC1CCCCC1"],
   ["2-methylprop-1-ene", "CC(C)=C"],
+  // Positions written in words rather than numbers.
+  ["p-nitrotoluene", "Cc1ccc(cc1)[N+](=O)[O-]"],
+  ["o-dichlorobenzene", "Clc1ccccc1Cl"],
+  ["m-dichlorobenzene", "Clc1cccc(Cl)c1"],
+  ["para-nitrophenol", "Oc1ccc(cc1)[N+](=O)[O-]"],
+  ["ortho-nitroaniline", "Nc1ccccc1[N+](=O)[O-]"],
+  // Substituents on the nitrogen rather than on the chain or the ring.
+  ["N-ethylethanamine", "CCNCC"],
+  ["N-methylmethanamine", "CNC"],
+  ["N,N-dimethylmethanamine", "CN(C)C"],
+  ["N-methylbutan-2-amine", "CCC(C)NC"],
+  ["N-methylethanamide", "CC(=O)NC"],
+  ["N-methylaniline", "CNc1ccccc1"],
+  ["N,N-dimethylaniline", "CN(C)c1ccccc1"],
+  // A lowercase n- is not a locant: it says the chain is unbranched.
+  ["n-butanol", "CCCCO"],
+  ["n-hexane", "CCCCCC"],
 ];
 
 // Names the parser must refuse rather than answer by guessing. Placing an
-// unlocanted substituent at position 1 would build a different compound.
+// unlocanted substituent at position 1 would build a different compound — and
+// on a ring that already carries one, an impossible one.
 const REJECT = [
   "methylpropene",
   "methylpropane",
   "chloropropane",
   "ethylhexane",
+  "chlorophenol",
+  "dichlorobenzene",
+  "nitrotoluene",
+  "p-butane",
+  "N-methylbutane",
+  "N-methylbutan-1-ol",
 ];
 
 let pass = 0;

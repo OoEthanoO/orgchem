@@ -288,17 +288,38 @@ function cleanName(input: string): string {
   let s = input.trim().replace(/\bN(?=[,-])/g, N_LOCANT).toLowerCase();
   // Stereodescriptors and configurational prefixes: (2R,3S)-, (E)-, cis-, D-.
   s = s.replace(/^\(([0-9rsezRSEZ,'\s+-]|alpha|beta)*\)-/g, "");
-  s = s.replace(/^(cis|trans|syn|anti|d|l|dl|r|s|e|z|n|o|p|m|meso)-/g, "");
+  // ortho, meta and para are left in place: they are positions, not
+  // decorations, and are read as locants below.
+  s = s.replace(/^(cis|trans|syn|anti|dl|meso|d|l|r|s|e|z|n)-/g, "");
   s = s.replace(/\((\d*[rsez])\)-/g, "");
   s = s.replace(/\s+/g, " ");
   return s.trim();
 }
 
+/**
+ * How far round the ring the second substituent sits, for names that say it in
+ * words: ortho is next to the first, meta one further, para opposite.
+ */
+const RELATIVE_POSITIONS: Record<string, number> = {
+  ortho: 2,
+  meta: 3,
+  para: 4,
+  o: 2,
+  m: 3,
+  p: 4,
+};
+
 function parseSingleName(name: string): NameResult {
+  const relative = /^(ortho|meta|para|o|m|p)-/.exec(name);
+  const separation = relative ? RELATIVE_POSITIONS[relative[1]] : null;
+  if (relative) name = name.slice(relative[0].length);
+
   const { prefixes, rest } = peelPrefixes(name);
 
   const aromatic = matchAromaticParent(rest);
-  if (aromatic) return buildAromatic(aromatic.parent, prefixes);
+  if (aromatic) return buildAromatic(aromatic.parent, prefixes, separation);
+  // Nothing else has a ring for ortho and para to mean anything on.
+  if (separation !== null) throw new NameError("a relative position without a ring to put it on");
 
   // Substituent groups whose names have no chain stem to parse (isopropyl).
   if (prefixes.length === 0) {
@@ -528,7 +549,11 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
   return { smiles: emit(atoms, ring), openValences };
 }
 
-function buildAromatic(parent: AromaticParent, prefixes: PrefixInstance[]): NameResult {
+function buildAromatic(
+  parent: AromaticParent,
+  prefixes: PrefixInstance[],
+  separation: number | null,
+): NameResult {
   const atoms: BuildAtom[] = parent.ring.map((sym) => ({
     sym,
     branches: [],
@@ -556,9 +581,32 @@ function buildAromatic(parent: AromaticParent, prefixes: PrefixInstance[]): Name
         : f.smiles;
     atoms[f.locant - 1].branches.push({ smiles, order: f.order });
   }
+  /*
+    Where a substituent goes when the name does not number it.
+
+    A bare ring is the same at every carbon, so the first one can only be
+    position 1 — that is how nitrobenzene needs no locant. After that the ring
+    is no longer symmetric and the position is real information: ortho, meta
+    and para supply it, and without them there is nothing to place a second
+    substituent by. Guessing put it on carbon 1 alongside the first, which is
+    not a crowded structure but an impossible one — p-nitrotoluene came back as
+    a ring carbon with five bonds.
+  */
+  const taken = new Set<number>([
+    ...fixed.map((f) => f.locant),
+    ...prefixes.map((p) => p.locant).filter((locant): locant is number => typeof locant === "number"),
+  ]);
+
   for (const p of prefixes) {
-    const index = chainIndex(p.locant);
-    if (index < 0 || index >= atoms.length) throw new NameError(`locant ${p.locant} out of range`);
+    let locant = typeof p.locant === "number" ? p.locant : null;
+    if (locant === null) {
+      if (taken.size === 0) locant = 1;
+      else if (separation !== null && !taken.has(separation)) locant = separation;
+      else throw new NameError("substituent has no locant and the ring is not symmetric");
+      taken.add(locant);
+    }
+    const index = locant - 1;
+    if (index < 0 || index >= atoms.length) throw new NameError(`locant ${locant} out of range`);
     atoms[index].branches.push({ smiles: p.smiles, order: p.order });
   }
 
