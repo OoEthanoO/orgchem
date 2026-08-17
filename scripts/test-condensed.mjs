@@ -91,6 +91,14 @@ const CASES = [
   // hangs off it rather than ending the chain.
   ["HOCH2(CHOH)4CHO", "OCC(O)C(O)C(O)C(O)C=O", 0],
   ["CH3(CHCH3)CH3", "CC(C)C", 0],
+  // A charge written at the end, against the open valence a dash otherwise
+  // marks: the O of CH3COO- has no room for another hydrogen, the CH2 of
+  // CH3CH2CH2CH2CH2- does.
+  ["CH3COO-", "CC(=O)[O-]", 0],
+  ["CH3O-", "C[O-]", 0],
+  ["CH3NH3+", "C[NH3+]", 0],
+  ["CH3CH2NH3+", "CC[NH3+]", 0],
+  ["(CH3)4N+", "C[N+](C)(C)C", 0],
   // Sulfur written past its usual valence.
   ["CH3SOCH3", "CS(C)=O", 0],
   ["(CH3)2SO", "CS(C)=O", 0],

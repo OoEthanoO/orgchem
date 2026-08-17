@@ -133,9 +133,15 @@ function uni(
   return tpl(toks, at, at, 1, 1, lead);
 }
 
-/** Single-atom template with an explicit hydrogen count. */
-function mono(sym: string, h: number | null): Template {
-  const cap = (VALENCE[sym] ?? 4) - (h ?? 0);
+/**
+ * Single-atom template with an explicit hydrogen count.
+ *
+ * `extra` is for an atom about to be given a positive charge, which buys it a
+ * bond: the N of CH3NH3+ has its three hydrogens and the bond to the methyl,
+ * one more than a neutral nitrogen has to give.
+ */
+function mono(sym: string, h: number | null, extra = 0): Template {
+  const cap = (VALENCE[sym] ?? 4) - (h ?? 0) + extra;
   return tpl(() => [atom(sym, h)], 0, 0, cap, cap);
 }
 
@@ -450,7 +456,17 @@ function parseChain(src: string, pieces: string[], continues = false): Frag {
     const ch = src[i];
 
     // --- explicit charge, written at the very end (CH3NH3+, CH3COO-) -------
-    if (ch === "+" || (ch === "-" && i === src.length - 1 && cur && cur.cap === 0)) {
+    //
+    // A trailing minus is a charge or an open valence depending on what it
+    // lands on. An atom whose hydrogens are written has room for another bond
+    // and the dash marks it — the CH2 of CH3CH2CH2CH2CH2-. An atom left to
+    // fill its own valence has no such room, since anything spare is already
+    // hydrogen, so on that one the dash can only be a charge: the O of
+    // CH3COO-, which is acetate and not acetic acid.
+    if (
+      ch === "+" ||
+      (ch === "-" && i === src.length - 1 && cur && (cur.cap === 0 || cur.atom.h === null))
+    ) {
       if (!cur) throw new ParseError("stray charge");
       cur.atom.charge += ch === "+" ? 1 : -1;
       cur.cap = Math.max(0, cur.cap - 1);
@@ -746,7 +762,11 @@ function matchGroup(src: string, i: number): Match | null {
   if (!sym) return null;
   const h = m[2] === undefined ? null : m[3] ? Number(m[3]) : 1;
   const consumed = sym.length + (m[2]?.length ?? 0);
-  return { template: mono(sym, h), text: rest.slice(0, consumed), next: i + consumed };
+  // The charge is applied further on, but what it does to the atom's capacity
+  // has to be known now, while there is still a bond to fit: NH3 has nothing
+  // left to bond with, NH3+ has one.
+  const extra = rest[consumed] === "+" ? 1 : 0;
+  return { template: mono(sym, h, extra), text: rest.slice(0, consumed), next: i + consumed };
 }
 
 /** The longest abbreviation the text opens with, if any. */
