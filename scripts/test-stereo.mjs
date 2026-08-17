@@ -28,6 +28,21 @@ function chirality(model, centre) {
   );
 }
 
+/**
+ * Index of the stereocentre in `smiles`, numbered as the conformer built from
+ * that same string is. Taking the index from the structure the pair was
+ * generated from would be reading the wrong atom: OpenChemLib renumbers when
+ * it rewrites a SMILES, and for ibuprofen the centre moves from 10 to 8.
+ */
+function stereoCentre(smiles) {
+  const molecule = OCL.Molecule.fromSmiles(smiles);
+  molecule.ensureHelperArrays(OCL.Molecule.cHelperCIP);
+  for (let atom = 0; atom < molecule.getAtoms(); atom++) {
+    if (molecule.isAtomStereoCenter(atom)) return atom;
+  }
+  return -1;
+}
+
 const CASES = [
   ["butan-2-ol", "CCC(C)O", "stereocentre", ["R", "S"]],
   ["alanine", "CC(N)C(=O)O", "stereocentre", ["R", "S"]],
@@ -74,12 +89,14 @@ for (const [name, smiles, kind, labels] of CASES) {
   }
   // For a stereocentre, the 3D coordinates must actually be mirrored.
   if (kind === "stereocentre") {
-    const centre = OCL.Molecule.fromSmiles(smiles);
-    centre.ensureHelperArrays(OCL.Molecule.cHelperCIP);
-    let index = -1;
-    for (let a = 0; a < centre.getAtoms(); a++) if (centre.isAtomStereoCenter(a)) index = a;
-    const volumes = pair.isomers.map((i) => chirality(i.model, index));
-    if (volumes.some((v) => v === null) || Math.sign(volumes[0]) === Math.sign(volumes[1])) {
+    const volumes = pair.isomers.map((i) => chirality(i.model, stereoCentre(i.smiles)));
+    // A tetrahedral centre encloses a couple of cubic angstroms; anything near
+    // zero is a flat atom, whose sign says nothing about configuration.
+    if (volumes.some((v) => v === null || Math.abs(v) < 1)) {
+      failures.push(`${name}: no tetrahedral centre in the 3D model (${volumes})`);
+      continue;
+    }
+    if (Math.sign(volumes[0]) === Math.sign(volumes[1])) {
       failures.push(`${name}: 3D coordinates are not mirrored (${volumes})`);
       continue;
     }
