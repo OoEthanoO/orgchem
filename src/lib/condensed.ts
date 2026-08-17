@@ -426,7 +426,7 @@ function render(toks: Tok[]): string {
  * Parse a run of fragments joined head to tail, handling branches, repeats and
  * bond symbols. Recurses for parenthesised groups.
  */
-function parseChain(src: string, pieces: string[]): Frag {
+function parseChain(src: string, pieces: string[], continues = false): Frag {
   const toks: Tok[] = [];
   const slots: Slot[] = [];
   let headSlot: Slot | null = null;
@@ -491,7 +491,10 @@ function parseChain(src: string, pieces: string[]): Frag {
       const isBranch = cur.cap > 0 && probe.tailSlot.cap <= 1 && probe.headSlot.cap <= 1;
 
       for (let k = 0; k < counted.count; k++) {
-        const piece = parseChain(inner, []);
+        // A repeat unit always has something after it — the next copy — so a
+        // monovalent group at its end hangs off it rather than ending it: the
+        // (CHOH)4 of HOCH2(CHOH)4CHO is four CH(OH), not a chain ending in O.
+        const piece = parseChain(inner, [], !isBranch);
         if (isBranch) attachBranch(toks, slots, cur, piece, pendingBond);
         else cur = attachChain(toks, slots, cur, piece, pendingBond);
         pendingBond = 1;
@@ -525,7 +528,12 @@ function parseChain(src: string, pieces: string[]): Frag {
     for (let k = 0; k < counted.count; k++) {
       // A monovalent group in the middle of a formula cannot carry the rest of
       // the chain, so it has to be a branch: the OH of CH3CHOHCH3.
-      if (cur && moreFollows && template.tailCap - pendingBond <= 0 && cur.cap > pendingBond) {
+      if (
+        cur &&
+        (moreFollows || continues) &&
+        template.tailCap - pendingBond <= 0 &&
+        cur.cap > pendingBond
+      ) {
         attachBranch(toks, slots, cur, fragFromTemplate(template, false), pendingBond);
         pendingBond = 1;
         continue;
@@ -543,7 +551,7 @@ function parseChain(src: string, pieces: string[]): Frag {
             throw new ParseError("group written before a multi-atom fragment");
           }
           for (const b of leadingBranches) {
-            attachBranch(toks, slots, cur, parseChain(b, []), 1);
+            attachBranch(toks, slots, cur, leadingFragment(b), 1);
           }
           leadingBranches = [];
         }
@@ -574,6 +582,37 @@ function attachChain(
   toks.push(...piece.toks);
   slots.push(...piece.slots);
   return piece.tailSlot;
+}
+
+/**
+ * A group written before the atom it hangs off, spelled so it can be emitted
+ * after it.
+ *
+ * SMILES writes a branch after its parent, so the first atom of the branch is
+ * the one carrying the bond — but the atom carrying it in the ethyls of
+ * (CH3CH2)2NH is the last one written, the CH2. A run of plain atoms means the
+ * same thing read from either end, so it is turned round. Anything with a
+ * shape to it — a carbonyl, a branch of its own — does not survive being
+ * reversed, so it is refused and the formula falls through to the resolvers
+ * rather than coming back as a different compound.
+ */
+function leadingFragment(source: string): Frag {
+  const frag = parseChain(source, []);
+  if (frag.headSlot.cap > 0) return frag;
+  if (frag.tailSlot.cap === 0 || !frag.toks.every(canReverse)) {
+    throw new ParseError("group written before a multi-atom fragment");
+  }
+  return {
+    toks: [...frag.toks].reverse(),
+    headSlot: frag.tailSlot,
+    tailSlot: frag.headSlot,
+    slots: frag.slots,
+  };
+}
+
+/** Whether a token means the same thing wherever it lands in the sequence. */
+function canReverse(token: Tok): boolean {
+  return token.kind === "atom" || token.s === "" || token.s === "=" || token.s === "#";
 }
 
 /** Hang `piece` off `cur` as a branch; the chain continues from `cur`. */
@@ -636,6 +675,30 @@ function matchGroup(src: string, i: number): Match | null {
     for (const [name, template] of REVERSED) {
       if (rest.startsWith(name)) return { template, text: name, next: i + name.length };
     }
+
+    // Hydrogen cyanide, written the way the acid is: the nitrile is otherwise
+    // only recognised where nothing precedes it.
+    if (rest === "HCN") {
+      return {
+        template: tpl(() => [atom("C", 1), raw("#"), atom("N")], 0, 2, 0, 0),
+        text: "HCN",
+        next: i + 3,
+      };
+    }
+
+    // A hydrogen written in front of a group belongs to that group: HCOOH is
+    // formic acid and HCHO is methanal. Taken instead as the hydrogen count of
+    // the atom after it — which is what the H2N of H2NCH2COOH is — the group
+    // behind it is never looked for, and HCOOH comes out as CH-O-OH.
+    const behind = matchMacro(rest.slice(1));
+    if (behind && behind.template.headCap > 0) {
+      return {
+        template: { ...behind.template, headCap: behind.template.headCap - 1 },
+        text: `H${behind.name}`,
+        next: i + 1 + behind.name.length,
+      };
+    }
+
     const m = /^H(\d*)([A-Z][a-z]?)/.exec(rest);
     if (m) {
       const sym = elementOf(m[2]);
@@ -654,13 +717,8 @@ function matchGroup(src: string, i: number): Match | null {
     if (template) return { template, text: cn[0], next: i + cn[0].length };
   }
 
-  for (const [name, template] of MACROS) {
-    if (!rest.startsWith(name)) continue;
-    // In this notation a hydrogen always follows the atom it belongs to, so
-    // `COH` is C then OH, not the carbonyl macro, and `CHOH` is CH then OH.
-    if (rest[name.length] === "H" && !name.endsWith("H")) continue;
-    return { template, text: name, next: i + name.length };
-  }
+  const macro = matchMacro(rest);
+  if (macro) return { template: macro.template, text: macro.name, next: i + macro.name.length };
 
   // Nitrile, but only where it terminates the formula: elsewhere CN is C then N.
   if (rest === "CN") {
@@ -679,6 +737,18 @@ function matchGroup(src: string, i: number): Match | null {
   const h = m[2] === undefined ? null : m[3] ? Number(m[3]) : 1;
   const consumed = sym.length + (m[2]?.length ?? 0);
   return { template: mono(sym, h), text: rest.slice(0, consumed), next: i + consumed };
+}
+
+/** The longest abbreviation the text opens with, if any. */
+function matchMacro(text: string): { template: Template; name: string } | null {
+  for (const [name, template] of MACROS) {
+    if (!text.startsWith(name)) continue;
+    // In this notation a hydrogen always follows the atom it belongs to, so
+    // `COH` is C then OH, not the carbonyl macro, and `CHOH` is CH then OH.
+    if (text[name.length] === "H" && !name.endsWith("H")) continue;
+    return { template, name };
+  }
+  return null;
 }
 
 function elementOf(candidate: string): string | null {

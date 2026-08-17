@@ -29,8 +29,10 @@ build.
 **Condensed structural formulas** — the notation people actually write by hand.
 This is the part no name-to-structure service handles, so it is parsed here
 (`src/lib/condensed.ts`). It understands branches `CH₃CH(CH₃)CH₃`, repeat units
-`CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, bond symbols
-`CH₃CH=CHCH₃`, abbreviations `tBuOH`, `PhCH₂COOH`, `CF₃COOH`, and open valences.
+`CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, a hydrogen written in
+front of the group it belongs to `HCOOH`, groups written before the atom they
+hang off `(CH₃CH₂)₂NH`, bond symbols `CH₃CH=CHCH₃`, abbreviations `tBuOH`,
+`PhCH₂COOH`, `CF₃COOH`, and open valences.
 
 The parser is valence driven, which is what lets it settle the notation's
 ambiguities without guessing:
@@ -40,6 +42,7 @@ ambiguities without guessing:
 | `CH₃CH(CH₃)CH₃` vs `CH₃(CH₂)₃CH₃` | is `(X)n` a branch or a repeat unit? | the CH has spare valence and CH₃ is monovalent, so it branches; the CH₃ is saturated and CH₂ is divalent, so it repeats |
 | `CH₃CHOHCH₃` vs `CH₃CH₂OH` | does OH continue the chain or hang off it? | OH cannot carry what follows, so mid-formula it must branch |
 | `CH₃CH₂CH₂CH₂CH₂` | molecule or substituent group? | the last CH₂ has one bond spare, so it is the pentyl group — the dash a chemist writes is confirmation, not information |
+| `HOCH₂(CHOH)₄CHO` | does the OH inside a repeat unit end the unit or hang off it? | a repeat unit always has the next copy after it, and OH cannot carry that, so it branches: the unit is CH(OH) |
 
 **IUPAC names** go to [OPSIN](https://github.com/dan2097/opsin), with a local
 parser (`src/lib/iupac.ts`) covering chains, rings, locants, multipliers,

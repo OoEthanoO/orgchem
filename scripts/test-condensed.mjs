@@ -73,6 +73,24 @@ const CASES = [
   ["CH3CONHCH3", "CC(=O)NC", 0],
   ["(CH3)2CHOH", "CC(C)O", 0],
   ["CH3(CH2)2CH(CH3)2", "CCCC(C)C", 0],
+  // A hydrogen written in front of a group belongs to that group.
+  ["HCOOH", "OC=O", 0],
+  ["HCHO", "C=O", 0],
+  ["HCOOCH3", "COC=O", 0],
+  ["HCONH2", "NC=O", 0],
+  ["HCOCH3", "CC=O", 0],
+  ["HCOCl", "ClC=O", 0],
+  ["HCN", "C#N", 0],
+  // Groups written before the atom they hang off, more than one atom each.
+  ["(CH3CH2)2NH", "CCNCC", 0],
+  ["(CH3CH2)3N", "CCN(CC)CC", 0],
+  ["(C2H5)2O", "CCOCC", 0],
+  ["(CH3CH2CH2)2NH", "CCCNCCC", 0],
+  ["(CH3O)2CH2", "COCOC", 0],
+  // A repeat unit has the next copy after it, so a monovalent group at its end
+  // hangs off it rather than ending the chain.
+  ["HOCH2(CHOH)4CHO", "OCC(O)C(O)C(O)C(O)C=O", 0],
+  ["CH3(CHCH3)CH3", "CC(C)C", 0],
 ];
 
 // Strings that must NOT parse, so they fall through to the name resolvers.
