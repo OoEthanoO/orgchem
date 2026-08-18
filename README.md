@@ -31,8 +31,8 @@ This is the part no name-to-structure service handles, so it is parsed here
 (`src/lib/condensed.ts`). It understands branches `CH₃CH(CH₃)CH₃`, repeat units
 `CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, a hydrogen written in
 front of the group it belongs to `HCOOH` or behind it `CH₃C(=O)H`, groups
-written before the atom they hang off `(CH₃CH₂)₂NH` and nitriles written
-before their chain `NCCH₂CN`, bond symbols both along the chain `CH₃CH=CHCH₃` and
+written before the atom they hang off `(CH₃CH₂)₂NH`, nitriles written before
+their chain `NCCH₂CN`, bond symbols both along the chain `CH₃CH=CHCH₃` and
 inside a bracket `CH₃C(=O)CH₃`, abbreviations `tBuOH`, `PhCH₂COOH`, `CF₃COOH`,
 and open valences.
 
@@ -53,9 +53,9 @@ unsaturation, substituents on nitrogen and the common suffixes so the app still
 answers when the network does not. It also reads the functional class names an
 introductory course meets everywhere — `ethyl alcohol`, `dimethyl ether`,
 `methyl ethyl ketone`, `acetyl chloride`, `propylamine` — where the group is
-named and its class follows as a word of its own. Every name in the question bank that this
-parser will answer is checked against the structure OPSIN gave for it, so the
-two never disagree where they overlap.
+named and its class follows as a word of its own. Every name in the question
+bank that this parser will answer is checked against the structure OPSIN gave
+for it, so the two never disagree where they overlap.
 
 **Common and trade names** come from a local dictionary of ~260 compounds first,
 then [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
