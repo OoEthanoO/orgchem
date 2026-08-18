@@ -196,6 +196,11 @@ in principle and 32 on file. Charged species and co-crystals that happen to
 share an atom count are filtered out, and enantiomers and isotopologues are
 collapsed, so the list counts structures rather than records.
 
+The name parser's own references are checked too. `scripts/check-iupac.mjs`
+puts every name the suite asserts a structure for to OPSIN and compares, since
+a reference written wrong by hand is a test that passes while the app draws the
+wrong compound.
+
 The dictionary is checked against PubChem by two scripts, both comparing
 InChIKey blocks. `scripts/check-stereochemistry.mjs` catches a configuration
 that is wrong, without a right one being overwritten by a vaguer record.
