@@ -204,6 +204,46 @@ const ESTER_ALKYLS: Record<string, string> = {
   allyl: "CC=C",
 };
 
+/**
+ * Functional class nomenclature: the group is named, and the class it belongs
+ * to is a word of its own after it. It is the older style, and the one an
+ * introductory course still meets everywhere — ethyl alcohol, dimethyl ether,
+ * methyl ethyl ketone, acetyl chloride, propylamine.
+ *
+ * `centre` is what the named groups hang off, written first so that each of
+ * them bonds through its own attachment atom. Written after, a branched group
+ * would bond through whichever atom happened to fall last in its spelling, and
+ * isopropyl alcohol would come back as propan-1-ol.
+ *
+ * `symmetric` is for the classes that let one name stand for both halves:
+ * ethyl ether is diethyl ether. `solid` is for the ones written as one word,
+ * which is the amines and only the amines — nobody writes methylalcohol.
+ */
+type FunctionalClass = {
+  centre: string;
+  min: number;
+  max: number;
+  symmetric?: boolean;
+  solid?: boolean;
+};
+
+const FUNCTIONAL_CLASSES: Record<string, FunctionalClass> = {
+  alcohol: { centre: "O", min: 1, max: 1 },
+  mercaptan: { centre: "S", min: 1, max: 1 },
+  fluoride: { centre: "F", min: 1, max: 1 },
+  chloride: { centre: "Cl", min: 1, max: 1 },
+  bromide: { centre: "Br", min: 1, max: 1 },
+  iodide: { centre: "I", min: 1, max: 1 },
+  cyanide: { centre: "N#C", min: 1, max: 1 },
+  ether: { centre: "O", min: 2, max: 2, symmetric: true },
+  sulfide: { centre: "S", min: 2, max: 2, symmetric: true },
+  sulphide: { centre: "S", min: 2, max: 2, symmetric: true },
+  sulfoxide: { centre: "S(=O)", min: 2, max: 2, symmetric: true },
+  sulfone: { centre: "S(=O)(=O)", min: 2, max: 2, symmetric: true },
+  ketone: { centre: "C(=O)", min: 2, max: 2 },
+  amine: { centre: "N", min: 1, max: 3, solid: true },
+};
+
 /** Substituent groups named without a parsable chain stem. */
 const RADICAL_GROUPS: Record<string, string> = {
   isopropyl: "C[CH]C",
@@ -269,6 +309,13 @@ export function parseIupacName(input: string): NameResult {
     }
   }
 
+  // Functional class names put the class in a word of its own after the groups
+  // that carry it: "ethyl alcohol", "methyl ethyl ketone", "acetyl chloride".
+  if (words.length > 1) {
+    const klass = FUNCTIONAL_CLASSES[words[words.length - 1]];
+    if (klass) return buildFunctionalClass(klass, peelGroups(words.slice(0, -1).join("")));
+  }
+
   return parseSingleName(name);
 }
 
@@ -327,6 +374,22 @@ function parseSingleName(name: string): NameResult {
     if (radical) return { smiles: radical, openValences: 1 };
   }
 
+  // The same class names written solid, which the amines are: propylamine,
+  // diethylamine. A locant would mean the name is a substitutive one — there
+  // is no position on an amine for it to number — so it puts the name back
+  // where it came from.
+  const klass = FUNCTIONAL_CLASSES[rest];
+  if (
+    klass?.solid &&
+    prefixes.length > 0 &&
+    prefixes.every((p) => p.locant === null && p.order === 1)
+  ) {
+    return buildFunctionalClass(
+      klass,
+      prefixes.map((p) => p.smiles),
+    );
+  }
+
   const parent = parseParent(rest);
   return buildChain(parent, prefixes);
 }
@@ -340,6 +403,44 @@ type PrefixInstance = { locant: Locant | null; smiles: string; order: number };
  * Consume `2,3-dimethyl`-style substituent prefixes from the front of the name
  * until what remains is the parent hydride.
  */
+/**
+ * The groups a functional class name lists in front of it, as SMILES written
+ * attachment first. All of the text has to be groups: anything left over means
+ * the name was something else, and it goes to a resolver that knows it.
+ */
+function peelGroups(text: string): string[] {
+  const groups: string[] = [];
+  let rest = text;
+  while (rest) {
+    const whole = PREFIXES.find(([p]) => rest.startsWith(p));
+    const multiplier = whole
+      ? null
+      : /^(tetrakis|tetra|tris|bis|penta|hexa|hepta|octa|nona|deca|tri|di)/.exec(rest);
+    const after = multiplier ? rest.slice(multiplier[0].length) : rest;
+    const found = whole ?? PREFIXES.find(([p]) => after.startsWith(p));
+    if (!found) throw new NameError(`"${rest}" does not name a group`);
+    const [name, spec] = found;
+    // A doubly bonded prefix has one bond to give where a class needs two ends
+    // of it, so "oxo" and its kind are not groups a class name can carry.
+    if (spec.order === 2) throw new NameError(`${name} cannot carry a class name`);
+    for (let k = 0; k < (multiplier ? MULTIPLIERS[multiplier[0]] : 1); k++) {
+      groups.push(spec.smiles);
+    }
+    rest = after.slice(name.length).replace(/^-/, "");
+  }
+  return groups;
+}
+
+/** Hang the named groups off the atom their class is built round. */
+function buildFunctionalClass(klass: FunctionalClass, named: string[]): NameResult {
+  const groups = named.length === 1 && klass.symmetric ? [named[0], named[0]] : named;
+  if (groups.length < klass.min || groups.length > klass.max) {
+    throw new NameError(`${groups.length} groups is not what this class takes`);
+  }
+  const branches = groups.slice(0, -1).map((g) => `(${g})`);
+  return { smiles: klass.centre + branches.join("") + groups[groups.length - 1], openValences: 0 };
+}
+
 function peelPrefixes(name: string): { prefixes: PrefixInstance[]; rest: string } {
   const prefixes: PrefixInstance[] = [];
   let rest = name;
@@ -351,12 +452,18 @@ function peelPrefixes(name: string): { prefixes: PrefixInstance[]; rest: string 
     const locantText = locantMatch?.[1];
     const after = locantMatch ? rest.slice(locantMatch[0].length) : rest.replace(/^-/, "");
 
-    const multiplierMatch = /^(tetrakis|tetra|tris|bis|penta|hexa|hepta|octa|nona|deca|tri|di)/.exec(
-      after,
-    );
+    // A multiplier is only a multiplier where a substituent does not already
+    // start with those letters. Stripping the "tri" of trifluoromethyl first
+    // leaves "fluoromethyl", which reads as three fluorines and a methyl —
+    // four substituents where the name wrote one, and the entry the table
+    // holds for it is never reached at all.
+    const whole = PREFIXES.find(([p]) => after.startsWith(p));
+    const multiplierMatch = whole
+      ? null
+      : /^(tetrakis|tetra|tris|bis|penta|hexa|hepta|octa|nona|deca|tri|di)/.exec(after);
     const withoutMultiplier = multiplierMatch ? after.slice(multiplierMatch[0].length) : after;
 
-    const found = PREFIXES.find(([p]) => withoutMultiplier.startsWith(p));
+    const found = whole ?? PREFIXES.find(([p]) => withoutMultiplier.startsWith(p));
     if (!found) {
       // A multiplier that is not followed by a substituent belongs to the
       // parent instead ("2,4-dienol"), so stop here.

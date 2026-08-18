@@ -49,7 +49,10 @@ ambiguities without guessing:
 **IUPAC names** go to [OPSIN](https://github.com/dan2097/opsin), with a local
 parser (`src/lib/iupac.ts`) covering chains, rings, locants, multipliers,
 unsaturation, substituents on nitrogen and the common suffixes so the app still
-answers when the network does not. Every name in the question bank that this
+answers when the network does not. It also reads the functional class names an
+introductory course meets everywhere — `ethyl alcohol`, `dimethyl ether`,
+`methyl ethyl ketone`, `acetyl chloride`, `propylamine` — where the group is
+named and its class follows as a word of its own. Every name in the question bank that this
 parser will answer is checked against the structure OPSIN gave for it, so the
 two never disagree where they overlap.
 

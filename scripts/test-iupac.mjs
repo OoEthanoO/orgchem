@@ -93,6 +93,45 @@ const CASES = [
   ["propanenitrile", "CCC#N"],
   ["butanenitrile", "CCCC#N"],
   ["prop-2-enenitrile", "C=CC#N"],
+  // A substituent whose own name starts with a multiplier's letters.
+  ["trifluoromethylbenzene", "FC(F)(F)c1ccccc1"],
+  ["trichloromethylbenzene", "ClC(Cl)(Cl)c1ccccc1"],
+  ["2-trifluoromethylphenol", "OC1=CC=CC=C1C(F)(F)F"],
+  ["trifluoromethylcyclohexane", "FC(F)(F)C1CCCCC1"],
+  ["trichloromethane", "ClC(Cl)Cl"],
+  ["dichloromethane", "ClCCl"],
+  ["triphenylmethane", "C(c1ccccc1)(c1ccccc1)c1ccccc1"],
+  // Functional class names: the class is a word of its own after the groups
+  // carrying it, and the amines are written solid.
+  ["ethyl alcohol", "CCO"],
+  ["isopropyl alcohol", "CC(C)O"],
+  ["tert-butyl alcohol", "CC(C)(C)O"],
+  ["benzyl alcohol", "OCc1ccccc1"],
+  ["dimethyl ether", "COC"],
+  ["ethyl ether", "CCOCC"],
+  ["methyl ether", "COC"],
+  ["methyl ethyl ether", "COCC"],
+  ["methyl tert-butyl ether", "COC(C)(C)C"],
+  ["methyl ethyl ketone", "CCC(C)=O"],
+  ["diethyl ketone", "CCC(=O)CC"],
+  ["dimethyl sulfide", "CSC"],
+  ["dimethyl sulfoxide", "CS(C)=O"],
+  ["dimethyl sulfone", "CS(C)(=O)=O"],
+  ["methyl chloride", "CCl"],
+  ["vinyl chloride", "C=CCl"],
+  ["isopropyl bromide", "CC(C)Br"],
+  ["acetyl chloride", "CC(Cl)=O"],
+  ["benzoyl chloride", "ClC(=O)c1ccccc1"],
+  ["methyl cyanide", "CC#N"],
+  ["ethyl mercaptan", "CCS"],
+  ["propylamine", "CCCN"],
+  ["isopropylamine", "CC(C)N"],
+  ["cyclohexylamine", "NC1CCCCC1"],
+  ["diethylamine", "CCNCC"],
+  ["triethylamine", "CCN(CC)CC"],
+  ["benzylamine", "NCc1ccccc1"],
+  ["phenylamine", "Nc1ccccc1"],
+  ["allylamine", "NCC=C"],
 ];
 
 // Names the parser must refuse rather than answer by guessing. Placing an
@@ -115,6 +154,14 @@ const REJECT = [
   "methylcyclohexanol",
   "methylcyclohexene",
   "methylcyclohexanone",
+  // A class name whose groups are not groups, and a class with the wrong
+  // number of them.
+  "sodium chloride",
+  "ammonium chloride",
+  "hydrochloric acid",
+  "methylene chloride",
+  "tetramethylamine",
+  "amine",
 ];
 
 let pass = 0;
