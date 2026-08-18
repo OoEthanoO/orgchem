@@ -54,6 +54,20 @@ const VALENCE: Record<string, number> = {
   I: 1,
 };
 
+/**
+ * Valences above the standard one, taken only when the formula writes bonds
+ * that will not fit without them.
+ *
+ * Sulfur is divalent in almost everything a beginner meets, which is why the
+ * table above says so, but the S of CH3S(=O)CH3 is written with three bonds
+ * and the S of CH3S(=O)(=O)CH3 with four. Reaching for the next level only
+ * when the bonds demand it keeps the ordinary reading of a bare S intact.
+ */
+const EXPANDED: Record<string, number[]> = {
+  S: [4, 6],
+  P: [5],
+};
+
 /** Two-letter symbols that really are elements in an organic formula. */
 const TWO_LETTER = ["Cl", "Br", "Si", "Se"];
 
@@ -71,7 +85,14 @@ type RawTok = { kind: "raw"; s: string };
 type Tok = AtomTok | RawTok;
 
 /** A bonding site: an atom plus the valence it still has available. */
-type Slot = { atom: AtomTok; cap: number };
+type Slot = {
+  atom: AtomTok;
+  cap: number;
+  /** The valence this slot was opened with, so a wider one can be costed. */
+  val: number;
+  /** Wider valences still available, for an atom that has them. */
+  expand?: number[];
+};
 
 /** A parsed run of the formula, connectable at its head and its tail. */
 type Frag = {
@@ -103,6 +124,8 @@ type Template = {
   headCap: number;
   tailCap: number;
   lead?: { toks: () => Tok[]; at: number };
+  /** Wider valences this atom will take if the formula asks for them. */
+  expand?: number[];
 };
 
 function atom(sym: string, h: number | null = null, charge = 0): AtomTok {
@@ -142,7 +165,11 @@ function uni(
  */
 function mono(sym: string, h: number | null, extra = 0): Template {
   const cap = (VALENCE[sym] ?? 4) - (h ?? 0) + extra;
-  return tpl(() => [atom(sym, h)], 0, 0, cap, cap);
+  const t = tpl(() => [atom(sym, h)], 0, 0, cap, cap);
+  // Only an atom left to fill its own valence can be widened: SH2 states two
+  // hydrogens on a divalent sulfur and means them.
+  if (h === null && extra === 0) t.expand = EXPANDED[sym];
+  return t;
 }
 
 /**
@@ -513,32 +540,46 @@ function parseChain(src: string, pieces: string[], continues = false): Frag {
     if (ch === "(" || ch === "[") {
       const close = ch === "(" ? ")" : "]";
       const end = matchParen(src, i, ch, close);
-      const inner = src.slice(i + 1, end);
+      const written = src.slice(i + 1, end);
       i = end + 1;
       const counted = readCount(src, i);
       i = counted.next;
+      if (!written) throw new ParseError("empty group");
+      pieces.push(counted.count > 1 ? `(${written})${counted.count}` : `(${written})`);
+
+      // A bond symbol written just inside the bracket is the bond that
+      // attaches the group, not one between anything inside it: the =O of
+      // CH3C(=O)CH3 is the carbonyl oxygen, doubly bonded to the carbon
+      // before the bracket. Read as part of the group's own contents it
+      // simply has nothing to join, and acetone comes back as methoxyethane.
+      const lead = written[0] === "=" ? 2 : written[0] === "#" ? 3 : 0;
+      const inner = lead ? written.slice(1) : written;
       if (!inner) throw new ParseError("empty group");
-      pieces.push(counted.count > 1 ? `(${inner})${counted.count}` : `(${inner})`);
 
       if (!cur) {
         // Nothing to hang it off yet — it belongs to the atom that follows.
+        if (lead) throw new ParseError("bond to nothing");
         for (let k = 0; k < counted.count; k++) leadingBranches.push(inner);
         continue;
       }
 
       // Branch or linker? A group whose ends are divalent (CH2, O, NH) can
       // only be a repeat unit; a monovalent one on an atom that still has
-      // capacity is a branch.
+      // capacity is a branch. A group that states the bond attaching it is a
+      // branch whatever its ends could carry, since a repeat unit is joined
+      // by the single bonds of the chain it sits in and never says so.
       const probe = parseChain(inner, []);
-      const isBranch = cur.cap > 0 && probe.tailSlot.cap <= 1 && probe.headSlot.cap <= 1;
+      const isBranch =
+        lead > 0 || (reach(cur) > 0 && probe.tailSlot.cap <= 1 && probe.headSlot.cap <= 1);
+      const bond = lead || pendingBond;
 
       for (let k = 0; k < counted.count; k++) {
         // A repeat unit always has something after it — the next copy — so a
         // monovalent group at its end hangs off it rather than ending it: the
         // (CHOH)4 of HOCH2(CHOH)4CHO is four CH(OH), not a chain ending in O.
         const piece = parseChain(inner, [], !isBranch);
-        if (isBranch) attachBranch(toks, slots, cur, piece, pendingBond);
-        else cur = attachChain(toks, slots, cur, piece, pendingBond);
+        if (isBranch) attachBranch(toks, slots, cur, piece, bond);
+        else cur = attachChain(toks, slots, cur, piece, bond);
         pendingBond = 1;
       }
       continue;
@@ -606,6 +647,32 @@ function parseChain(src: string, pieces: string[], continues = false): Frag {
   return { toks, headSlot, tailSlot: cur, slots };
 }
 
+/**
+ * Open the narrowest wider valence that fits `need`, if the atom has one.
+ *
+ * Asked for only when a bond will not otherwise fit, so a sulfur stays
+ * divalent everywhere the formula lets it: CH3SCH3 is the sulfide, and it is
+ * the second oxygen of CH3S(=O)(=O)CH3, not the sight of an S, that makes the
+ * atom hexavalent.
+ */
+function widen(slot: Slot, need: number): boolean {
+  for (const v of slot.expand ?? []) {
+    const cap = slot.cap + v - slot.val;
+    if (cap >= need) {
+      slot.cap = cap;
+      slot.val = v;
+      return true;
+    }
+  }
+  return false;
+}
+
+/** The capacity a slot could still reach, counting a wider valence it has. */
+function reach(slot: Slot): number {
+  const widest = slot.expand?.[slot.expand.length - 1] ?? slot.val;
+  return slot.cap + Math.max(0, widest - slot.val);
+}
+
 /** Append `piece` to the chain, returning the new tail slot. */
 function attachChain(
   toks: Tok[],
@@ -615,8 +682,12 @@ function attachChain(
   bond: number,
 ): Slot {
   if (cur) {
-    if (cur.cap < bond) throw new ParseError(`too many bonds on ${cur.atom.sym}`);
-    if (piece.headSlot.cap < bond) throw new ParseError("valence overflow");
+    if (cur.cap < bond && !widen(cur, bond)) {
+      throw new ParseError(`too many bonds on ${cur.atom.sym}`);
+    }
+    if (piece.headSlot.cap < bond && !widen(piece.headSlot, bond)) {
+      throw new ParseError("valence overflow");
+    }
     cur.cap -= bond;
     piece.headSlot.cap -= bond;
     toks.push(raw(BOND_SYMBOL[bond]));
@@ -665,8 +736,12 @@ function attachBranch(
   piece: Frag,
   bond: number,
 ): void {
-  if (cur.cap < bond) throw new ParseError(`too many bonds on ${cur.atom.sym}`);
-  if (piece.headSlot.cap < bond) throw new ParseError("valence overflow");
+  if (cur.cap < bond && !widen(cur, bond)) {
+    throw new ParseError(`too many bonds on ${cur.atom.sym}`);
+  }
+  if (piece.headSlot.cap < bond && !widen(piece.headSlot, bond)) {
+    throw new ParseError("valence overflow");
+  }
   cur.cap -= bond;
   piece.headSlot.cap -= bond;
   toks.push(raw("("), raw(BOND_SYMBOL[bond]), ...piece.toks, raw(")"));
@@ -683,8 +758,16 @@ function fragFromTemplate(t: Template, leading: boolean): Frag {
   if (headAtom?.kind !== "atom" || tailAtom?.kind !== "atom") {
     throw new ParseError("bad template");
   }
-  const headSlot: Slot = { atom: headAtom, cap: t.headCap };
-  const tailSlot: Slot = headIdx === tailIdx ? headSlot : { atom: tailAtom, cap: t.tailCap };
+  const headSlot: Slot = {
+    atom: headAtom,
+    cap: t.headCap,
+    val: t.headCap,
+    expand: t.expand,
+  };
+  const tailSlot: Slot =
+    headIdx === tailIdx
+      ? headSlot
+      : { atom: tailAtom, cap: t.tailCap, val: t.tailCap, expand: t.expand };
   const slots = headIdx === tailIdx ? [headSlot] : [headSlot, tailSlot];
   return { toks, headSlot, tailSlot, slots };
 }

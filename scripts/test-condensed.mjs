@@ -110,6 +110,25 @@ const CASES = [
   ["(CH3)2SO", "CS(C)=O", 0],
   ["CH3SO2CH3", "CS(C)(=O)=O", 0],
   ["CH3SOH", "CSO", 0],
+  // A bond written just inside a bracket is the bond attaching the group.
+  ["CH3C(=O)CH3", "CC(C)=O", 0],
+  ["CH3C(=O)OH", "CC(=O)O", 0],
+  ["CH3C(=O)OCH2CH3", "CCOC(C)=O", 0],
+  ["CH3CH2C(=O)CH3", "CCC(C)=O", 0],
+  ["CH2=CHC(=O)OH", "OC(=O)C=C", 0],
+  ["CH3C(=O)NH2", "CC(N)=O", 0],
+  ["CH3C(=O)Cl", "CC(Cl)=O", 0],
+  ["C6H5C(=O)CH3", "CC(=O)c1ccccc1", 0],
+  ["CH2=C(CH3)COOCH3", "COC(=O)C(C)=C", 0],
+  ["(CH3)2C(=O)", "CC(C)=O", 0],
+  // A wider valence is opened by the bonds written, not by the atom's name:
+  // the S of CH3SCH3 is the ordinary divalent one either way.
+  ["CH3SCH3", "CSC", 0],
+  ["CH3S(=O)CH3", "CS(C)=O", 0],
+  ["CH3S(=O)(=O)CH3", "CS(C)(=O)=O", 0],
+  ["CH3CH2S(=O)CH2CH3", "CCS(=O)CC", 0],
+  ["CH3S(=O)(=O)OH", "CS(=O)(=O)O", 0],
+  ["CH3P(=O)(OH)2", "CP(O)(O)=O", 0],
 ];
 
 // Strings that must NOT parse, so they fall through to the name resolvers.
@@ -121,6 +140,8 @@ const REJECT = [
   "propan-2-one",
   "H2SO4",
   "sodium chloride",
+  // A bond written with nothing before it to attach to.
+  "(=O)CH3",
 ];
 
 let pass = 0;

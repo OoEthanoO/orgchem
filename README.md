@@ -31,8 +31,9 @@ This is the part no name-to-structure service handles, so it is parsed here
 (`src/lib/condensed.ts`). It understands branches `CH₃CH(CH₃)CH₃`, repeat units
 `CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, a hydrogen written in
 front of the group it belongs to `HCOOH`, groups written before the atom they
-hang off `(CH₃CH₂)₂NH`, bond symbols `CH₃CH=CHCH₃`, abbreviations `tBuOH`,
-`PhCH₂COOH`, `CF₃COOH`, and open valences.
+hang off `(CH₃CH₂)₂NH`, bond symbols both along the chain `CH₃CH=CHCH₃` and
+inside a bracket `CH₃C(=O)CH₃`, abbreviations `tBuOH`, `PhCH₂COOH`, `CF₃COOH`,
+and open valences.
 
 The parser is valence driven, which is what lets it settle the notation's
 ambiguities without guessing:
@@ -43,6 +44,7 @@ ambiguities without guessing:
 | `CH₃CHOHCH₃` vs `CH₃CH₂OH` | does OH continue the chain or hang off it? | OH cannot carry what follows, so mid-formula it must branch |
 | `CH₃CH₂CH₂CH₂CH₂` | molecule or substituent group? | the last CH₂ has one bond spare, so it is the pentyl group — the dash a chemist writes is confirmation, not information |
 | `HOCH₂(CHOH)₄CHO` | does the OH inside a repeat unit end the unit or hang off it? | a repeat unit always has the next copy after it, and OH cannot carry that, so it branches: the unit is CH(OH) |
+| `CH₃SCH₃` vs `CH₃S(=O)CH₃` | is the sulfur divalent? | it is, until the bonds written will not fit — the second formula gives S three, so it takes the next valence up, and the first is still the sulfide |
 
 **IUPAC names** go to [OPSIN](https://github.com/dan2097/opsin), with a local
 parser (`src/lib/iupac.ts`) covering chains, rings, locants, multipliers,
