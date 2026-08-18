@@ -418,6 +418,11 @@ function parseParent(input: string): Parent {
 
   // Unsaturation: `an`, `-2-en`, `a-2,4-dien`, `-1,3-diyn`.
   for (;;) {
+    // The "e" joining the stem to a suffix that starts with a consonant is
+    // not the "en" of an alkene. Read as one it takes the suffix's first
+    // letter with it, and propanenitrile becomes a propene ending in
+    // "itrile", which is nothing at all.
+    if (rest[0] === "e" && SUFFIXES.some(([name]) => rest.startsWith(name, 1))) break;
     const m = /^a?-?(\d+(?:,\d+)*)?-?(tetra|penta|tri|di)?(an|en|yn)/.exec(rest);
     if (!m) break;
     rest = rest.slice(m[0].length);
@@ -505,13 +510,25 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
   for (const locant of parent.doubleBonds) setBond(atoms, locant, 2, ring);
   for (const locant of parent.tripleBonds) setBond(atoms, locant, 3, ring);
 
+  // Every position on a plain saturated ring is the same position, so one
+  // substituent on it has nowhere else to go and needs no locant to say so:
+  // methylcyclohexane names one compound. A second substituent, a double bond
+  // or a suffix breaks the symmetry and the locant starts carrying meaning
+  // again, so any of them puts the name back out of reach.
+  const ringForces =
+    ring &&
+    prefixes.length === 1 &&
+    !suffix &&
+    parent.doubleBonds.length === 0 &&
+    parent.tripleBonds.length === 0;
+
   for (const p of prefixes) {
     // A substituent written without a locant cannot be placed by guessing.
     // "methylpropene" is isobutylene, but assuming position 1 would build
     // but-2-ene — a different compound with a name of its own. On a chain of
     // three or more carbons the position matters, so the name goes to a
     // resolver that knows the convention instead.
-    if (p.locant === null && atoms.length > 2) {
+    if (p.locant === null && atoms.length > 2 && !ringForces) {
       throw new NameError("substituent has no locant and the position is not forced");
     }
     const index = chainIndex(p.locant);

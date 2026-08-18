@@ -81,6 +81,18 @@ const CASES = [
   // A lowercase n- is not a locant: it says the chain is unbranched.
   ["n-butanol", "CCCCO"],
   ["n-hexane", "CCCCCC"],
+  // One substituent on a plain ring needs no locant: every position is the
+  // same position.
+  ["methylcyclohexane", "CC1CCCCC1"],
+  ["ethylcyclopentane", "CCC1CCCC1"],
+  ["chlorocyclohexane", "ClC1CCCCC1"],
+  ["propylcyclohexane", "CCCC1CCCCC1"],
+  ["methylcyclopropane", "CC1CC1"],
+  // The "e" joining stem to suffix is not the "en" of an alkene.
+  ["ethanenitrile", "CC#N"],
+  ["propanenitrile", "CCC#N"],
+  ["butanenitrile", "CCCC#N"],
+  ["prop-2-enenitrile", "C=CC#N"],
 ];
 
 // Names the parser must refuse rather than answer by guessing. Placing an
@@ -97,6 +109,12 @@ const REJECT = [
   "p-butane",
   "N-methylbutane",
   "N-methylbutan-1-ol",
+  // A ring forces the locant only while nothing else on it distinguishes one
+  // position from another.
+  "dimethylcyclohexane",
+  "methylcyclohexanol",
+  "methylcyclohexene",
+  "methylcyclohexanone",
 ];
 
 let pass = 0;
