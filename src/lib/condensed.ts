@@ -587,7 +587,23 @@ function parseChain(src: string, pieces: string[], continues = false): Frag {
 
     // --- a group -----------------------------------------------------------
     const matched = readGroup(src, i, cur, pendingBond, leadingBranches.length);
-    if (!matched) throw new ParseError(`unrecognised at "${src.slice(i, i + 6)}"`);
+    if (!matched) {
+      // A hydrogen written after the group it belongs to rather than in front
+      // of it: the H of CH3C(=O)H, which is acetaldehyde. Nothing is left for
+      // it to be the start of, so it lands on the atom the chain is standing
+      // on — and without it that atom's spare bond reads as an open valence
+      // and the formula comes back as the acetyl group.
+      const hydrogens = /^H(\d*)/.exec(src.slice(i));
+      if (hydrogens && cur) {
+        const n = hydrogens[1] ? Number(hydrogens[1]) : 1;
+        if (cur.cap < n) throw new ParseError(`too many hydrogens on ${cur.atom.sym}`);
+        cur.cap -= n;
+        if (cur.atom.h !== null) cur.atom.h += n;
+        i += hydrogens[0].length;
+        continue;
+      }
+      throw new ParseError(`unrecognised at "${src.slice(i, i + 6)}"`);
+    }
     const { template, text } = matched;
     i = matched.next;
     const counted = readCount(src, i);
@@ -882,6 +898,23 @@ function matchGroup(src: string, i: number, plainAtomsOnly = false): Match | nul
 
   const macro = plainAtomsOnly ? null : matchMacro(rest);
   if (macro) return { template: macro.template, text: macro.name, next: i + macro.name.length };
+
+  // The same nitrile written back to front, which is where it goes when the
+  // chain follows it: the NC of NCCH2CN. Only at the very start, and only
+  // where a hydrogen does not follow — the N of NCH3 carries its own.
+  if (
+    i === 0 &&
+    rest.length > 2 &&
+    rest.startsWith("NC") &&
+    rest[2] !== "H" &&
+    !TWO_LETTER.includes(rest.slice(1, 3))
+  ) {
+    return {
+      template: tpl(() => [atom("N"), raw("#"), atom("C")], 2, 2, 1, 1),
+      text: "NC",
+      next: i + 2,
+    };
+  }
 
   // Nitrile, but only where it terminates the formula: elsewhere CN is C then N.
   if (rest === "CN") {

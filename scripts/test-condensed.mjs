@@ -129,6 +129,20 @@ const CASES = [
   ["CH3CH2S(=O)CH2CH3", "CCS(=O)CC", 0],
   ["CH3S(=O)(=O)OH", "CS(=O)(=O)O", 0],
   ["CH3P(=O)(OH)2", "CP(O)(O)=O", 0],
+  // A hydrogen written after the group it belongs to.
+  ["CH3C(=O)H", "CC=O", 0],
+  ["CH3CH2C(=O)H", "CCC=O", 0],
+  ["(CH3)2CHC(=O)H", "CC(C)C=O", 0],
+  ["C6H5C(=O)H", "O=Cc1ccccc1", 0],
+  // A nitrile written before the chain it hangs off, and the readings it must
+  // not take: the N of NCH3 carries its own hydrogens, and the C of NCl is a
+  // chlorine.
+  ["NCCH2CN", "N#CCC#N", 0],
+  ["NCCH2COOH", "N#CCC(=O)O", 0],
+  ["NCCH2CH2CN", "N#CCCC#N", 0],
+  ["NCCH3", "CC#N", 0],
+  ["NCH3", "CN", 0],
+  ["NCl", "NCl", 0],
 ];
 
 // Strings that must NOT parse, so they fall through to the name resolvers.

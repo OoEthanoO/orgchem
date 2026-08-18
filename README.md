@@ -30,8 +30,9 @@ how a typed answer is marked, all of which go out to OPSIN and PubChem.
 This is the part no name-to-structure service handles, so it is parsed here
 (`src/lib/condensed.ts`). It understands branches `CH₃CH(CH₃)CH₃`, repeat units
 `CH₃(CH₂)₁₆COOH`, reversed left-hand groups `HOCH₂CH₂OH`, a hydrogen written in
-front of the group it belongs to `HCOOH`, groups written before the atom they
-hang off `(CH₃CH₂)₂NH`, bond symbols both along the chain `CH₃CH=CHCH₃` and
+front of the group it belongs to `HCOOH` or behind it `CH₃C(=O)H`, groups
+written before the atom they hang off `(CH₃CH₂)₂NH` and nitriles written
+before their chain `NCCH₂CN`, bond symbols both along the chain `CH₃CH=CHCH₃` and
 inside a bracket `CH₃C(=O)CH₃`, abbreviations `tBuOH`, `PhCH₂COOH`, `CF₃COOH`,
 and open valences.
 
