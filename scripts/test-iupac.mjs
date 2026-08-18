@@ -132,6 +132,17 @@ const CASES = [
   ["benzylamine", "NCc1ccccc1"],
   ["phenylamine", "Nc1ccccc1"],
   ["allylamine", "NCC=C"],
+  // Benzene parents named for what they already carry, so a substituent can
+  // be numbered against it. Each checked against PubChem's structure.
+  ["benzonitrile", "N#Cc1ccccc1"],
+  ["benzamide", "NC(=O)c1ccccc1"],
+  ["benzenesulfonic acid", "OS(=O)(=O)c1ccccc1"],
+  ["acetophenone", "CC(=O)c1ccccc1"],
+  ["cumene", "CC(C)c1ccccc1"],
+  ["4-chlorobenzonitrile", "N#Cc1ccc(Cl)cc1"],
+  ["4-methylacetophenone", "CC(=O)c1ccc(C)cc1"],
+  ["4-nitrobenzamide", "NC(=O)c1ccc(cc1)[N+](=O)[O-]"],
+  ["4-methylbenzenesulfonic acid", "OS(=O)(=O)c1ccc(C)cc1"],
 ];
 
 // Names the parser must refuse rather than answer by guessing. Placing an

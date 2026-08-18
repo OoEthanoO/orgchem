@@ -185,6 +185,26 @@ const AROMATIC_PARENTS: Record<string, AromaticParent> = {
     ring: ["c", "c", "c", "c", "c", "c"],
     fixed: [{ locant: 1, smiles: "C(=O)O", order: 1 }],
   },
+  benzonitrile: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C#N", order: 1 }],
+  },
+  benzamide: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C(N)=O", order: 1 }],
+  },
+  "benzenesulfonic acid": {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "S(=O)(=O)O", order: 1 }],
+  },
+  acetophenone: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C(C)=O", order: 1 }],
+  },
+  cumene: {
+    ring: ["c", "c", "c", "c", "c", "c"],
+    fixed: [{ locant: 1, smiles: "C(C)C", order: 1 }],
+  },
   pyridine: { ring: ["n", "c", "c", "c", "c", "c"] },
 };
 
