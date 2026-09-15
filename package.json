@@ -1,5 +1,5 @@
 {
-  "name": "orgchem",
+  "name": "chem",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npm run test:condensed && npm run test:iupac && npm run test:dictionary && npm run test:depict && npm run test:bonds && npm run test:stereo && npm run test:rotation && npm run test:quiz",
+    "test": "npm run test:condensed && npm run test:iupac && npm run test:dictionary && npm run test:depict && npm run test:bonds && npm run test:stereo && npm run test:rotation && npm run test:quiz && npm run test:complexes",
+    "test:complexes": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-complexes.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-complex-quiz.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-complex-resolution.mjs",
     "test:condensed": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-condensed.mjs",
     "test:iupac": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-iupac.mjs",
     "test:dictionary": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-dictionary.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/check-formulas.mjs",

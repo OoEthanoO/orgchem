@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CATEGORIES, DIFFICULTIES, countFor } from "@/lib/quiz";
 
 export const metadata: Metadata = {
-  title: "orgchem — naming practice",
+  title: "chem — organic naming practice",
   description:
     "See a structure, name it — or read a name and find it. IUPAC naming drills by topic and difficulty.",
 };
@@ -30,7 +30,7 @@ export default function PracticePage() {
       <header className="flex items-center justify-between gap-4">
         <div className="flex items-baseline gap-3">
           <Link href="/" className="text-xl font-semibold tracking-tight text-text">
-            orgchem
+            chem
           </Link>
           <span className="text-sm text-text-dim">naming practice</span>
         </div>
@@ -44,6 +44,15 @@ export default function PracticePage() {
           <ThemeToggle />
         </div>
       </header>
+
+      <nav aria-label="Practice subject" className="flex gap-2">
+        <Link href="/practice" aria-current="page" className="rounded-lg border border-accent bg-accent-soft px-3 py-2 text-sm font-medium text-accent-text">
+          Organic compounds
+        </Link>
+        <Link href="/practice/complexes" className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-dim transition-colors hover:border-border-strong hover:text-text">
+          Coordination complexes
+        </Link>
+      </nav>
 
       <p className="text-sm text-text-dim">
         {total} structures, each with a name checked against two independent systems. Name one, or

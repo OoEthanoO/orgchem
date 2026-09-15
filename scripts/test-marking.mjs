@@ -10,7 +10,7 @@
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
 import { DEFAULT_DISPLAY, depict } from "../src/lib/depict.ts";
 
-const BASE = process.env.ORGCHEM_URL ?? "http://localhost:3000";
+const BASE = process.env.CHEM_URL ?? process.env.ORGCHEM_URL ?? "http://localhost:3000";
 
 const indexOfName = (name) => QUIZ_BANK.findIndex((entry) => entry.name === name);
 

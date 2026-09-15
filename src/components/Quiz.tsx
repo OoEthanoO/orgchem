@@ -3,9 +3,15 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import type { Category, Difficulty, Question, QuizMode, Verdict } from "@/lib/quiz";
+import type { Category, Difficulty, NameQuestion, QuizMode, StructureQuestion, Verdict as QuizVerdict } from "@/lib/quiz";
 
+import { ComplexFormula } from "./ComplexFormula";
 import { Formula } from "./Formula";
+
+type Question = NameQuestion | (Omit<StructureQuestion, "choices"> & {
+  choices: Array<{ svg: string; formula?: string }>;
+});
+type Verdict = QuizVerdict & { formula?: string };
 
 /**
  * A naming drill, run in either direction: the structure is shown and you type
@@ -34,11 +40,16 @@ const EMPTY_SCORE: Score = { correct: 0, asked: 0, streak: 0, best: 0 };
 export function Quiz({
   categories,
   availability,
+  endpoint = "/api/quiz",
+  subject = "organic",
 }: {
   categories: Category[];
   /** Question counts by "category:difficulty", with "*" meaning unfiltered. */
   availability: Record<string, number>;
+  endpoint?: string;
+  subject?: "organic" | "complexes";
 }) {
+  const isComplex = subject === "complexes";
   // The URL is read once, to start from. After that the selection is state and
   // the URL is kept in step with it, rather than the other way round: a drill
   // in progress should not be restarted by the address bar.
@@ -94,7 +105,7 @@ export function Quiz({
     if (difficulty) params.set("difficulty", difficulty);
     if (seen.current.length) params.set("seen", seen.current.slice(-40).join(","));
 
-    fetch(`/api/quiz?${params}`, { signal: controller.signal })
+    fetch(`${endpoint}?${params}`, { signal: controller.signal })
       .then(async (response) => {
         const body = await response.json();
         if (controller.signal.aborted) return;
@@ -110,7 +121,7 @@ export function Quiz({
       });
 
     return () => controller.abort();
-  }, [mode, category, difficulty, round]);
+  }, [mode, category, difficulty, round, endpoint]);
 
   // Put the cursor where it is needed so a run can be done from the keyboard.
   useEffect(() => {
@@ -144,11 +155,15 @@ export function Quiz({
   });
 
   function mark(request: object): Promise<Verdict> {
-    return fetch("/api/quiz", {
+    return fetch(endpoint, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ id: question?.id, ...request }),
-    }).then((response) => response.json() as Promise<Verdict>);
+    }).then(async (response) => {
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error ?? "Could not check that answer.");
+      return body as Verdict;
+    });
   }
 
   function record(result: Verdict) {
@@ -216,6 +231,7 @@ export function Quiz({
         category={category}
         difficulty={difficulty}
         availability={availability}
+        isComplex={isComplex}
         onMode={(value) => requestQuestion(category, difficulty, value)}
         onCategory={(value) => requestQuestion(value, difficulty)}
         onDifficulty={(value) => requestQuestion(category, value)}
@@ -224,13 +240,13 @@ export function Quiz({
       <section className="overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow)]">
         <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
           <h2 className="text-sm font-medium text-text">
-            {mode === "structure" ? "Which one is this?" : "Name this compound"}
+            {mode === "structure" ? "Which one is this?" : isComplex ? "Name this complex" : "Name this compound"}
           </h2>
           <p className="text-xs text-text-faint">
             {score.asked > 0
               ? `${score.correct}/${score.asked} correct · streak ${score.streak}${score.best > 1 ? ` · best ${score.best}` : ""}`
               : mode === "structure"
-                ? "Pick the structure the name describes, by click or number key"
+                ? `Pick the ${isComplex ? "complex" : "structure"} the name describes, by click or number key`
                 : "Type the IUPAC name and press Enter"}
           </p>
         </header>
@@ -249,12 +265,24 @@ export function Quiz({
                 — but the label deliberately stops at the formula, since the
                 name is the answer.
               */
-              <div
-                role="img"
-                aria-label={`Structure to name. Molecular formula ${question.formula}.`}
-                className="structure flex min-h-[14rem] items-center justify-center bg-surface p-4 sm:min-h-[16rem] sm:p-6"
-                dangerouslySetInnerHTML={{ __html: question.svg }}
-              />
+              <div>
+                {isComplex && (
+                  <p className="px-4 pt-5 text-center text-xl font-medium text-text sm:text-2xl">
+                    <ComplexFormula formula={question.formula} />
+                  </p>
+                )}
+                <div
+                  role="img"
+                  aria-label={`${isComplex ? "Complex to name. Coordination" : "Structure to name. Molecular"} formula ${question.formula}.`}
+                  className="structure flex min-h-[14rem] items-center justify-center bg-surface p-4 sm:min-h-[16rem] sm:p-6"
+                  dangerouslySetInnerHTML={{ __html: question.svg }}
+                />
+                {isComplex && (
+                  <p className="px-4 pb-4 text-center text-xs text-text-faint">
+                    Ligand schematic. No cis/trans or fac/mer arrangement is specified.
+                  </p>
+                )}
+              </div>
             ) : (
               <div className="px-4 py-5 sm:px-5">
                 <p className="text-center text-lg font-medium text-text sm:text-xl">
@@ -274,7 +302,7 @@ export function Quiz({
                           type="button"
                           disabled={answered || checking}
                           onClick={() => void choose(index)}
-                          aria-label={`Option ${index + 1}${
+                          aria-label={`Option ${index + 1}${choice.formula ? `, ${choice.formula}` : ""}${
                             isAnswer ? ", the answer" : isMistake ? ", the one you picked" : ""
                           }`}
                           className={`w-full rounded-xl border p-2 transition-colors ${
@@ -298,9 +326,14 @@ export function Quiz({
                           </span>
                           <div
                             aria-hidden="true"
-                            className="structure flex h-28 items-center justify-center sm:h-32"
+                            className={`structure flex items-center justify-center ${isComplex ? "h-48 sm:h-56 [&_svg]:max-h-full [&_svg]:w-auto" : "h-28 sm:h-32"}`}
                             dangerouslySetInnerHTML={{ __html: choice.svg }}
                           />
+                          {choice.formula && (
+                            <p className="break-words pt-2 text-sm text-text sm:text-base">
+                              <ComplexFormula formula={choice.formula} />
+                            </p>
+                          )}
                           {(isAnswer || isMistake) && (
                             <p
                               className={`pt-1 text-xs font-medium ${
@@ -333,7 +366,7 @@ export function Quiz({
                     value={answer}
                     onChange={(event) => setAnswer(event.target.value)}
                     readOnly={Boolean(verdict)}
-                    placeholder="e.g. 2-methylbutan-1-ol"
+                    placeholder={isComplex ? "Ligands, metal and oxidation state" : "e.g. 2-methylbutan-1-ol"}
                     aria-label="IUPAC name"
                     autoComplete="off"
                     autoCapitalize="off"
@@ -379,7 +412,7 @@ export function Quiz({
                   ) : (
                     <>
                       <p className="flex-1 text-sm text-text-dim">
-                        Pick the matching structure, or press 1–{question.choices.length}.
+                        Pick the matching {isComplex ? "complex" : "structure"}, or press 1–{question.choices.length}.
                       </p>
                       <button
                         type="button"
@@ -404,9 +437,10 @@ export function Quiz({
               {verdict && (
                 <Feedback
                   verdict={verdict}
-                  formula={question.formula}
+                  formula={verdict.formula ?? question.formula}
                   mode={question.mode}
                   revealed={revealed}
+                  isComplex={isComplex}
                 />
               )}
             </div>
@@ -471,6 +505,7 @@ function Filters({
   category,
   difficulty,
   availability,
+  isComplex,
   onMode,
   onCategory,
   onDifficulty,
@@ -480,6 +515,7 @@ function Filters({
   category: string | null;
   difficulty: Difficulty | null;
   availability: Record<string, number>;
+  isComplex: boolean;
   onMode: (value: QuizMode) => void;
   onCategory: (value: string | null) => void;
   onDifficulty: (value: Difficulty | null) => void;
@@ -492,10 +528,10 @@ function Filters({
           Task
         </span>
         <Chip active={mode === "name"} onClick={() => onMode("name")}>
-          Name the structure
+          Name the {isComplex ? "complex" : "structure"}
         </Chip>
         <Chip active={mode === "structure"} onClick={() => onMode("structure")}>
-          Find the structure
+          Find the {isComplex ? "complex" : "structure"}
         </Chip>
       </div>
 
@@ -622,13 +658,16 @@ function Feedback({
   formula,
   mode,
   revealed,
+  isComplex,
 }: {
   verdict: Verdict;
   formula: string;
   mode: QuizMode;
   /** The answer was asked for, so there is no attempt to judge. */
   revealed: boolean;
+  isComplex: boolean;
 }) {
+  const RenderFormula = isComplex ? ComplexFormula : Formula;
   const tone =
     verdict.outcome === "correct"
       ? "border-accent bg-accent-soft"
@@ -661,13 +700,13 @@ function Feedback({
         !verdict.correct &&
         (mode === "structure" ? (
           <p className="mt-1 text-sm text-text-dim">
-            It is the structure marked above (<Formula formula={formula} />
+            It is the {isComplex ? "complex" : "structure"} marked above (<RenderFormula formula={formula} />
             ).
           </p>
         ) : (
           <p className="mt-1 text-sm text-text-dim">
             The answer is <span className="font-medium text-text">{verdict.answer}</span> (
-            <Formula formula={formula} />
+            <RenderFormula formula={formula} />
             ).
           </p>
         ))}

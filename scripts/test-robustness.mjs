@@ -6,7 +6,7 @@
  *
  * Needs the dev server running: node scripts/test-robustness.mjs
  */
-const BASE = process.env.ORGCHEM_URL ?? "http://localhost:3000";
+const BASE = process.env.CHEM_URL ?? process.env.ORGCHEM_URL ?? "http://localhost:3000";
 
 const CASES = [
   // Nothing, or nearly nothing.

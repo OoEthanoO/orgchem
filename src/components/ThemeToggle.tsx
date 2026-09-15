@@ -26,7 +26,7 @@ export function ThemeToggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     try {
-      localStorage.setItem("orgchem-theme", next);
+      localStorage.setItem("chem-theme", next);
     } catch {
       // Private browsing: the choice just will not persist.
     }

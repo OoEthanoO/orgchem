@@ -1,10 +1,10 @@
 import type { Depiction, DisplayOptions } from "@/lib/depict";
-import type { Resolution } from "@/lib/resolve";
+import type { OrganicResolution } from "@/lib/resolve";
 
 import { CopyButton } from "./CopyButton";
 import { Formula } from "./Formula";
 
-const SOURCE_LABELS: Record<Resolution["source"], string> = {
+const SOURCE_LABELS: Record<OrganicResolution["source"], string> = {
   dictionary: "common name",
   condensed: "condensed formula",
   smiles: "SMILES",
@@ -16,7 +16,7 @@ const SOURCE_LABELS: Record<Resolution["source"], string> = {
 
 type Props = {
   query: string;
-  resolution: Resolution;
+  resolution: OrganicResolution;
   depiction: Depiction;
   display: DisplayOptions;
   /** Link to switch the isomer list on or off, when the structure has one. */

@@ -1,6 +1,6 @@
-# orgchem
+# chem
 
-Type anything that names or describes an organic compound, and see its structure.
+Look up organic compounds and coordination complexes by name or formula, and practise chemical naming at [chem.ethanyanxu.com](https://chem.ethanyanxu.com).
 
 ```
 CH₃CH₂CH₂CH₂CH₂–        →  the pentyl group
@@ -24,7 +24,32 @@ input wins, what the resolver does with anything typed into a search box, and
 how a typed answer is marked, all of which go out to OPSIN and PubChem.
 `npm run build` produces a production build.
 
+`npm run test:complexes` checks complex parsing, charge balance, naming practice,
+API validation and offline resolution. Live suites use `CHEM_URL` (with
+`ORGCHEM_URL` accepted for existing scripts).
+
+Production is served at `chem.ethanyanxu.com`. The previous
+`orgchem.ethanyanxu.com` host permanently redirects with HTTP 308, preserving
+paths and query strings.
+
 ## What it accepts
+
+**Coordination complexes** are parsed locally from additive names such as
+`triamminetriaquachromium(III)` or bracket formulas such as
+`[Cr(NH3)3(H2O)3]^3+`. The result shows the coordination formula, donor bonds,
+ligands, coordination number, oxidation state and charge balance. Common
+counterion salts are supported too. Traditional ligand spellings such as
+`chloro` and `cyano` are accepted alongside `chlorido` and `cyanido`.
+
+Drawings are coordination schematics: the layout does not assign cis/trans,
+fac/mer, or optical stereochemistry. Four-coordinate geometry is not inferred
+from the formula alone. This introductory parser covers one metal centre;
+bridging ligands and unspecified linkage isomers are outside its scope.
+
+Dedicated [complex practice](https://chem.ethanyanxu.com/practice/complexes)
+works in both directions: name a complex from its formula and schematic, or
+choose the complex matching a name. Answers are checked locally against metal,
+oxidation state, ligand identities/counts and counterions.
 
 **Condensed structural formulas** — the notation people actually write by hand.
 This is the part no name-to-structure service handles, so it is parsed here

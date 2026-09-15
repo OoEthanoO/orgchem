@@ -71,7 +71,7 @@ export function SearchForm({ initialQuery }: { initialQuery: string }) {
           name="q"
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          placeholder="2-methylbutan-1-ol, CH₃CH₂CH₂CH₂CH₂–, caffeine, CC(=O)O…"
+          placeholder="A name or formula: caffeine, CH₃CH₂OH, [Cr(NH₃)₃(H₂O)₃]³⁺…"
           aria-label="Chemical name, formula or SMILES"
           autoComplete="off"
           autoCapitalize="off"

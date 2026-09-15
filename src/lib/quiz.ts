@@ -581,6 +581,16 @@ export async function checkAnswer(id: number, answer: string): Promise<Verdict> 
     };
   }
 
+  if (resolved.source === "complex") {
+    return {
+      correct: false,
+      outcome: "different-compound",
+      message: "That names a coordination complex, which is different from the structure shown.",
+      answer: question.name,
+      named: resolved.title,
+    };
+  }
+
   const submitted = constitutionKey(resolved.smiles);
   const expected = constitutionKey(question.smiles);
   if (!submitted || !expected) {

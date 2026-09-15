@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 
+import { ComplexView } from "@/components/ComplexView";
 import { IsomerGrid, IsomerGridSkeleton } from "@/components/IsomerGrid";
 import { SearchForm } from "@/components/SearchForm";
 import { StereoSection, StereoSectionSkeleton } from "@/components/StereoSection";
@@ -12,6 +13,8 @@ import { ResolveError, resolveQuery } from "@/lib/resolve";
 export const dynamic = "force-dynamic";
 
 const EXAMPLES: Array<{ query: string; note: string }> = [
+  { query: "triamminetriaquachromium(III)", note: "coordination complex" },
+  { query: "[Fe(CN)6]^4-", note: "complex ion formula" },
   { query: "CH₃CH₂CH₂CH₂CH₂–", note: "condensed formula for a group" },
   { query: "2-methylbutan-1-ol", note: "IUPAC name" },
   { query: "(CH₃)₃COH", note: "branches in parentheses" },
@@ -37,7 +40,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
       <header className="flex items-center justify-between gap-4">
         <Link href="/" className="group flex items-baseline gap-2">
-          <span className="text-xl font-semibold tracking-tight text-text">orgchem</span>
+          <span className="text-xl font-semibold tracking-tight text-text">chem</span>
           <span className="hidden text-sm text-text-dim sm:inline">
             type anything, see the structure
           </span>
@@ -120,7 +123,8 @@ export default async function Page({ searchParams }: PageProps<"/">) {
         >
           OpenChemLib
         </a>
-        . Predicted properties are estimates, not measurements.
+        . Coordination complexes use a local nomenclature parser and coordination schematics.
+        Predicted properties are estimates, not measurements.
         </p>
       </footer>
     </div>
@@ -146,6 +150,10 @@ async function Result({
         hint={error instanceof ResolveError ? error.hint : undefined}
       />
     );
+  }
+
+  if (resolution.source === "complex") {
+    return <ComplexView complex={resolution.complex} query={query} />;
   }
 
   let depiction;
@@ -207,6 +215,11 @@ function Landing() {
       <div className="rounded-2xl border border-border bg-surface p-5 shadow-[var(--shadow)] sm:p-6">
         <h2 className="text-sm font-medium text-text">What it understands</h2>
         <ul className="mt-3 grid gap-2 text-sm text-text-dim sm:grid-cols-2">
+          <li>
+            <strong className="font-medium text-text">Coordination complexes</strong> — metal
+            centres, ligands, oxidation states, complex ions and salts.
+            {" "}<Link href="/practice/complexes" className="text-accent-text hover:underline">Practise their names →</Link>
+          </li>
           <li>
             <strong className="font-medium text-text">Condensed formulas</strong> — the way
             structures get written by hand, including branches, repeat units and open valences.

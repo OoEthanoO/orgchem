@@ -7,16 +7,18 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "orgchem — draw any organic structure",
+  metadataBase: new URL("https://chem.ethanyanxu.com"),
+  applicationName: "chem",
+  title: "chem — chemical structures and naming practice",
   description:
-    "Type an IUPAC name, a condensed formula like CH₃CH₂CH₂CH₂CH₂–, a common name or SMILES, and see the structure.",
+    "Explore organic structures and coordination complexes from names and formulas. Practise chemical naming, ligands and oxidation states.",
 };
 
 /**
  * Settles the theme before first paint. Without this the page would flash the
  * light palette while React hydrates.
  */
-const THEME_SCRIPT = `(()=>{try{const s=localStorage.getItem("orgchem-theme");const d=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=s==="light"||s==="dark"?s:(d?"dark":"light")}catch{document.documentElement.dataset.theme="light"}})()`;
+const THEME_SCRIPT = `(()=>{try{const s=localStorage.getItem("chem-theme")??localStorage.getItem("orgchem-theme");const d=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=s==="light"||s==="dark"?s:(d?"dark":"light")}catch{document.documentElement.dataset.theme="light"}})()`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

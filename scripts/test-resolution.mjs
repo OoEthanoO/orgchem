@@ -11,7 +11,7 @@
  */
 import OCL from "openchemlib";
 
-const BASE = process.env.ORGCHEM_URL ?? "http://localhost:3000";
+const BASE = process.env.CHEM_URL ?? process.env.ORGCHEM_URL ?? "http://localhost:3000";
 
 const canonical = (smiles) => OCL.Molecule.fromSmiles(smiles).getIDCode();
 

@@ -12,6 +12,7 @@ import { isElementFormula, parseCondensed } from "./condensed";
 import { applyDescriptor } from "./stereo";
 import { parseIupacName } from "./iupac";
 import { lookupDictionary } from "./dictionary";
+import { looksLikeComplex, parseComplex, type CoordinationComplex } from "./complexes";
 
 /**
  * Turns whatever the user typed into a structure.
@@ -32,7 +33,7 @@ export type SourceId =
   | "pubchem"
   | "formula";
 
-export interface Resolution {
+export interface OrganicResolution {
   smiles: string;
   source: SourceId;
   /** Short description of how the input was read, shown to the user. */
@@ -48,6 +49,16 @@ export interface Resolution {
   /** Alternative structures, when the input was ambiguous. */
   candidates?: Array<{ title: string; smiles: string; cid?: number }>;
 }
+
+export interface ComplexResolution {
+  source: "complex";
+  interpretation: string;
+  title: string;
+  iupacName: string;
+  complex: CoordinationComplex;
+}
+
+export type Resolution = OrganicResolution | ComplexResolution;
 
 export class ResolveError extends Error {
   readonly hint?: string;
@@ -88,7 +99,10 @@ export async function resolveQuery(raw: string): Promise<Resolution> {
     return remember(input, await resolveExplicit(kind.toLowerCase(), rest.trim()));
   }
 
-  const attempts: Array<() => Promise<Resolution | null> | Resolution | null> = [
+  const complex = fromComplex(input);
+  if (complex) return remember(input, complex);
+
+  const attempts: Array<() => Promise<OrganicResolution | null> | OrganicResolution | null> = [
     () => fromDictionary(input),
     // Before the condensed reading, because it would take these first and both
     // readings parse into something drawable, so nothing downstream could tell
@@ -124,11 +138,15 @@ export async function resolveQuery(raw: string): Promise<Resolution> {
 
   throw new ResolveError(
     `Could not work out a structure for "${raw.trim()}".`,
-    "Try an IUPAC name (2-methylbutan-1-ol), a condensed formula (CH3CH2COOH), a common name (caffeine), or a SMILES string.",
+    "Try an IUPAC name, a condensed formula (CH3CH2COOH), a coordination complex (triamminetriaquachromium(III) or [Cr(NH3)3(H2O)3]^3+), a common name, or SMILES.",
   );
 }
 
 async function resolveExplicit(kind: string, value: string): Promise<Resolution> {
+  if (kind === "name" || kind === "formula") {
+    const complex = fromComplex(value);
+    if (complex) return complex;
+  }
   if (kind === "smiles") {
     const result = fromSmiles(value, true);
     if (result) return result;
@@ -151,7 +169,27 @@ async function resolveExplicit(kind: string, value: string): Promise<Resolution>
 
 // --- stages ----------------------------------------------------------------
 
-function fromDictionary(input: string): Resolution | null {
+function fromComplex(input: string): ComplexResolution | null {
+  const complex = parseComplex(input);
+  if (!complex) {
+    if (looksLikeComplex(input)) {
+      throw new ResolveError(
+        "That coordination complex is not supported or its name/formula is incomplete.",
+        "Use a single metal centre with supported ligands, a Roman-numeral oxidation state in names, and a charge or counterions in ionic formulas. Specific cis/trans, fac/mer, bridging and linkage-isomer names are not supported yet.",
+      );
+    }
+    return null;
+  }
+  return {
+    source: "complex",
+    interpretation: "Read as a coordination complex",
+    title: complex.canonicalName,
+    iupacName: complex.canonicalName,
+    complex,
+  };
+}
+
+function fromDictionary(input: string): OrganicResolution | null {
   // Exact spelling first, then progressively looser: "D-glucose" has to match
   // its own key before the hyphen-as-space form catches "ethylene-glycol".
   const spellings = [input, normalizeName(input), normalizeName(input).replace(/-/g, " ")];
@@ -191,7 +229,7 @@ function namesEachElementOnce(text: string): boolean {
   return true;
 }
 
-function fromCondensed(input: string): Resolution | null {
+function fromCondensed(input: string): OrganicResolution | null {
   const descriptor = LEADING_DESCRIPTOR.exec(input)?.[1];
   const formula = descriptor ? input.replace(LEADING_DESCRIPTOR, "") : input;
 
@@ -255,13 +293,13 @@ function fromCondensed(input: string): Resolution | null {
  * nothing in SMILES — or an aromatic atom, which is distinctive enough that
  * the ordinary SMILES stage already claims it.
  */
-function fromHydrogenlessSmiles(input: string): Resolution | null {
+function fromHydrogenlessSmiles(input: string): OrganicResolution | null {
   if (/H/.test(input)) return null;
   if (/[a-z]/.test(input.replace(/Cl|Br/g, ""))) return null;
   return fromSmiles(input, true);
 }
 
-function fromSmiles(input: string, force = false): Resolution | null {
+function fromSmiles(input: string, force = false): OrganicResolution | null {
   const distinctive = /[[\]@\\/%]|(?:^|[^A-Za-z])[bcnops](?:[0-9(]|$)|\d(?=[A-Za-z(])/.test(input);
   if (!force && !distinctive) return null;
   if (/\s/.test(input)) return null;
@@ -278,7 +316,7 @@ function fromSmiles(input: string, force = false): Resolution | null {
  * parser is worked out first because it costs nothing, and answers only when
  * the service is unreachable or does not recognise the name.
  */
-async function fromName(input: string): Promise<Resolution | null> {
+async function fromName(input: string): Promise<OrganicResolution | null> {
   const name = normalizeName(input);
   if (!/[a-z]{3}/.test(name)) return null;
 
@@ -316,7 +354,7 @@ async function fromName(input: string): Promise<Resolution | null> {
   return null;
 }
 
-async function fromPubChemName(input: string): Promise<Resolution | null> {
+async function fromPubChemName(input: string): Promise<OrganicResolution | null> {
   const data = await fetchPubChemProperties(`name/${encodeURIComponent(input)}`);
   if (!data) return null;
   return {
@@ -332,7 +370,7 @@ async function fromPubChemName(input: string): Promise<Resolution | null> {
   };
 }
 
-async function fromPubChemInchi(value: string): Promise<Resolution | null> {
+async function fromPubChemInchi(value: string): Promise<OrganicResolution | null> {
   const body = new URLSearchParams({ inchi: value });
   const data = await fetchPubChemProperties("inchi", body);
   if (!data) return null;
@@ -353,7 +391,7 @@ async function fromPubChemInchi(value: string): Promise<Resolution | null> {
  * A bare molecular formula does not describe one structure. Rather than pick
  * an isomer, offer the ones PubChem knows about and show the first.
  */
-async function fromMolecularFormula(input: string): Promise<Resolution | null> {
+async function fromMolecularFormula(input: string): Promise<OrganicResolution | null> {
   const formula = input.replace(/\s+/g, "");
   if (!isMolecularFormula(formula)) return null;
 
@@ -380,14 +418,14 @@ async function fromMolecularFormula(input: string): Promise<Resolution | null> {
  * lookup by SMILES supplies both. It is best-effort: the structure is already
  * correct without it.
  */
-function needsEnrichment(resolution: Resolution): boolean {
+function needsEnrichment(resolution: OrganicResolution): boolean {
   // An open valence means a fragment, which PubChem does not index, so those
   // are complete as they are.
   if (resolution.openValences > 0) return false;
   return !resolution.iupacName || !resolution.inchiKey;
 }
 
-async function enrich(resolution: Resolution): Promise<Resolution> {
+async function enrich(resolution: OrganicResolution): Promise<OrganicResolution> {
   if (!needsEnrichment(resolution)) return resolution;
 
   const data = await fetchPubChemProperties(

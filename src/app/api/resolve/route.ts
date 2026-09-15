@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { DEFAULT_DISPLAY, DepictionError, depict } from "@/lib/depict";
 import { ResolveError, resolveQuery } from "@/lib/resolve";
+import { complexSvg } from "@/lib/complexes";
 
 /**
  * JSON version of what the page does, for scripting against.
@@ -16,6 +17,18 @@ export async function GET(request: Request) {
 
   try {
     const resolution = await resolveQuery(query);
+    if (resolution.source === "complex") {
+      return NextResponse.json({
+        query,
+        source: resolution.source,
+        interpretation: resolution.interpretation,
+        title: resolution.title,
+        iupacName: resolution.iupacName,
+        formula: resolution.complex.formula,
+        complex: resolution.complex,
+        svg: complexSvg(resolution.complex),
+      });
+    }
     const depiction = depict(resolution.smiles, {
       ...DEFAULT_DISPLAY,
       showHydrogens: new URL(request.url).searchParams.get("h") === "1",

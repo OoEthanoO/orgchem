@@ -1,5 +1,6 @@
 import { depict } from "@/lib/depict";
 import { resolveQuery } from "@/lib/resolve";
+import { complexSvg } from "@/lib/complexes";
 
 /**
  * The structure as a standalone SVG download. Theme variables are resolved to
@@ -12,14 +13,14 @@ export async function GET(request: Request) {
 
   try {
     const resolution = await resolveQuery(query);
-    const depiction = depict(resolution.smiles, {
+    const svg = resolution.source === "complex" ? complexSvg(resolution.complex) : depict(resolution.smiles, {
       showHydrogens: params.get("h") === "1",
       showCarbons: params.get("c") === "1",
       showAtomNumbers: params.get("n") === "1",
       showStereoLabels: params.get("s") === "1",
-    });
+    }).svg;
 
-    return new Response(inlineColors(depiction.svg), {
+    return new Response(inlineColors(svg), {
       headers: {
         "content-type": "image/svg+xml; charset=utf-8",
         "content-disposition": `attachment; filename="${fileName(query)}.svg"`,
@@ -45,7 +46,7 @@ const FIXED_COLORS: Record<string, string> = {
 };
 
 function inlineColors(svg: string): string {
-  return svg.replace(/var\(--mol-[a-z]+\)/g, (match) => FIXED_COLORS[match] ?? "#1f1d1a");
+  return svg.replace(/var\((--mol-[a-z]+)(?:,\s*[^)]+)?\)/g, (_, variable) => FIXED_COLORS[`var(${variable})`] ?? "#1f1d1a");
 }
 
 function fileName(query: string): string {
