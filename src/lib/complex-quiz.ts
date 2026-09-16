@@ -62,6 +62,68 @@ export const COMPLEX_QUIZ_BANK: BankEntry[] = [
   { name: "pentaamminechloridocobalt(III) chloride", category: "salts", difficulty: "hard" },
   { name: "tetraamminedichloridocobalt(III) chloride", category: "salts", difficulty: "hard" },
   { name: "potassium trioxalatoferrate(III)", category: "salts", difficulty: "hard" },
+
+  // Append-only: existing IDs are used by active practice sessions. Sources
+  // and independently specified formula fixtures live in scripts/.
+  { name: "hexaaquazinc(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "hexaaquamanganese(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "tetraamminezinc(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "tetraammineplatinum(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "tetraamminepalladium(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "hexaammineruthenium(III)", category: "single-ligand", difficulty: "easy" },
+  { name: "hexaammineruthenium(II)", category: "single-ligand", difficulty: "easy" },
+  { name: "tetracarbonylnickel(0)", category: "single-ligand", difficulty: "medium" },
+  { name: "pentacarbonyliron(0)", category: "single-ligand", difficulty: "medium" },
+  { name: "hexacarbonylchromium(0)", category: "single-ligand", difficulty: "medium" },
+  { name: "hexacarbonylmolybdenum(0)", category: "single-ligand", difficulty: "medium" },
+  { name: "hexacarbonyltungsten(0)", category: "single-ligand", difficulty: "medium" },
+  { name: "dicyanidoargentate(I)", category: "single-ligand", difficulty: "medium" },
+  { name: "dicyanidoaurate(I)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetracyanidocuprate(I)", category: "single-ligand", difficulty: "hard" },
+  { name: "hexacyanidocobaltate(III)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetrachloridoaurate(III)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetrachloridopalladate(II)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetrachloridoplatinate(II)", category: "single-ligand", difficulty: "medium" },
+  { name: "hexachloridoiridate(III)", category: "single-ligand", difficulty: "hard" },
+  { name: "hexachloridoiridate(IV)", category: "single-ligand", difficulty: "hard" },
+  { name: "tetrahydroxidozincate(II)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetrabromidocobaltate(II)", category: "single-ligand", difficulty: "medium" },
+  { name: "tetracarbonylcobaltate(-I)", category: "single-ligand", difficulty: "hard" },
+  { name: "tetracarbonylferrate(-II)", category: "single-ligand", difficulty: "hard" },
+  { name: "potassium dicyanidoargentate(I)", category: "salts", difficulty: "medium" },
+  { name: "potassium dicyanidoaurate(I)", category: "salts", difficulty: "medium" },
+  { name: "potassium hexacyanidocobaltate(III)", category: "salts", difficulty: "medium" },
+  { name: "potassium tetrachloridoaurate(III)", category: "salts", difficulty: "medium" },
+  { name: "sodium hexachloridoiridate(IV)", category: "salts", difficulty: "hard" },
+  { name: "potassium hexachloridoiridate(IV)", category: "salts", difficulty: "hard" },
+  { name: "tetraammineplatinum(II) chloride", category: "salts", difficulty: "medium" },
+  { name: "hexaamminechromium(III) nitrate", category: "salts", difficulty: "medium" },
+  { name: "sodium tetracarbonylcobaltate(-I)", category: "salts", difficulty: "hard" },
+  { name: "sodium tetracarbonylferrate(-II)", category: "salts", difficulty: "hard" },
+  { name: "pentaamminefluoridocobalt(III)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "pentaamminebromidocobalt(III)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "pentaammineiodidocobalt(III)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "pentaammineaquaruthenium(II)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "pentaamminehydroxidocobalt(III)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "pentaamminechloridorhodium(III)", category: "mixed-ligands", difficulty: "medium" },
+  { name: "tris(ethane-1,2-diamine)ruthenium(II)", category: "chelates", difficulty: "medium" },
+  { name: "dichloridobis(ethane-1,2-diamine)cobalt(III)", category: "chelates", difficulty: "hard" },
+  { name: "tris(ethane-1,2-diamine)chromium(III)", category: "chelates", difficulty: "hard" },
+  { name: "tris(ethane-1,2-diamine)zinc(II)", category: "chelates", difficulty: "medium" },
+  { name: "tris(ethane-1,2-diamine)copper(II)", category: "chelates", difficulty: "medium" },
+  { name: "diaquabis(ethane-1,2-diamine)nickel(II)", category: "chelates", difficulty: "medium" },
+  { name: "dichlorido(ethane-1,2-diamine)platinum(II)", category: "chelates", difficulty: "medium" },
+  { name: "bis(ethane-1,2-diamine)platinum(II)", category: "chelates", difficulty: "medium" },
+  { name: "diaquadioxalatochromate(III)", category: "chelates", difficulty: "hard" },
+  { name: "diaquadioxalatocobaltate(II)", category: "chelates", difficulty: "hard" },
+  { name: "trioxalatocobaltate(III)", category: "chelates", difficulty: "hard" },
+  { name: "dichloridobis(ethane-1,2-diamine)cobalt(III) chloride", category: "salts", difficulty: "hard" },
+  { name: "dichloridobis(ethane-1,2-diamine)cobalt(III) perchlorate", category: "salts", difficulty: "hard" },
+  { name: "tris(ethane-1,2-diamine)zinc(II) sulfate", category: "salts", difficulty: "medium" },
+  { name: "tris(ethane-1,2-diamine)copper(II) sulfate", category: "salts", difficulty: "medium" },
+  { name: "tris(ethane-1,2-diamine)nickel(II) sulfate", category: "salts", difficulty: "medium" },
+  { name: "potassium diaquadioxalatochromate(III)", category: "salts", difficulty: "hard" },
+  { name: "potassium trioxalatocobaltate(III)", category: "salts", difficulty: "hard" },
 ];
 
 export type ComplexQuestion = NameQuestion | (Omit<StructureQuestion, "choices"> & {
@@ -129,7 +191,7 @@ function hintsFor(complex: CoordinationComplex, mode: QuizMode): string[] {
   if (mode === "structure") {
     return [
       "Read each ligand's multiplying prefix, then count that ligand inside the brackets of each option.",
-      "The Roman numeral is the metal's oxidation state. Add the ligand charges to it to find the complex ion's charge.",
+      "The metal's oxidation state is written as a Roman numeral, or 0 for zero; a minus sign indicates a negative oxidation state. Add the ligand charges to find the complex's overall charge.",
       complex.counterion
         ? "The ions outside the brackets are counterions. Their total charge must balance the complex ions."
         : "Check the metal symbol as well as every ligand and the overall charge; matching just one ligand is not enough.",
@@ -138,7 +200,7 @@ function hintsFor(complex: CoordinationComplex, mode: QuizMode): string[] {
   const ligandCharge = complex.ligands.reduce((sum, ligand) => sum + ligand.count * ligand.charge, 0);
   return [
     "Name the ligands first: NH3 is ammine and H2O is aqua. Count ligands, rather than individual atoms, for the multiplying prefixes.",
-    `The ligands together have charge ${ligandCharge}. Metal oxidation state + (${ligandCharge}) = the complex ion's charge (${complex.charge}). Write the oxidation state as a Roman numeral.`,
+    `The ligands together have charge ${ligandCharge}. Metal oxidation state + (${ligandCharge}) = the complex's charge (${complex.charge}). Write 0 for zero oxidation state; otherwise use a Roman numeral, with a minus sign if negative.`,
     complex.counterion
       ? "Name the cation before the anion. Within a complex, alphabetize ligand names without their multiplying prefixes; a complex anion uses a metal name ending in -ate."
       : complex.charge < 0

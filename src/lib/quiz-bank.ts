@@ -1997,5 +1997,3120 @@ export const QUIZ_BANK: BankQuestion[] = [
     "name": "penta-1,4-diene",
     "title": "1,4-Pentadiene",
     "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C(=O)O)Br",
+    "name": "2-bromopropanoic acid",
+    "title": "2-Bromopropionic acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C(C(=O)O)O",
+    "name": "2-hydroxyacetic acid",
+    "title": "Glycolic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C(=O)O)O",
+    "name": "2-hydroxypropanoic acid",
+    "title": "Lactic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC1CCC1C(=O)O",
+    "name": "2-methylcyclobutane-1-carboxylic acid",
+    "title": "2-Methylcyclobutane-1-carboxylic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC1CCCCC1C(=O)O",
+    "name": "2-methylcyclohexane-1-carboxylic acid",
+    "title": "2-Methylcyclohexanecarboxylic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC1CCCC1C(=O)O",
+    "name": "2-methylcyclopentane-1-carboxylic acid",
+    "title": "2-Methylcyclopentane-1-carboxylic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC1CC1C(=O)O",
+    "name": "2-methylcyclopropane-1-carboxylic acid",
+    "title": "2-Methylcyclopropanecarboxylic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(=C)C(=O)O",
+    "name": "2-methylprop-2-enoic acid",
+    "title": "Methacrylic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)C(=O)N",
+    "name": "2-methylpropanamide",
+    "title": "Isobutyramide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)C(=O)Cl",
+    "name": "2-methylpropanoyl chloride",
+    "title": "Isobutyryl chloride",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)COC(=O)C",
+    "name": "2-methylpropyl acetate",
+    "title": "Isobutyl Acetate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(=O)C(=O)O",
+    "name": "2-oxopropanoic acid",
+    "title": "Pyruvic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCC(C)(C)C(=O)O",
+    "name": "2,2-dimethylbutanoic acid",
+    "title": "2,2-Dimethylbutanoic acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)(C)C(=O)O",
+    "name": "2,2-dimethylpropanoic acid",
+    "title": "Pivalic acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C(CCl)C(=O)O",
+    "name": "3-chloropropanoic acid",
+    "title": "3-Chloropropionic acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(CC(=O)O)O",
+    "name": "3-hydroxybutanoic acid",
+    "title": "3-Hydroxybutyric Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(=O)CC(=O)O",
+    "name": "3-oxobutanoic acid",
+    "title": "Acetoacetic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(=O)OC(=O)C",
+    "name": "acetyl acetate",
+    "title": "Acetic Anhydride",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC=CC(=O)O",
+    "name": "but-2-enoic acid",
+    "title": "2-Butenoic acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCCC(=O)N",
+    "name": "butanamide",
+    "title": "Butyramide",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCCC(=O)Cl",
+    "name": "butanoyl chloride",
+    "title": "Butyryl chloride",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CC(C1)C(=O)N",
+    "name": "cyclobutanecarboxamide",
+    "title": "Cyclobutanecarboxamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CC(C1)C(=O)O",
+    "name": "cyclobutanecarboxylic acid",
+    "title": "Cyclobutanecarboxylic acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CCC(CC1)C(=O)N",
+    "name": "cyclohexanecarboxamide",
+    "title": "Cyclohexanecarboxamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CCC(CC1)C(=O)O",
+    "name": "cyclohexanecarboxylic acid",
+    "title": "Cyclohexanecarboxylic acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CCC(C1)C(=O)N",
+    "name": "cyclopentanecarboxamide",
+    "title": "Cyclopentanecarboxamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CCC(C1)C(=O)O",
+    "name": "cyclopentanecarboxylic acid",
+    "title": "Cyclopentanecarboxylic acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CC1C(=O)N",
+    "name": "cyclopropanecarboxamide",
+    "title": "Cyclopropanecarboxamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C1CC1C(=O)O",
+    "name": "cyclopropanecarboxylic acid",
+    "title": "Cyclopropanecarboxylic acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCOC(=O)CC(=O)OCC",
+    "name": "diethyl propanedioate",
+    "title": "Diethyl Malonate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)CC(=O)OC",
+    "name": "dimethyl propanedioate",
+    "title": "Dimethyl malonate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCOC(=O)C(C)C",
+    "name": "ethyl 2-methylpropanoate",
+    "title": "Ethyl isobutyrate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C(=O)O",
+    "name": "formic acid",
+    "title": "Formic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCC(C)C(=O)OC",
+    "name": "methyl 2-methylbutanoate",
+    "title": "Methyl 2-methylbutyrate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)C(=O)OC",
+    "name": "methyl 2-methylpropanoate",
+    "title": "Methyl isobutyrate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)C1CCC1",
+    "name": "methyl cyclobutanecarboxylate",
+    "title": "Cyclobutanecarboxylic acid methyl ester",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)C1CCCCC1",
+    "name": "methyl cyclohexanecarboxylate",
+    "title": "Methyl cyclohexanecarboxylate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)C1CCCC1",
+    "name": "methyl cyclopentanecarboxylate",
+    "title": "Methyl cyclopentanecarboxylate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)C1CC1",
+    "name": "methyl cyclopropanecarboxylate",
+    "title": "Methyl cyclopropanecarboxylate",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "COC(=O)C=C",
+    "name": "methyl prop-2-enoate",
+    "title": "Methyl Acrylate",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCNC(=O)C",
+    "name": "N-ethylacetamide",
+    "title": "Ethylacetamide",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCC(=O)NC",
+    "name": "N-methylpropanamide",
+    "title": "N-Methylpropanamide",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(=O)N(C)C",
+    "name": "N,N-dimethylacetamide",
+    "title": "Dimethylacetamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCC(=O)N(C)C",
+    "name": "N,N-dimethylpropanamide",
+    "title": "Propanamide, N,N-dimethyl-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "acids",
+    "smiles": "C(=O)(C(=O)O)O",
+    "name": "oxalic acid",
+    "title": "Oxalic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "C=CC(=O)O",
+    "name": "prop-2-enoic acid",
+    "title": "Acrylic Acid",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)OC(=O)C",
+    "name": "propan-2-yl acetate",
+    "title": "Isopropyl Acetate",
+    "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "CCC(=O)OC(C)C",
+    "name": "propan-2-yl propanoate",
+    "title": "Isopropyl propionate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCCOCC",
+    "name": "1-ethoxypropane",
+    "title": "Ethyl propyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C)COC",
+    "name": "1-methoxy-2-methylpropane",
+    "title": "Ether, isobutyl methyl",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1(CCC1)O",
+    "name": "1-methylcyclobutan-1-ol",
+    "title": "1-Methylcyclobutanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1(CCCCCC1)O",
+    "name": "1-methylcycloheptan-1-ol",
+    "title": "1-Methylcycloheptan-1-ol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1(CCCCC1)O",
+    "name": "1-methylcyclohexan-1-ol",
+    "title": "1-Methylcyclohexanol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1(CCCC1)O",
+    "name": "1-methylcyclopentan-1-ol",
+    "title": "1-Methylcyclopentanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1(CC1)O",
+    "name": "1-methylcyclopropan-1-ol",
+    "title": "1-Methylcyclopropan-1-ol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCCOCCC",
+    "name": "1-propoxypropane",
+    "title": "Propyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1COCCO1",
+    "name": "1,4-dioxane",
+    "title": "1,4-Dioxane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCOCCO",
+    "name": "2-ethoxyethanol",
+    "title": "Glycol monoethyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCOC(C)C",
+    "name": "2-ethoxypropane",
+    "title": "Ethyl isopropyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C)(C)OC",
+    "name": "2-methoxy-2-methylpropane",
+    "title": "tert-Butyl methyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "COCCO",
+    "name": "2-methoxyethanol",
+    "title": "2-Methoxyethanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCC(C)(C)O",
+    "name": "2-methylbutan-2-ol",
+    "title": "2-Methyl-2-butanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CCC1O",
+    "name": "2-methylcyclobutan-1-ol",
+    "title": "2-Methylcyclobutan-1-ol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CCCCCC1O",
+    "name": "2-methylcycloheptan-1-ol",
+    "title": "2-Methylcycloheptan-1-ol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CCCC1O",
+    "name": "2-methylcyclopentan-1-ol",
+    "title": "2-Methylcyclopentanol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CC1O",
+    "name": "2-methylcyclopropan-1-ol",
+    "title": "2-Methylcyclopropan-1-ol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C)(C)CO",
+    "name": "2,2-dimethylpropan-1-ol",
+    "title": "Neopentyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C)CCO",
+    "name": "3-methylbutan-1-ol",
+    "title": "Isoamyl Alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CC(C1)O",
+    "name": "3-methylcyclobutan-1-ol",
+    "title": "3-Methylcyclobutan-1-ol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CCCCC(C1)O",
+    "name": "3-methylcycloheptan-1-ol",
+    "title": "3-Methylcycloheptanol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC1CCC(C1)O",
+    "name": "3-methylcyclopentan-1-ol",
+    "title": "3-Methylcyclopentanol, mixed isomers",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCC(C)(CC)O",
+    "name": "3-methylpentan-3-ol",
+    "title": "3-methyl-3-Pentanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC#CCO",
+    "name": "but-2-yn-1-ol",
+    "title": "2-Butyn-1-ol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCC(CO)O",
+    "name": "butane-1,2-diol",
+    "title": "1,2-Butanediol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C(CCO)CO",
+    "name": "butane-1,4-diol",
+    "title": "1,4-Butanediol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C(C)O)O",
+    "name": "butane-2,3-diol",
+    "title": "2,3-Butanediol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CC(C1)O",
+    "name": "cyclobutanol",
+    "title": "Cyclobutanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CC(C1)CO",
+    "name": "cyclobutylmethanol",
+    "title": "Cyclobutylcarbinol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCCC(CC1)O",
+    "name": "cycloheptanol",
+    "title": "Cycloheptanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCCC(CC1)CO",
+    "name": "cycloheptylmethanol",
+    "title": "Cycloheptanemethanol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCC(C(C1)O)O",
+    "name": "cyclohexane-1,2-diol",
+    "title": "1,2-Cyclohexanediol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCC(CC1)CO",
+    "name": "cyclohexylmethanol",
+    "title": "Cyclohexanemethanol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCC(C1)O",
+    "name": "cyclopentanol",
+    "title": "Cyclopentanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCC(C1)CO",
+    "name": "cyclopentylmethanol",
+    "title": "Cyclopentanemethanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CC1O",
+    "name": "cyclopropanol",
+    "title": "Cyclopropanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CC1CO",
+    "name": "cyclopropylmethanol",
+    "title": "Cyclopropanemethanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCO",
+    "name": "ethanol",
+    "title": "Ethanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CO",
+    "name": "methanol",
+    "title": "Methanol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "COC1CCCCC1",
+    "name": "methoxycyclohexane",
+    "title": "Cyclohexyl methyl ether",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCOCC1",
+    "name": "oxane",
+    "title": "Tetrahydropyran",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1COC1",
+    "name": "oxetane",
+    "title": "Oxetane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CO1",
+    "name": "oxirane",
+    "title": "Ethylene Oxide",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C1CCOC1",
+    "name": "oxolane",
+    "title": "Tetrahydrofuran",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(CC=C)O",
+    "name": "pent-4-en-2-ol",
+    "title": "4-Penten-2-OL",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C=CCO",
+    "name": "prop-2-en-1-ol",
+    "title": "Allyl Alcohol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "C#CCO",
+    "name": "prop-2-yn-1-ol",
+    "title": "Propargyl alcohol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCC1C",
+    "name": "1-ethyl-2-methylcyclobutane",
+    "title": "1-Ethyl-2-methylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCCCC1C",
+    "name": "1-ethyl-2-methylcycloheptane",
+    "title": "1-Ethyl-2-methylcycloheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCCC1C",
+    "name": "1-ethyl-2-methylcyclohexane",
+    "title": "1-Ethyl-2-methylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCCCCC1C",
+    "name": "1-ethyl-2-methylcyclooctane",
+    "title": "1-Ethyl-2-methylcyclooctane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCC1C",
+    "name": "1-ethyl-2-methylcyclopentane",
+    "title": "1-Ethyl-2-methylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CC1C",
+    "name": "1-ethyl-2-methylcyclopropane",
+    "title": "1-Ethyl-2-methylcyclopropane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CCC1)C",
+    "name": "1,1-dimethylcyclobutane",
+    "title": "1,1-Dimethylcyclobutane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CCCCCC1)C",
+    "name": "1,1-dimethylcycloheptane",
+    "title": "Cycloheptane, 1,1-dimethyl",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CCCCC1)C",
+    "name": "1,1-dimethylcyclohexane",
+    "title": "1,1-Dimethylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CCCCCCC1)C",
+    "name": "1,1-dimethylcyclooctane",
+    "title": "Cyclooctane, 1,1-dimethyl",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CCCC1)C",
+    "name": "1,1-dimethylcyclopentane",
+    "title": "1,1-Dimethylcyclopentane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1(CC1)C",
+    "name": "1,1-dimethylcyclopropane",
+    "title": "1,1-Dimethylcyclopropane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCC1C",
+    "name": "1,2-dimethylcyclobutane",
+    "title": "1,2-Dimethylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCCC1C",
+    "name": "1,2-dimethylcycloheptane",
+    "title": "1,2-Dimethylcycloheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCCCC1C",
+    "name": "1,2-dimethylcyclooctane",
+    "title": "1,2-Dimethylcyclooctane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCC1C",
+    "name": "1,2-dimethylcyclopentane",
+    "title": "1,2-Dimethylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CC1C",
+    "name": "1,2-dimethylcyclopropane",
+    "title": "1,2-Dimethylcyclopropane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CC(C1)C",
+    "name": "1,3-dimethylcyclobutane",
+    "title": "1,3-Dimethylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCC(C1)C",
+    "name": "1,3-dimethylcycloheptane",
+    "title": "1,3-Dimethylcycloheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCCC(C1)C",
+    "name": "1,3-dimethylcyclooctane",
+    "title": "1,3-Dimethylcyclooctane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCC(C1)C",
+    "name": "1,3-dimethylcyclopentane",
+    "title": "1,3-Dimethylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)(C)CC(C)(C)C",
+    "name": "2,2,4,4-tetramethylpentane",
+    "title": "2,2,4,4-Tetramethylpentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)CCC(C)(C)C",
+    "name": "2,2,5-trimethylhexane",
+    "title": "2,2,5-Trimethylhexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(C)C(C)C(C)C",
+    "name": "2,3,4-trimethylhexane",
+    "title": "2,3,4-Trimethylhexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(C)(CC)CC",
+    "name": "3-ethyl-3-methylpentane",
+    "title": "3-Ethyl-3-methylpentane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(C)C(C)(C)CC",
+    "name": "3,3,4-trimethylhexane",
+    "title": "3,3,4-Trimethylhexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(CC)C(CC)CC",
+    "name": "3,4-diethylhexane",
+    "title": "Hexane, 3,4-diethyl-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(CC)CC(CC)CC",
+    "name": "3,5-diethylheptane",
+    "title": "3,5-Diethylheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "C1CCCCCCC1",
+    "name": "cyclooctane",
+    "title": "Cyclooctane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "C1CC1",
+    "name": "cyclopropane",
+    "title": "Cyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCC1",
+    "name": "ethylcyclobutane",
+    "title": "Ethylcyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCCCC1",
+    "name": "ethylcycloheptane",
+    "title": "Ethylcycloheptane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCCCCC1",
+    "name": "ethylcyclooctane",
+    "title": "Ethylcyclooctane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CCCC1",
+    "name": "ethylcyclopentane",
+    "title": "Ethylcyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC1CC1",
+    "name": "ethylcyclopropane",
+    "title": "Ethylcyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCC1",
+    "name": "methylcyclobutane",
+    "title": "Cyclobutane, methyl-",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCCC1",
+    "name": "methylcycloheptane",
+    "title": "Methylcycloheptane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCCCCC1",
+    "name": "methylcyclooctane",
+    "title": "Cyclooctane, methyl-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CCCC1",
+    "name": "methylcyclopentane",
+    "title": "Methylcyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC1CC1",
+    "name": "methylcyclopropane",
+    "title": "Methylcyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CCC1",
+    "name": "propan-2-ylcyclobutane",
+    "title": "Isopropylcyclobutane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CCCCCC1",
+    "name": "propan-2-ylcycloheptane",
+    "title": "1,2-Methylethylcycloheptane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CCCCC1",
+    "name": "propan-2-ylcyclohexane",
+    "title": "Isopropylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CCCCCCC1",
+    "name": "propan-2-ylcyclooctane",
+    "title": "Propan-2-ylcyclooctane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CCCC1",
+    "name": "propan-2-ylcyclopentane",
+    "title": "Isopropylcyclopentane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C1CC1",
+    "name": "propan-2-ylcyclopropane",
+    "title": "Cyclopropane, (1-methylethyl)-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CN1CCCCC1",
+    "name": "1-methylpiperidine",
+    "title": "N-Methylpiperidine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCC[N+](=O)[O-]",
+    "name": "1-nitropropane",
+    "title": "1-Nitropropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C#N)O",
+    "name": "2-hydroxypropanenitrile",
+    "title": "Lactonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)C[N+](=O)[O-]",
+    "name": "2-methyl-1-nitropropane",
+    "title": "2-Methyl-1-nitropropane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCC(C)CN",
+    "name": "2-methylbutan-1-amine",
+    "title": "2-Methylbutylamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCC(C)(C)N",
+    "name": "2-methylbutan-2-amine",
+    "title": "2-Butanamine, 2-methyl-",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCC(C)C#N",
+    "name": "2-methylbutanenitrile",
+    "title": "2-Methylbutyronitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC1CCC1N",
+    "name": "2-methylcyclobutan-1-amine",
+    "title": "2-Methylcyclobutan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC1CCCCCC1N",
+    "name": "2-methylcycloheptan-1-amine",
+    "title": "2-Methylcycloheptan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC1CCCCC1N",
+    "name": "2-methylcyclohexan-1-amine",
+    "title": "2-Methylcyclohexylamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC1CCCC1N",
+    "name": "2-methylcyclopentan-1-amine",
+    "title": "2-Methylcyclopentylamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC1CC1N",
+    "name": "2-methylcyclopropan-1-amine",
+    "title": "2-Methylcyclopropan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCCC(C)C#N",
+    "name": "2-methylpentanenitrile",
+    "title": "2-Methylpentanenitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(=C)C#N",
+    "name": "2-methylprop-2-enenitrile",
+    "title": "Methacrylonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CN",
+    "name": "2-methylpropan-1-amine",
+    "title": "Isobutylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)(C)N",
+    "name": "2-methylpropan-2-amine",
+    "title": "Tert-Butylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(CN)CN",
+    "name": "2-methylpropane-1,3-diamine",
+    "title": "2-Methyl-1,3-propanediamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)[N+](=O)[O-]",
+    "name": "2-nitropropane",
+    "title": "2-Nitropropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)(C)CN",
+    "name": "2,2-dimethylpropan-1-amine",
+    "title": "Neopentylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)(C)C#N",
+    "name": "2,2-dimethylpropanenitrile",
+    "title": "Pivalonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)C(C)CN",
+    "name": "2,3-dimethylbutan-1-amine",
+    "title": "2,3-Dimethylbutan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CC(C)C[N+](=O)[O-]",
+    "name": "2,4-dimethyl-1-nitropentane",
+    "title": "",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CCN",
+    "name": "3-methylbutan-1-amine",
+    "title": "Isoamylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)C(C)N",
+    "name": "3-methylbutan-2-amine",
+    "title": "1,2-Dimethylpropylamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CC#N",
+    "name": "3-methylbutanenitrile",
+    "title": "Isovaleronitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CC(C)N",
+    "name": "4-methylpentan-2-amine",
+    "title": "1,3-Dimethylbutylamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CCC#N",
+    "name": "4-methylpentanenitrile",
+    "title": "4-Methylpentanenitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC=CC#N",
+    "name": "but-2-enenitrile",
+    "title": "2-Butenenitrile",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(CCN)N",
+    "name": "butane-1,3-diamine",
+    "title": "1,3-Butanediamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "C(CCN)CN",
+    "name": "butane-1,4-diamine",
+    "title": "Putrescine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C(CC#N)C#N",
+    "name": "butanedinitrile",
+    "title": "Succinonitrile",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC(C1)N",
+    "name": "cyclobutanamine",
+    "title": "Cyclobutylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC(C1)C#N",
+    "name": "cyclobutanecarbonitrile",
+    "title": "Cyanocyclobutane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC(C1)CN",
+    "name": "cyclobutylmethanamine",
+    "title": "Cyclobutylmethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCCC(CC1)N",
+    "name": "cycloheptanamine",
+    "title": "Cycloheptylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCCC(CC1)C#N",
+    "name": "cycloheptanecarbonitrile",
+    "title": "Cycloheptanecarbonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCCC(CC1)CN",
+    "name": "cycloheptylmethanamine",
+    "title": "Cycloheptylmethylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(CC1)N",
+    "name": "cyclohexanamine",
+    "title": "Cyclohexylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(CC1)C#N",
+    "name": "cyclohexanecarbonitrile",
+    "title": "Cyanocyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(CC1)CN",
+    "name": "cyclohexylmethanamine",
+    "title": "Cyclohexanemethylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(C1)N",
+    "name": "cyclopentanamine",
+    "title": "Cyclopentylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(C1)C#N",
+    "name": "cyclopentanecarbonitrile",
+    "title": "Cyclopentanecarbonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCC(C1)CN",
+    "name": "cyclopentylmethanamine",
+    "title": "Cyclopentanemethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC1N",
+    "name": "cyclopropanamine",
+    "title": "Cyclopropylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC1C#N",
+    "name": "cyclopropanecarbonitrile",
+    "title": "Cyclopropanecarbonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CC1CN",
+    "name": "cyclopropylmethanamine",
+    "title": "Cyclopropanemethanamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1COCCN1",
+    "name": "morpholine",
+    "title": "Morpholine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCN(C)CC",
+    "name": "N-ethyl-N-methylethanamine",
+    "title": "Diethylmethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCNC1CCCCC1",
+    "name": "N-ethylcyclohexanamine",
+    "title": "N-Ethyl cyclohexylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCCNCC",
+    "name": "N-ethylpropan-1-amine",
+    "title": "1-Propanamine, N-ethyl-",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCNC(C)C",
+    "name": "N-ethylpropan-2-amine",
+    "title": "Isopropylethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CNC1CCC1",
+    "name": "N-methylcyclobutanamine",
+    "title": "N-Methylcyclobutanamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CNC1CCCCCC1",
+    "name": "N-methylcycloheptanamine",
+    "title": "N-cycloheptyl-N-methylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CNC1CCCCC1",
+    "name": "N-methylcyclohexanamine",
+    "title": "N-Methylcyclohexylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CNC1CCCC1",
+    "name": "N-methylcyclopentanamine",
+    "title": "N-methylcyclopentanamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CNC1CC1",
+    "name": "N-methylcyclopropanamine",
+    "title": "N-Methylcyclopropanamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCCNC",
+    "name": "N-methylpropan-1-amine",
+    "title": "N-Methylpropylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)CNC",
+    "name": "N,2-dimethylpropan-1-amine",
+    "title": "N-Methylisobutylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCN(CC)CC",
+    "name": "N,N-diethylethanamine",
+    "title": "Triethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCN(C)C",
+    "name": "N,N-dimethylethanamine",
+    "title": "Dimethylethylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCCN(C)C",
+    "name": "N,N-dimethylpropan-1-amine",
+    "title": "N,N-Dimethylpropylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)N(C)C",
+    "name": "N,N-dimethylpropan-2-amine",
+    "title": "N,N-Dimethylisopropylamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCC(CC)N",
+    "name": "pentan-3-amine",
+    "title": "3-Pentanamine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCNCC1",
+    "name": "piperidine",
+    "title": "Piperidine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C=CC#N",
+    "name": "prop-2-enenitrile",
+    "title": "Acrylonitrile",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(CN)N",
+    "name": "propane-1,2-diamine",
+    "title": "Propylenediamine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "C(C#N)C#N",
+    "name": "propanedinitrile",
+    "title": "Malononitrile",
+    "difficulty": "easy"
+  },
+  {
+    "category": "amines",
+    "smiles": "C1CCNC1",
+    "name": "pyrrolidine",
+    "title": "Pyrrolidine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)CO)Cl",
+    "name": "(2-chlorophenyl)methanol",
+    "title": "2-Chlorobenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=CC=C1CO",
+    "name": "(2-methylphenyl)methanol",
+    "title": "2-Methylbenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)Cl)CO",
+    "name": "(3-chlorophenyl)methanol",
+    "title": "3-Chlorobenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=CC=C1)CO",
+    "name": "(3-methylphenyl)methanol",
+    "title": "3-Methylbenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1CO)Cl",
+    "name": "(4-chlorophenyl)methanol",
+    "title": "4-Chlorobenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=C(C=C1)CO",
+    "name": "(4-methylphenyl)methanol",
+    "title": "4-Methylbenzyl alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)Cl)Br",
+    "name": "1-bromo-2-chlorobenzene",
+    "title": "1-Bromo-2-chlorobenzene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)Br)Cl",
+    "name": "1-bromo-3-chlorobenzene",
+    "title": "1-Bromo-3-chlorobenzene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1Cl)Br",
+    "name": "1-bromo-4-chlorobenzene",
+    "title": "p-Bromochlorobenzene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=CC=C1F",
+    "name": "1-fluoro-2-methylbenzene",
+    "title": "2-Fluorotoluene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=CC=C1)F",
+    "name": "1-fluoro-3-methylbenzene",
+    "title": "m-Fluorotoluene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=C(C=C1)F",
+    "name": "1-fluoro-4-methylbenzene",
+    "title": "p-Fluorotoluene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=CC=C1[N+](=O)[O-]",
+    "name": "1-methoxy-2-nitrobenzene",
+    "title": "2-Nitroanisole",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=CC(=C1)[N+](=O)[O-]",
+    "name": "1-methoxy-3-nitrobenzene",
+    "title": "3-Nitroanisole",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=C(C=C1)[N+](=O)[O-]",
+    "name": "1-methoxy-4-nitrobenzene",
+    "title": "4-Nitroanisole",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC(=O)C1=CC=CC=C1",
+    "name": "1-phenylethanone",
+    "title": "Acetophenone",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CCC(=O)C1=CC=CC=C1",
+    "name": "1-phenylpropan-1-one",
+    "title": "1-Phenyl-1-propanone",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)C2=CC=CC=C2",
+    "name": "1,1'-biphenyl",
+    "title": "Biphenyl",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=C(C(=CC=C1)C)C",
+    "name": "1,2,3-trimethylbenzene",
+    "title": "1,2,3-Trimethylbenzene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=C(C=C1)C)C",
+    "name": "1,2,4-trimethylbenzene",
+    "title": "1,2,4-Trimethylbenzene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=C(C=C(C=C1Cl)Cl)Cl",
+    "name": "1,3,5-trichlorobenzene",
+    "title": "1,3,5-Trichlorobenzene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)C(=O)O)Cl",
+    "name": "2-chlorobenzoic acid",
+    "title": "2-Chlorobenzoic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)O)Cl",
+    "name": "2-chlorophenol",
+    "title": "2-Chlorophenol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)C=O)O",
+    "name": "2-hydroxybenzaldehyde",
+    "title": "Salicylaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)C(=O)O)O",
+    "name": "2-hydroxybenzoic acid",
+    "title": "Salicylic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=CC=C1C=O",
+    "name": "2-methoxybenzaldehyde",
+    "title": "2-Methoxybenzaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=CC=C1N",
+    "name": "2-methylaniline",
+    "title": "O-Toluidine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=CC=C1C#N",
+    "name": "2-methylbenzonitrile",
+    "title": "2-Methylbenzonitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)N)[N+](=O)[O-]",
+    "name": "2-nitroaniline",
+    "title": "2-Nitroaniline",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)CCN",
+    "name": "2-phenylethanamine",
+    "title": "Phenethylamine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)Cl)C(=O)O",
+    "name": "3-chlorobenzoic acid",
+    "title": "3-Chlorobenzoic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)Cl)O",
+    "name": "3-chlorophenol",
+    "title": "3-Chlorophenol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)O)C=O",
+    "name": "3-hydroxybenzaldehyde",
+    "title": "3-Hydroxybenzaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)O)C(=O)O",
+    "name": "3-hydroxybenzoic acid",
+    "title": "3-Hydroxybenzoic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=CC(=C1)C=O",
+    "name": "3-methoxybenzaldehyde",
+    "title": "3-Methoxybenzaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=CC=C1)N",
+    "name": "3-methylaniline",
+    "title": "m-Toluidine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=CC=C1)C#N",
+    "name": "3-methylbenzonitrile",
+    "title": "3-Tolunitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)[N+](=O)[O-])N",
+    "name": "3-nitroaniline",
+    "title": "3-Nitroaniline",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=C(C=CC(=C1)Cl)O",
+    "name": "4-chloro-2-methylphenol",
+    "title": "4-Chloro-2-methylphenol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1O)Cl",
+    "name": "4-chlorophenol",
+    "title": "4-Chlorophenol",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=C(C=CC(=C1)C=O)O",
+    "name": "4-hydroxy-3-methoxybenzaldehyde",
+    "title": "Vanillin",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1C=O)O",
+    "name": "4-hydroxybenzaldehyde",
+    "title": "4-Hydroxybenzaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1C(=O)O)O",
+    "name": "4-hydroxybenzoic acid",
+    "title": "4-Hydroxybenzoic Acid",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=C(C=C1)C=O",
+    "name": "4-methoxybenzaldehyde",
+    "title": "4-Methoxybenzaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=C(C=C1)N",
+    "name": "4-methylaniline",
+    "title": "p-Toluidine",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC=C(C=C1)C#N",
+    "name": "4-methylbenzonitrile",
+    "title": "p-Tolunitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1N)[N+](=O)[O-]",
+    "name": "4-nitroaniline",
+    "title": "4-Nitroaniline",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC1=CC=CC=C1",
+    "name": "anisole",
+    "title": "Anisole",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)C(=O)N",
+    "name": "benzamide",
+    "title": "Benzamide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C(=C1)O)O",
+    "name": "benzene-1,2-diol",
+    "title": "Catechol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=C(C=C1O)O)O",
+    "name": "benzene-1,2,4-triol",
+    "title": "1,2,4-Benzenetriol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC(=C1)O)O",
+    "name": "benzene-1,3-diol",
+    "title": "Resorcinol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=CC=C1O)O",
+    "name": "benzene-1,4-diol",
+    "title": "Hydroquinone",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)C#N",
+    "name": "benzonitrile",
+    "title": "Benzonitrile",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)C(=O)Cl",
+    "name": "benzoyl chloride",
+    "title": "Benzoyl chloride",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC(C)C1=CC=CC=C1",
+    "name": "cumene",
+    "title": "Cumene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CCOC1=CC=CC=C1",
+    "name": "ethoxybenzene",
+    "title": "Phenetole",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CCOC(=O)C1=CC=CC=C1",
+    "name": "ethyl benzoate",
+    "title": "Ethyl benzoate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=COC=C1",
+    "name": "furan",
+    "title": "Furan",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "COC(=O)C1=CC=CC=C1",
+    "name": "methyl benzoate",
+    "title": "Methyl Benzoate",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC(=O)NC1=CC=CC=C1",
+    "name": "N-phenylacetamide",
+    "title": "Acetanilide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC(=O)OC1=CC=CC=C1",
+    "name": "phenyl acetate",
+    "title": "Phenyl acetate",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=C(C=C1)CO",
+    "name": "phenylmethanol",
+    "title": "Benzyl Alcohol",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC=NC=C1",
+    "name": "pyridine",
+    "title": "Pyridine",
+    "difficulty": "easy"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC(C)(C)C1=CC=CC=C1",
+    "name": "tert-butylbenzene",
+    "title": "Tert-Butylbenzene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CSC=C1",
+    "name": "thiophene",
+    "title": "Thiophene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)CO",
+    "name": "1-hydroxypropan-2-one",
+    "title": "Hydroxyacetone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)COC",
+    "name": "1-methoxypropan-2-one",
+    "title": "Methoxyacetone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C=O)Cl",
+    "name": "2-chloropropanal",
+    "title": "2-Chloropropanal",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(CC)C=O",
+    "name": "2-ethylbutanal",
+    "title": "2-Ethylbutyraldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C=O)O",
+    "name": "2-hydroxypropanal",
+    "title": "Lactaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(C)C=O",
+    "name": "2-methylbutanal",
+    "title": "2-Methylbutanal",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCC1=O",
+    "name": "2-methylcyclobutan-1-one",
+    "title": "2-Methylcyclobutan-1-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCCC1=O",
+    "name": "2-methylcycloheptan-1-one",
+    "title": "2-Methylcycloheptanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCCCC1=O",
+    "name": "2-methylcyclooctan-1-one",
+    "title": "2-Methyl-cyclooctanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCC1=O",
+    "name": "2-methylcyclopentan-1-one",
+    "title": "2-Methylcyclopentanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CC1=O",
+    "name": "2-methylcyclopropan-1-one",
+    "title": "Methylcyclopropanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(=O)C(C)C",
+    "name": "2-methylpentan-3-one",
+    "title": "2-Methyl-3-pentanone",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCCC(C)C=O",
+    "name": "2-methylpentanal",
+    "title": "2-Methylpentaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C=O)C=O",
+    "name": "2-methylpropanedial",
+    "title": "Methylmalondialdehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(C)(C)C=O",
+    "name": "2,2-dimethylbutanal",
+    "title": "Butanal, 2,2-dimethyl-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C)(C)C=O",
+    "name": "2,2-dimethylpropanal",
+    "title": "Pivalaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C)C(C)C=O",
+    "name": "2,3-dimethylbutanal",
+    "title": "2,3-Dimethylbutanal",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CC(=O)C1C",
+    "name": "2,3-dimethylcyclobutan-1-one",
+    "title": "2,3-Dimethylcyclobutan-1-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCC(=O)C1C",
+    "name": "2,3-dimethylcycloheptan-1-one",
+    "title": "2,3-Dimethylcycloheptan-1-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCC(=O)C1C",
+    "name": "2,3-dimethylcyclohexan-1-one",
+    "title": "2,3-Dimethylcyclohexanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCCC(=O)C1C",
+    "name": "2,3-dimethylcyclooctan-1-one",
+    "title": "2,3-Dimethylcyclooctan-1-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCC(=O)C1C",
+    "name": "2,3-dimethylcyclopentan-1-one",
+    "title": "Cyclopentanone, 2,3-dimethyl-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(C)CC(C)C=O",
+    "name": "2,4-dimethylhexanal",
+    "title": "2,4-Dimethylhexanal",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C(=O)C)O",
+    "name": "3-hydroxybutan-2-one",
+    "title": "Acetoin",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CC(=O)C1",
+    "name": "3-methylcyclobutan-1-one",
+    "title": "3-Methylcyclobutan-1-one",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCC(=O)C1",
+    "name": "3-methylcycloheptan-1-one",
+    "title": "3-Methylcycloheptanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCCCCC(=O)C1",
+    "name": "3-methylcyclooctan-1-one",
+    "title": "3-Methylcyclooctan-1-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC1CCC(=O)C1",
+    "name": "3-methylcyclopentan-1-one",
+    "title": "3-Methylcyclopentanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(C)C(=O)C",
+    "name": "3-methylpentan-2-one",
+    "title": "3-Methylpentan-2-One",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)C(C)(C)C",
+    "name": "3,3-dimethylbutan-2-one",
+    "title": "Pinacolone",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C)(C)CC=O",
+    "name": "3,3-dimethylbutanal",
+    "title": "3,3-Dimethylbutanal",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C)C(C)C(=O)C",
+    "name": "3,4-dimethylpentan-2-one",
+    "title": "3,4-Dimethyl-2-pentanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(C)CC(C)CC=O",
+    "name": "3,5-dimethylhexanal",
+    "title": "3,5-Dimethylhexanal",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)CCCl",
+    "name": "4-chlorobutan-2-one",
+    "title": "4-Chloro-2-butanone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CCC(C)C(=O)CC",
+    "name": "4-methylhexan-3-one",
+    "title": "4-Methylhexan-3-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=CC(=O)C)C",
+    "name": "4-methylpent-3-en-2-one",
+    "title": "Mesityl oxide",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)CC(C)(C)C",
+    "name": "4,4-dimethylpentan-2-one",
+    "title": "4,4-Dimethyl-2-pentanone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC=O",
+    "name": "acetaldehyde",
+    "title": "Acetaldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC=CC=O",
+    "name": "but-2-enal",
+    "title": "But-2-enal",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)C=C",
+    "name": "but-3-en-2-one",
+    "title": "Methyl vinyl ketone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)C(=O)C",
+    "name": "butane-2,3-dione",
+    "title": "Butanedione",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C(CC=O)C=O",
+    "name": "butanedial",
+    "title": "Butanedial",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CC(C1)C=O",
+    "name": "cyclobutanecarbaldehyde",
+    "title": "Cyclobutanecarbaldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CC(=O)C1",
+    "name": "cyclobutanone",
+    "title": "Cyclobutanone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCCC(CC1)C=O",
+    "name": "cycloheptanecarbaldehyde",
+    "title": "Formylcycloheptane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCCC(=O)CC1",
+    "name": "cycloheptanone",
+    "title": "Cycloheptanone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCC(CC1)C=O",
+    "name": "cyclohexanecarbaldehyde",
+    "title": "Cyclohexanecarboxaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCCC(CCC1)C=O",
+    "name": "cyclooctanecarbaldehyde",
+    "title": "Cyclooctanecarbaldehyde",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCCC(=O)CCC1",
+    "name": "cyclooctanone",
+    "title": "Cyclooctanone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CCC(C1)C=O",
+    "name": "cyclopentanecarbaldehyde",
+    "title": "Cyclopentanecarbaldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CC1C=O",
+    "name": "cyclopropanecarbaldehyde",
+    "title": "Cyclopropanecarboxaldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C1CC1=O",
+    "name": "cyclopropanone",
+    "title": "Cyclopropanone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C=O",
+    "name": "formaldehyde",
+    "title": "Formaldehyde",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)CCC(=O)C",
+    "name": "hexane-2,5-dione",
+    "title": "2,5-Hexanedione",
+    "difficulty": "medium"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC=CC(=O)C",
+    "name": "pent-3-en-2-one",
+    "title": "Pentenone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "C=CC=O",
+    "name": "prop-2-enal",
+    "title": "Acrolein",
+    "difficulty": "easy"
+  },
+  {
+    "category": "carbonyls",
+    "smiles": "CC(=O)C",
+    "name": "propan-2-one",
+    "title": "Acetone",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCC1)Br",
+    "name": "1-bromo-1-methylcyclobutane",
+    "title": "1-Bromo-1-methylcyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCCC1)Br",
+    "name": "1-bromo-1-methylcyclohexane",
+    "title": "1-Bromo-1-methylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCC1)Br",
+    "name": "1-bromo-1-methylcyclopentane",
+    "title": "1-Bromo-1-methylcyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CC1)Br",
+    "name": "1-bromo-1-methylcyclopropane",
+    "title": "1-Bromo-1-methylcyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCC1Br",
+    "name": "1-bromo-2-methylcyclobutane",
+    "title": "1-Bromo-2-methylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCCC1Br",
+    "name": "1-bromo-2-methylcyclohexane",
+    "title": "Cyclohexane, 1-bromo-2-methyl-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCC1Br",
+    "name": "1-bromo-2-methylcyclopentane",
+    "title": "1-Bromo-2-methylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CC1Br",
+    "name": "1-bromo-2-methylcyclopropane",
+    "title": "1-Bromo-2-methylcyclopropane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C)(C)CBr",
+    "name": "1-bromo-2,2-dimethylpropane",
+    "title": "1-Bromo-2,2-dimethylpropane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCC1)Cl",
+    "name": "1-chloro-1-methylcyclobutane",
+    "title": "1-Chloro-1-methylcyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCCC1)Cl",
+    "name": "1-chloro-1-methylcyclohexane",
+    "title": "1-Chloro-1-methylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCC1)Cl",
+    "name": "1-chloro-1-methylcyclopentane",
+    "title": "1-Chloro-1-methylcyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CC1)Cl",
+    "name": "1-chloro-1-methylcyclopropane",
+    "title": "1-Chloro-1-methylcyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCC1Cl",
+    "name": "1-chloro-2-methylcyclobutane",
+    "title": "1-Chloro-2-methylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCCC1Cl",
+    "name": "1-chloro-2-methylcyclohexane",
+    "title": "1-Chloro-2-methylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCC1Cl",
+    "name": "1-chloro-2-methylcyclopentane",
+    "title": "1-Chloro-2-methylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CC1Cl",
+    "name": "1-chloro-2-methylcyclopropane",
+    "title": "1-Chloro-2-methylcyclopropane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C)(C)CCl",
+    "name": "1-chloro-2,2-dimethylpropane",
+    "title": "1-Chloro-2,2-dimethylpropane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCC1)F",
+    "name": "1-fluoro-1-methylcyclobutane",
+    "title": "1-Fluoro-1-methylcyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCCC1)F",
+    "name": "1-fluoro-1-methylcyclohexane",
+    "title": "1-Fluoro-1-methylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CCCC1)F",
+    "name": "1-fluoro-1-methylcyclopentane",
+    "title": "1-Fluoro-1-methylcyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1(CC1)F",
+    "name": "1-fluoro-1-methylcyclopropane",
+    "title": "1-Fluoro-1-methylcyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCC1F",
+    "name": "1-fluoro-2-methylcyclobutane",
+    "title": "1-Fluoro-2-methylcyclobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCCC1F",
+    "name": "1-fluoro-2-methylcyclohexane",
+    "title": "1-Fluoro-2-methylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CCCC1F",
+    "name": "1-fluoro-2-methylcyclopentane",
+    "title": "1-Fluoro-2-methylcyclopentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC1CC1F",
+    "name": "1-fluoro-2-methylcyclopropane",
+    "title": "1-Fluoro-2-methylcyclopropane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C)CF",
+    "name": "1-fluoro-2-methylpropane",
+    "title": "1-Fluoro-2-methylpropane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CCC(Cl)Cl",
+    "name": "1,1-dichloropropane",
+    "title": "1,1-Dichloropropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(C(Cl)Cl)Cl",
+    "name": "1,1,2-trichloroethane",
+    "title": "1,1,2-Trichloroethane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(CBr)Br",
+    "name": "1,2-dibromoethane",
+    "title": "1,2-Dibromoethane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(CF)F",
+    "name": "1,2-difluoroethane",
+    "title": "1,2-Difluoroethane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C(C)Cl)F",
+    "name": "2-chloro-3-fluorobutane",
+    "title": "2-Chloro-3-fluorobutane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C(C)Br)Br",
+    "name": "2,3-dibromobutane",
+    "title": "2,3-Dibromobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C(C)Cl)Cl",
+    "name": "2,3-dichlorobutane",
+    "title": "2,3-Dichlorobutane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(CCCl)Br",
+    "name": "3-bromo-1-chlorobutane",
+    "title": "2-Bromo-4-chlorobutane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(Cl)Br",
+    "name": "bromo(chloro)methane",
+    "title": "Bromochloromethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC(C1)Br",
+    "name": "bromocyclobutane",
+    "title": "Bromocyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(CC1)Br",
+    "name": "bromocyclohexane",
+    "title": "Cyclohexyl bromide",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(C1)Br",
+    "name": "bromocyclopentane",
+    "title": "Bromocyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC1Br",
+    "name": "bromocyclopropane",
+    "title": "Bromocyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC(C1)Cl",
+    "name": "chlorocyclobutane",
+    "title": "Chlorocyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(CC1)Cl",
+    "name": "chlorocyclohexane",
+    "title": "Chlorocyclohexane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(C1)Cl",
+    "name": "chlorocyclopentane",
+    "title": "Chlorocyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC1Cl",
+    "name": "chlorocyclopropane",
+    "title": "Chlorocyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(Br)Br",
+    "name": "dibromomethane",
+    "title": "Dibromomethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(Cl)Cl",
+    "name": "dichloromethane",
+    "title": "Dichloromethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(F)F",
+    "name": "difluoromethane",
+    "title": "Difluoromethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC(C1)F",
+    "name": "fluorocyclobutane",
+    "title": "Fluorocyclobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(CC1)F",
+    "name": "fluorocyclohexane",
+    "title": "Fluorocyclohexane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CCC(C1)F",
+    "name": "fluorocyclopentane",
+    "title": "Fluorocyclopentane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C1CC1F",
+    "name": "fluorocyclopropane",
+    "title": "Fluorocyclopropane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "halides",
+    "smiles": "C(F)(F)F",
+    "name": "fluoroform",
+    "title": "Trifluoromethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C/C=C/C=C\\C",
+    "name": "(2Z,4E)-hexa-2,4-diene",
+    "title": "2,4-Hexadiene, (2E,4Z)-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C/C=C\\C=C/C",
+    "name": "(2Z,4Z)-hexa-2,4-diene",
+    "title": "(2Z,4Z)-2,4-Hexadiene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)/C=C/C(C)C",
+    "name": "(E)-2,5-dimethylhex-3-ene",
+    "title": "(3E)-2,5-Dimethyl-3-hexene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(C)/C=C/C",
+    "name": "(E)-4-methylhex-2-ene",
+    "title": "4-Methyl-2-hexene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C/C=C/C(C)C",
+    "name": "(E)-4-methylpent-2-ene",
+    "title": "4-Methyl-2-pentene, (2E)-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCCC/C=C/C",
+    "name": "(E)-hept-2-ene",
+    "title": "2-Heptene, (2E)-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC/C=C/CC",
+    "name": "(E)-hept-3-ene",
+    "title": "trans-3-Heptene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC/C=C/C",
+    "name": "(E)-hex-2-ene",
+    "title": "Hexene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC/C=C/CC",
+    "name": "(E)-hex-3-ene",
+    "title": "trans-3-Hexene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)/C=C\\C(C)C",
+    "name": "(Z)-2,5-dimethylhex-3-ene",
+    "title": "(Z)-2,5-Dimethyl-3-hexene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(C)/C=C\\C",
+    "name": "(Z)-4-methylhex-2-ene",
+    "title": "4-Methyl-2-hexene, (Z)-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C/C=C\\C(C)C",
+    "name": "(Z)-4-methylpent-2-ene",
+    "title": "4-Methyl-2-pentene, (2Z)-",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCCC/C=C\\C",
+    "name": "(Z)-hept-2-ene",
+    "title": "2-Heptene, (2Z)-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC/C=C\\CC",
+    "name": "(Z)-hept-3-ene",
+    "title": "3-Heptene, (3Z)-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC/C=C\\C",
+    "name": "(Z)-hex-2-ene",
+    "title": "2-Hexene, (2Z)-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC1=CCCC1",
+    "name": "1-methylcyclopentene",
+    "title": "1-Methylcyclopentene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC1CCC(=C1)C",
+    "name": "1,3-dimethylcyclopentene",
+    "title": "1,3-Dimethylcyclopentene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC1CC=C(C1)C",
+    "name": "1,4-dimethylcyclopentene",
+    "title": "1,4-Dimethylcyclopentene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(=C)C",
+    "name": "2-methylbut-1-ene",
+    "title": "2-Methyl-1-butene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(=C)C=C",
+    "name": "2-methylbuta-1,3-diene",
+    "title": "Isoprene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCCC(=C)C",
+    "name": "2-methylpent-1-ene",
+    "title": "2-Methyl-1-pentene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)C(=C)C",
+    "name": "2,3-dimethylbut-1-ene",
+    "title": "2,3-Dimethyl-1-butene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(=C)C(=C)C",
+    "name": "2,3-dimethylbuta-1,3-diene",
+    "title": "2,3-Dimethyl-1,3-butadiene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(=CC(C)C)C",
+    "name": "2,4-dimethylhex-3-ene",
+    "title": "4-Ethyl-2-methylpent-3-ene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)C=C",
+    "name": "3-methylbut-1-ene",
+    "title": "3-Methyl-1-butene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)C#C",
+    "name": "3-methylbut-1-yne",
+    "title": "3-Methylbut-1-yne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCCC(=CC)C",
+    "name": "3-methylhex-2-ene",
+    "title": "3-Methyl-2-hexene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(C)C=C",
+    "name": "3-methylpent-1-ene",
+    "title": "3-Methyl-1-pentene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(C)C#C",
+    "name": "3-methylpent-1-yne",
+    "title": "3-Methyl-1-pentyne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(=CC)C",
+    "name": "3-methylpent-2-ene",
+    "title": "3-Methyl-2-pentene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)(C)C#C",
+    "name": "3,3-dimethylbut-1-yne",
+    "title": "3,3-Dimethyl-1-butyne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CCC(=C(C)CC)C",
+    "name": "3,4-dimethylhex-3-ene",
+    "title": "3,4-Dimethylhex-3-ene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)CC=C",
+    "name": "4-methylpent-1-ene",
+    "title": "4-Methyl-1-pentene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC(C)CC#C",
+    "name": "4-methylpent-1-yne",
+    "title": "4-Methyl-1-pentyne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC#CC(C)C",
+    "name": "4-methylpent-2-yne",
+    "title": "4-Methyl-2-pentyne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC#CCC(C)C",
+    "name": "5-methylhex-2-yne",
+    "title": "2-Hexyne, 5-methyl-",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C#C",
+    "name": "acetylene",
+    "title": "Acetylene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=CC#C",
+    "name": "but-1-en-3-yne",
+    "title": "Vinyl acetylene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C#CC#C",
+    "name": "buta-1,3-diyne",
+    "title": "1,3-Butadiyne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1CC=C1",
+    "name": "cyclobutene",
+    "title": "Cyclobutene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1CCC=CCC1",
+    "name": "cycloheptene",
+    "title": "Cycloheptene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1CC=CC=C1",
+    "name": "cyclohexa-1,3-diene",
+    "title": "1,3-Cyclohexadiene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1C=CCC=C1",
+    "name": "cyclohexa-1,4-diene",
+    "title": "1,4-Cyclohexadiene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1CCCC=CCC1",
+    "name": "cyclooctene",
+    "title": "1-Cyclooctene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1CC=CC1",
+    "name": "cyclopentene",
+    "title": "Cyclopentene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C1C=C1",
+    "name": "cyclopropene",
+    "title": "Cyclopropene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=C",
+    "name": "ethene",
+    "title": "Ethylene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=CC1CCCCC1",
+    "name": "ethenylcyclohexane",
+    "title": "Vinylcyclohexane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=CC=CC=C",
+    "name": "hexa-1,3,5-triene",
+    "title": "1,3,5-Hexatriene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=CCCC=C",
+    "name": "hexa-1,5-diene",
+    "title": "1,5-Hexadiene",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=C1CCCCC1",
+    "name": "methylidenecyclohexane",
+    "title": "Methylenecyclohexane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "C=CCC#C",
+    "name": "pent-1-en-4-yne",
+    "title": "1-Penten-4-yne",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC#CC#C",
+    "name": "penta-1,3-diyne",
+    "title": "1,3-Pentadiyne",
+    "difficulty": "medium"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC=C",
+    "name": "prop-1-ene",
+    "title": "Propylene",
+    "difficulty": "easy"
+  },
+  {
+    "category": "unsaturated",
+    "smiles": "CC#C",
+    "name": "prop-1-yne",
+    "title": "Propyne",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)C",
+    "name": "2-methylpropane",
+    "title": "Isobutane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC(C)(C)C",
+    "name": "2,2-dimethylpropane",
+    "title": "Neopentane",
+    "difficulty": "medium"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CC",
+    "name": "ethane",
+    "title": "Ethane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "C",
+    "name": "methane",
+    "title": "Methane",
+    "difficulty": "easy"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC",
+    "name": "propane",
+    "title": "Propane",
+    "difficulty": "easy"
   }
 ];

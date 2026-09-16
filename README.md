@@ -127,7 +127,7 @@ identifiers.
 
 ## Naming practice
 
-`/practice` drills 283 structures in both directions, filtered by topic
+`/practice` drills organic structures in both directions, filtered by topic
 (alkanes, alkenes, haloalkanes, alcohols, carbonyls, acids, amines, aromatics)
 and by level. **Name the structure** shows a drawing and takes a typed name.
 **Find the structure** shows a name and offers four drawings, three of them
@@ -170,6 +170,22 @@ and OPSIN then reads it back; a pair is kept only if OPSIN's structure for the
 name is the structure it was paired with. Difficulty is computed from what makes
 naming hard (branches, how many locants have to be placed, whether there is
 stereochemistry) rather than assigned by hand.
+
+Additional candidates live in `scripts/quiz-expansion-candidates.mjs`. To verify
+and append them without renumbering existing questions, run:
+
+```bash
+node --experimental-strip-types --import ./scripts/loader.mjs scripts/build-quiz-bank.mjs --expand
+```
+
+The builder checks PubChem's structure against OPSIN, including stereochemistry,
+removes duplicate names and structures, and verifies that the app can draw each
+accepted compound. Successful lookups are cached under `node_modules/.cache/chem`.
+
+Complex practice includes neutral complexes, complex ions, chelates, and salts,
+with positive, zero and negative metal oxidation states. Independent formula and
+charge checks for the added questions are documented in
+[`scripts/complex-practice-references.md`](scripts/complex-practice-references.md).
 
 ## How it fits together
 

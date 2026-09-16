@@ -1,6 +1,6 @@
 /**
  * Checks the offline IUPAC parser against hand-written reference structures,
- * and then against the whole question bank — 283 names whose structures OPSIN
+ * and then against the whole question bank — names whose structures OPSIN
  * confirmed when the bank was built, which is a second opinion this parser
  * never sees at runtime: OPSIN gets the final say when it can be reached, so a
  * name the local parser reads differently only shows up when it cannot.

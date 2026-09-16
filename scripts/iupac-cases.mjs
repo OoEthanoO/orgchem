@@ -30,6 +30,15 @@ export const CASES = [
   ["ethane-1,2-diol", "OCCO"],
   ["propane-1,2,3-triol", "OCC(O)CO"],
   ["propan-2-one", "CC(C)=O"],
+  ["propanone", "CC(C)=O"],
+  ["butanone", "CCC(C)=O"],
+  ["cyclohexanone", "O=C1CCCCC1"],
+  // A short ketone parent gets its second carbon neighbour from the prefix.
+  // C2 carbonyl placement in the first name would give phenylacetaldehyde.
+  ["1-phenylethanone", "CC(=O)c1ccccc1"],
+  ["1-phenylethan-1-one", "CC(=O)c1ccccc1"],
+  ["1-phenylpropan-1-one", "CCC(=O)c1ccccc1"],
+  ["diphenylmethanone", "O=C(c1ccccc1)c1ccccc1"],
   ["butanal", "CCCC=O"],
   ["ethanoic acid", "CC(=O)O"],
   ["butanoic acid", "CCCC(=O)O"],
@@ -167,4 +176,9 @@ export const REJECT = [
   "methylene chloride",
   "tetramethylamine",
   "amine",
+  // A terminal carbonyl without two carbon neighbours is not a ketone.
+  "ethanone",
+  "ethan-1-one",
+  "1-phenylethan-2-one",
+  "1-chloroethanone",
 ];

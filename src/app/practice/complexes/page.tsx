@@ -45,8 +45,8 @@ export default function ComplexPracticePage() {
       </nav>
 
       <p className="text-sm text-text-dim">
-        {total} complex ions and salts. Name a formula, or find the complex a name describes.
-        Practise ligand prefixes, oxidation states, chelates and counterions. Both modern names
+        {total} complexes and salts. Name a formula, or find the complex a name describes.
+        Practise ligand prefixes, positive, zero and negative oxidation states, chelates and counterions. Both modern names
         such as chlorido and traditional names such as chloro are accepted.
       </p>
 

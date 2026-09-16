@@ -12,16 +12,29 @@
  * Run with:
  *   node --experimental-strip-types --import ./scripts/loader.mjs \
  *     scripts/build-quiz-bank.mjs
+ *
+ * Append the expansion while preserving existing question IDs:
+ *   node --experimental-strip-types --import ./scripts/loader.mjs \
+ *     scripts/build-quiz-bank.mjs --expand
+ * Successful responses are cached under ignored node_modules/.cache/chem.
  */
-import { writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 import * as OCL from "openchemlib";
 
 import { difficultyOf } from "./quiz-difficulty.mjs";
+import { expansionCandidates } from "./quiz-expansion-candidates.mjs";
+import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
+import { DEFAULT_DISPLAY, depict } from "../src/lib/depict.ts";
 
 const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound";
 const OPSIN = "https://www.ebi.ac.uk/opsin/ws";
-const PAUSE_MS = 210;
+const APPEND = process.argv.includes("--expand");
+const CACHE_DIR = "node_modules/.cache/chem";
+const CACHE_FILE = `${CACHE_DIR}/quiz-bank-verification.json`;
+mkdirSync(CACHE_DIR, { recursive: true });
+let responseCache = {};
+try { responseCache = JSON.parse(readFileSync(CACHE_FILE, "utf8")); } catch { /* First run. */ }
 
 const chain = (n) => "C".repeat(n);
 
@@ -215,6 +228,13 @@ function candidates() {
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+let nextRequestAt = 0;
+async function paceRequest() {
+  const now = Date.now();
+  const wait = Math.max(0, nextRequestAt - now);
+  nextRequestAt = Math.max(now, nextRequestAt) + 275;
+  if (wait) await sleep(wait);
+}
 
 /**
  * Fetch with a deadline and a couple of retries.
@@ -226,8 +246,9 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function fetchJson(url, options = {}, attempts = 3) {
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
+      await paceRequest();
       const response = await fetch(url, { ...options, signal: AbortSignal.timeout(20000) });
-      if (response.status >= 500 && attempt < attempts) {
+      if ((response.status >= 500 || response.status === 429) && attempt < attempts) {
         await sleep(1000 * attempt);
         continue;
       }
@@ -245,13 +266,15 @@ async function fetchJson(url, options = {}, attempts = 3) {
 }
 
 async function iupacNameFor(smiles) {
-  const data = await fetchJson(`${PUBCHEM}/smiles/property/IUPACName,Title/JSON`, {
+  const data = await fetchJson(`${PUBCHEM}/smiles/property/IUPACName,Title,SMILES/JSON`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ smiles }),
   });
   const row = data?.PropertyTable?.Properties?.[0];
-  return row?.IUPACName ? { name: row.IUPACName, title: row.Title } : null;
+  return row?.IUPACName && row.SMILES
+    ? { name: row.IUPACName, title: row.Title, smiles: row.SMILES, cid: row.CID }
+    : null;
 }
 
 async function opsinStructure(name) {
@@ -267,73 +290,85 @@ function flatKey(smiles) {
   return molecule.getIDCode();
 }
 
-const pool = candidates();
-console.log(`${pool.length} candidate structures\n`);
-
-const accepted = [];
+const existing = APPEND ? QUIZ_BANK : [];
+const seen = new Set(existing.map((entry) => idCode(entry.smiles)));
+const seenNames = new Set(existing.map((entry) => entry.name));
 const rejected = [];
-const seen = new Set();
-
-for (const [index, candidate] of pool.entries()) {
+const pool = [];
+for (const candidate of APPEND ? expansionCandidates() : [...candidates(), ...expansionCandidates()]) {
   try {
-    await considerCandidate(index, candidate);
-  } catch (error) {
-    rejected.push(`${candidate.smiles}: ${error.message}`);
+    const key = idCode(candidate.smiles);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (candidate.smiles.includes(".")) throw new Error("disconnected structure");
+    pool.push(candidate);
+  } catch (error) { rejected.push(`${candidate.smiles}: ${error.message}`); }
+}
+console.log(`${pool.length} unique candidate structures; preserving ${existing.length} existing questions\n`);
+
+const results = Array(pool.length);
+let nextIndex = 0;
+let completed = 0;
+let verified = 0;
+async function worker() {
+  while (nextIndex < pool.length) {
+    const index = nextIndex++;
+    const candidate = pool[index];
+    try { results[index] = await considerCandidate(candidate); }
+    catch (error) { rejected.push(`${candidate.smiles}: ${error.message}`); }
+    if (results[index]) verified++;
+    completed++;
+    if (completed % 20 === 0 || completed === pool.length) console.log(`  ${completed}/${pool.length} checked, ${verified} verified, ${rejected.length} rejected`);
   }
 }
+await Promise.all(Array.from({ length: 4 }, worker));
 
-async function considerCandidate(index, candidate) {
-  let key;
-  try {
-    key = idCode(candidate.smiles);
-  } catch {
-    rejected.push(`${candidate.smiles}: unparsable`);
-    return;
+async function considerCandidate(candidate) {
+  let record = responseCache[candidate.smiles];
+  if (!record?.named?.smiles || !record?.back) {
+    const named = await iupacNameFor(candidate.smiles);
+    if (!named) throw new Error("PubChem has no IUPAC name and structure");
+    const back = await opsinStructure(named.name);
+    if (!back) throw new Error(`OPSIN cannot read "${named.name}"`);
+    record = { named, back, verifiedAt: new Date().toISOString() };
+    responseCache[candidate.smiles] = record;
+    writeFileSync(CACHE_FILE, JSON.stringify(responseCache, null, 2));
   }
-  if (seen.has(key)) return;
-  seen.add(key);
-
-  const named = await iupacNameFor(candidate.smiles);
-  await sleep(PAUSE_MS);
-  if (!named) {
-    rejected.push(`${candidate.smiles}: PubChem has no IUPAC name`);
-    return;
-  }
-
-  const back = await opsinStructure(named.name);
-  await sleep(PAUSE_MS);
-  if (!back) {
-    rejected.push(`${candidate.smiles}: OPSIN cannot read "${named.name}"`);
-    return;
-  }
-
-  // The round trip has to land on the same structure. Stereochemistry is
-  // compared too, but a name that merely omits it is still a fair question
-  // when the structure has none to omit.
-  let matches;
-  try {
-    matches = idCode(back) === key || (flatKey(back) === flatKey(candidate.smiles) && !/[@/\\]/.test(candidate.smiles));
-  } catch {
-    matches = false;
-  }
-  if (!matches) {
-    rejected.push(`${candidate.smiles}: "${named.name}" round-trips to something else`);
-    return;
-  }
-
-  accepted.push({
+  const { named, back } = record;
+  // PubChem may normalize SMILES spelling, but it must preserve the candidate's
+  // constitution and any deliberately specified stereochemistry. The stored
+  // PubChem structure and OPSIN name round trip must agree in full, including
+  // every stereocentre and double bond; never accept only a flat match here.
+  if (flatKey(named.smiles) !== flatKey(candidate.smiles)
+      || (/[@/\\]/.test(candidate.smiles) && idCode(named.smiles) !== idCode(candidate.smiles))
+      || idCode(back) !== idCode(named.smiles)) throw new Error(`"${named.name}" does not round-trip exactly`);
+  if (named.smiles.includes(".") || back.includes(".")) throw new Error("disconnected PubChem or OPSIN structure");
+  const molecule = OCL.Molecule.fromSmiles(named.smiles);
+  let netCharge = 0;
+  for (let atom = 0; atom < molecule.getAllAtoms(); atom++) netCharge += molecule.getAtomCharge(atom);
+  if (netCharge !== 0) throw new Error("ionic compound");
+  // The actual application must be able to draw what the services agreed on.
+  depict(named.smiles, DEFAULT_DISPLAY);
+  return {
     category: candidate.category,
-    smiles: candidate.smiles,
-    // PubChem's name is already lower case apart from its stereodescriptors,
-    // and those carry meaning: "(E)" is not "(e)".
+    smiles: named.smiles,
     name: named.name,
     title: named.title ?? "",
-    difficulty: difficultyOf(candidate.smiles, named.name),
-  });
+    difficulty: difficultyOf(named.smiles, named.name),
+  };
+}
 
-  if ((index + 1) % 25 === 0) {
-    console.log(`  ${index + 1}/${pool.length} checked, ${accepted.length} accepted`);
-  }
+// PubChem can resolve two candidate spellings to one standardized identity.
+// Deduplicate again after normalization and append in a deterministic order.
+const accepted = [...existing];
+const acceptedKeys = new Set(existing.map((entry) => idCode(entry.smiles)));
+const additions = results.filter(Boolean).sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+for (const entry of additions) {
+  const key = idCode(entry.smiles);
+  if (acceptedKeys.has(key) || seenNames.has(entry.name)) continue;
+  acceptedKeys.add(key);
+  seenNames.add(entry.name);
+  accepted.push(entry);
 }
 
 const byCategory = {};
@@ -343,13 +378,13 @@ for (const question of accepted) {
   byDifficulty[question.difficulty]++;
 }
 
-console.log(`\naccepted ${accepted.length} of ${pool.length}`);
+console.log(`\nadded ${accepted.length - existing.length}; total ${accepted.length} questions`);
 console.log("by category:", byCategory);
 console.log("by difficulty:", byDifficulty);
 console.log(`\nrejected ${rejected.length}:`);
 for (const reason of rejected.slice(0, 40)) console.log(`  ${reason}`);
 
-accepted.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+if (!APPEND) accepted.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
 const file = `/**
  * Naming-practice questions.

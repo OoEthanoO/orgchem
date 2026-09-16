@@ -130,6 +130,8 @@ type Suffix = {
   branches: Array<{ smiles: string; order: number }>;
   /** Where the locant defaults when the name omits it. */
   defaultLocant?: number;
+  /** A ketone carbonyl must have two carbon neighbours. */
+  ketone?: boolean;
   /** The group supplies its own carbon (carboxylic acid, carbonitrile). */
   addsCarbon?: boolean;
   /** Marks an open valence rather than adding atoms (-yl). */
@@ -149,7 +151,7 @@ const SUFFIXES: Array<[string, Suffix]> = [
   ["amide", { branches: [{ smiles: "O", order: 2 }, { smiles: "N", order: 1 }] }],
   ["amine", { branches: [{ smiles: "N", order: 1 }] }],
   ["thiol", { branches: [{ smiles: "S", order: 1 }] }],
-  ["one", { branches: [{ smiles: "O", order: 2 }], defaultLocant: 2 }],
+  ["one", { branches: [{ smiles: "O", order: 2 }], defaultLocant: 2, ketone: true }],
   ["ol", { branches: [{ smiles: "O", order: 1 }] }],
   ["al", { branches: [{ smiles: "O", order: 2 }] }],
   ["yl", { branches: [], openValence: true }],
@@ -577,7 +579,12 @@ function parseParent(input: string): Parent {
   const [, suffix] = suffixEntry;
   const count = sm[2] ? MULTIPLIERS[sm[2]] : 1;
   // "hexanedioic acid" names both chain ends without writing the locants.
-  const implied = count === 2 && !suffix.defaultLocant ? [1, size] : [suffix.defaultLocant ?? 1];
+  // An ethanone parent, as in 1-phenylethanone, has its carbonyl at C1;
+  // the carbon substituent supplies the ketone's other carbon neighbour.
+  // Defaulting to C2 would instead build phenylacetaldehyde. A short parent
+  // without the necessary carbon substituents is rejected during assembly.
+  const defaultLocant = suffix.ketone && !ring && size <= 2 ? 1 : suffix.defaultLocant ?? 1;
+  const implied = count === 2 && !suffix.defaultLocant ? [1, size] : [defaultLocant];
   const locants = sm[1] ? sm[1].split(",").map(Number) : implied;
   const suffixLocants: number[] = [];
   for (let k = 0; k < count; k++) suffixLocants.push(locants[k] ?? locants[0]);
@@ -669,6 +676,18 @@ function buildChain(parent: Parent, prefixes: PrefixInstance[]): NameResult {
       const index = locant - 1;
       if (index < 0 || index >= atoms.length) {
         throw new NameError(`locant ${locant} out of range`);
+      }
+      if (suffix.ketone) {
+        const closure = ring && (index === 0 || index === atoms.length - 1) ? 1 : 0;
+        const carbonBranches = atoms[index].branches.filter(
+          (branch) => branch.order === 1 && /^(?:C(?![a-z])|c)/.test(branch.smiles),
+        ).length;
+        const carbonNeighbours = Number(index > 0) + Number(index < atoms.length - 1) + closure + carbonBranches;
+        const occupiedBonds = (index > 0 ? atoms[index - 1].next : 0) + atoms[index].next + closure
+          + atoms[index].branches.reduce((sum, branch) => sum + branch.order, 0);
+        if (carbonNeighbours !== 2 || occupiedBonds !== 2) {
+          throw new NameError("a ketone carbonyl needs two singly bonded carbon neighbours");
+        }
       }
       if (suffix.openValence) {
         atoms[index].open = true;
