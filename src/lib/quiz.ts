@@ -17,6 +17,9 @@ import { resolveQuery } from "./resolve";
 
 export type Difficulty = "easy" | "medium" | "hard";
 
+/** Selected topics form a union; null or an empty selection means all topics. */
+export type CategorySelection = string | readonly string[] | null;
+
 export interface Category {
   id: string;
   label: string;
@@ -99,20 +102,22 @@ export interface Verdict {
 
 function matches(
   question: BankQuestion,
-  category: string | null,
+  category: CategorySelection,
   difficulty: Difficulty | null,
 ): boolean {
   return (
-    (!category || question.category === category) &&
+    (!category || (typeof category === "string"
+      ? question.category === category
+      : category.length === 0 || category.includes(question.category))) &&
     (!difficulty || question.difficulty === difficulty)
   );
 }
 
-function bankFor(category: string | null, difficulty: Difficulty | null): BankQuestion[] {
+function bankFor(category: CategorySelection, difficulty: Difficulty | null): BankQuestion[] {
   return QUIZ_BANK.filter((question) => matches(question, category, difficulty));
 }
 
-export function countFor(category: string | null, difficulty: Difficulty | null): number {
+export function countFor(category: CategorySelection, difficulty: Difficulty | null): number {
   return bankFor(category, difficulty).length;
 }
 
@@ -122,7 +127,7 @@ export function countFor(category: string | null, difficulty: Difficulty | null)
  */
 export function pickQuestion(
   mode: QuizMode,
-  category: string | null,
+  category: CategorySelection,
   difficulty: Difficulty | null,
   exclude: number[] = [],
 ): Question | null {

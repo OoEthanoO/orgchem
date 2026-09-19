@@ -5,6 +5,7 @@
  * the invariants that must hold every time it is loaded.
  */
 import * as OCL from "openchemlib";
+import { registerHooks } from "node:module";
 
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
 import { CATEGORIES, DIFFICULTIES, QUIZ_MODES, checkChoice, countFor, pickQuestion } from "../src/lib/quiz.ts";
@@ -115,6 +116,52 @@ if (withLocants >= 0) {
 const all = QUIZ_BANK.map((_, index) => index);
 check("exhausting the pool starts over rather than failing", pickQuestion("name", null, null, all) !== null);
 check("an impossible selection returns nothing", pickQuestion("name", "no-such-category", null, []) === null);
+
+// A selected topic is part of one combined pool. Exhausting the first topic
+// must not reset it while another selected topic still has unseen questions.
+const selectedTopics = Object.freeze(["alkanes", "alcohols"]);
+for (const difficulty of [null, ...DIFFICULTIES]) {
+  const expected = selectedTopics.reduce((sum, topic) => sum + countFor(topic, difficulty), 0);
+  check(`multi-topic count is the union at ${difficulty ?? "any"} level`, countFor(selectedTopics, difficulty) === expected);
+  check(`duplicate topics do not inflate the count at ${difficulty ?? "any"} level`, countFor(["alkanes", "alcohols", "alkanes"], difficulty) === expected);
+  check(`empty topic array means all at ${difficulty ?? "any"} level`, countFor([], difficulty) === countFor(null, difficulty));
+  for (const topic of selectedTopics) {
+    const target = QUIZ_BANK.findIndex((entry) => entry.category === topic && (!difficulty || entry.difficulty === difficulty));
+    if (target < 0) continue;
+    for (const mode of QUIZ_MODES) {
+      const question = pickQuestion(mode, selectedTopics, difficulty, all.filter((id) => id !== target));
+      check(`${mode}: unseen ${topic} question survives the union at ${difficulty ?? "any"} level`, question?.id === target);
+    }
+  }
+}
+const unionReset = pickQuestion("name", selectedTopics, "hard", all);
+check("exhausted union resets only within its topics and difficulty", unionReset && selectedTopics.includes(unionReset.category) && unionReset.difficulty === "hard");
+check("unknown topic arrays have no questions", countFor(["no-such-category"], null) === 0 && pickQuestion("name", ["no-such-category"], null) === null);
+
+// Load the real Next handler under Node with the same aliases/extension that
+// Next resolves at build time. Keep this adapter local to the route import.
+const routeImports = registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier === "@/lib/quiz") return nextResolve(new URL("../src/lib/quiz.ts", import.meta.url).href, context);
+    if (specifier === "next/server") return nextResolve("next/server.js", context);
+    return nextResolve(specifier, context);
+  },
+});
+let quizGet;
+try { ({ GET: quizGet } = await import("../src/app/api/quiz/route.ts")); }
+finally { routeImports.deregister(); }
+const secondTopicTarget = QUIZ_BANK.findIndex((entry) => entry.category === "alcohols" && entry.difficulty === "easy");
+const unseenSecondTopic = all.filter((id) => id !== secondTopicTarget).join(",");
+for (const mode of QUIZ_MODES) {
+  const response = await quizGet(new Request(`http://localhost/api/quiz?mode=${mode}&category=alkanes&category=alcohols&category=alkanes&difficulty=easy&seen=${unseenSecondTopic}`));
+  const question = await response.json();
+  check(`${mode}: API reads every repeated topic and respects history/difficulty`, response.status === 200 && question.id === secondTopicTarget && question.difficulty === "easy");
+}
+const legacyTopicResponse = await quizGet(new Request("http://localhost/api/quiz?category=alkanes"));
+check("API preserves single-topic requests", legacyTopicResponse.status === 200 && (await legacyTopicResponse.json()).category === "alkanes");
+const emptyTopicResponse = await quizGet(new Request(`http://localhost/api/quiz?category=&category=&seen=${unseenSecondTopic}`));
+check("empty API topic values mean all topics", emptyTopicResponse.status === 200 && (await emptyTopicResponse.json()).id === secondTopicTarget);
+check("API preserves unknown-only topic 404", (await quizGet(new Request("http://localhost/api/quiz?category=no-such-category"))).status === 404);
 
 // The substituent hint must name what the compound actually carries. A plain
 // substring test gets this wrong both ways: "methyl" ends with "ethyl", and

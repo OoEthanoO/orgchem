@@ -16,15 +16,15 @@ function json(body: unknown, status = 200) {
 export function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const mode = params.get("mode") || "name";
-  const category = params.get("category") || null;
+  const categories = [...new Set(params.getAll("category").filter(Boolean))];
   const difficulty = params.get("difficulty") || null;
   if (!COMPLEX_QUIZ_MODES.includes(mode as QuizMode)) return json({ error: "Choose name or structure mode." }, 400);
-  if (category && !COMPLEX_CATEGORIES.some((item) => item.id === category)) return json({ error: "Unknown complex topic." }, 400);
+  if (categories.some((category) => !COMPLEX_CATEGORIES.some((item) => item.id === category))) return json({ error: "Unknown complex topic." }, 400);
   if (difficulty && !COMPLEX_DIFFICULTIES.includes(difficulty as Difficulty)) return json({ error: "Unknown difficulty." }, 400);
   const seenRaw = params.get("seen") || "";
   if (seenRaw.length > 2000 || (seenRaw && !/^\d+(,\d+)*$/.test(seenRaw))) return json({ error: "Invalid question history." }, 400);
   const seen = seenRaw ? seenRaw.split(",").map(Number).filter(Number.isSafeInteger).slice(-100) : [];
-  const question = pickComplexQuestion(mode as QuizMode, category, difficulty as Difficulty | null, seen);
+  const question = pickComplexQuestion(mode as QuizMode, categories, difficulty as Difficulty | null, seen);
   return question ? json(question) : json({ error: "No questions match that selection." }, 404);
 }
 

@@ -21,7 +21,8 @@ type Verdict = QuizVerdict & { formula?: string };
  * question for as long as the reader wants it to.
  *
  * What is being drilled lives in the URL, as the lookup page's query does, so
- * a selection can be linked to: /practice?mode=structure&topic=alcohols&level=easy
+ * a selection can be linked to, including several repeated topic parameters.
+ * /practice?mode=structure&topic=alcohols&topic=amines&level=easy
  * sets someone down in front of exactly that. The questions themselves cannot
  * be in there — they are drawn fresh — so it is the drill that is shared, not
  * a particular run of it.
@@ -56,7 +57,7 @@ export function Quiz({
   const searchParams = useSearchParams();
   const [selection] = useState(() => readSelection(searchParams, categories, availability));
   const [mode, setMode] = useState<QuizMode>(selection.mode);
-  const [category, setCategory] = useState<string | null>(selection.category);
+  const [topics, setTopics] = useState<string[]>(selection.topics);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(selection.difficulty);
   const [round, setRound] = useState(0);
   const [question, setQuestion] = useState<Question | null>(null);
@@ -72,6 +73,7 @@ export function Quiz({
   const [score, setScore] = useState<Score>(EMPTY_SCORE);
   const seen = useRef<number[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const focusAnswer = useRef(true);
 
   // Nothing to show and nothing to say means a question is on its way. Keeping
   // this derived saves a state that could disagree with the other two.
@@ -80,12 +82,16 @@ export function Quiz({
   // Clearing the old question belongs to whatever asked for a new one, so the
   // effect below only has to write in what comes back.
   function requestQuestion(
-    nextCategory: string | null,
+    nextTopics: string[],
     nextDifficulty: Difficulty | null,
     nextMode: QuizMode = mode,
+    shouldFocusAnswer = true,
   ) {
+    // Removing a topic can leave no questions at the current level.
+    if (countAvailable(availability, nextTopics, nextDifficulty) === 0) nextDifficulty = null;
+    focusAnswer.current = shouldFocusAnswer;
     setMode(nextMode);
-    setCategory(nextCategory);
+    setTopics(nextTopics);
     setDifficulty(nextDifficulty);
     setQuestion(null);
     setError(null);
@@ -95,13 +101,13 @@ export function Quiz({
     setRevealed(false);
     setHintsShown(0);
     setRound((current) => current + 1);
-    writeSelection(nextMode, nextCategory, nextDifficulty);
+    writeSelection(nextMode, nextTopics, nextDifficulty);
   }
 
   useEffect(() => {
     const controller = new AbortController();
     const params = new URLSearchParams({ mode });
-    if (category) params.set("category", category);
+    for (const topic of topics) params.append("category", topic);
     if (difficulty) params.set("difficulty", difficulty);
     if (seen.current.length) params.set("seen", seen.current.slice(-40).join(","));
 
@@ -121,11 +127,11 @@ export function Quiz({
       });
 
     return () => controller.abort();
-  }, [mode, category, difficulty, round, endpoint]);
+  }, [mode, topics, difficulty, round, endpoint]);
 
   // Put the cursor where it is needed so a run can be done from the keyboard.
   useEffect(() => {
-    if (question && !verdict) inputRef.current?.focus();
+    if (question && !verdict && focusAnswer.current) inputRef.current?.focus({ preventScroll: true });
   }, [question, verdict]);
 
   // The multiple choice has nothing to type into, so without this it is the
@@ -138,7 +144,7 @@ export function Quiz({
     function onKeyDown(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (verdict) {
-        if (event.key === "Enter") requestQuestion(category, difficulty);
+        if (event.key === "Enter") requestQuestion(topics, difficulty);
         return;
       }
       const position = Number(event.key) - 1;
@@ -228,13 +234,13 @@ export function Quiz({
       <Filters
         categories={categories}
         mode={mode}
-        category={category}
+        topics={topics}
         difficulty={difficulty}
         availability={availability}
         isComplex={isComplex}
-        onMode={(value) => requestQuestion(category, difficulty, value)}
-        onCategory={(value) => requestQuestion(value, difficulty)}
-        onDifficulty={(value) => requestQuestion(category, value)}
+        onMode={(value) => requestQuestion(topics, difficulty, value, false)}
+        onTopics={(value) => requestQuestion(value, difficulty, mode, false)}
+        onDifficulty={(value) => requestQuestion(topics, value, mode, false)}
       />
 
       <section className="overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow)]">
@@ -356,7 +362,7 @@ export function Quiz({
                 <form
                   onSubmit={(event) => {
                     event.preventDefault();
-                    if (verdict) requestQuestion(category, difficulty);
+                    if (verdict) requestQuestion(topics, difficulty);
                     else void submit();
                   }}
                   className="flex flex-wrap items-center gap-2"
@@ -404,7 +410,7 @@ export function Quiz({
                   {verdict ? (
                     <button
                       type="button"
-                      onClick={() => requestQuestion(category, difficulty)}
+                      onClick={() => requestQuestion(topics, difficulty)}
                       className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                     >
                       Next
@@ -453,8 +459,18 @@ export function Quiz({
 
 interface Selection {
   mode: QuizMode;
-  category: string | null;
+  topics: string[];
   difficulty: Difficulty | null;
+}
+
+/** Each question belongs to one topic, so a selection's counts can be added. */
+function countAvailable(
+  availability: Record<string, number>,
+  topics: readonly string[],
+  difficulty: Difficulty | null,
+): number {
+  const keys = topics.length ? [...new Set(topics)] : ["*"];
+  return keys.reduce((total, topic) => total + (availability[`${topic}:${difficulty ?? "*"}`] ?? 0), 0);
 }
 
 /**
@@ -470,28 +486,27 @@ function readSelection(
   availability: Record<string, number>,
 ): Selection {
   const level = params.get("level");
-  const topic = params.get("topic");
-  const count = (c: string | null, d: Difficulty | null) => availability[`${c ?? "*"}:${d ?? "*"}`] ?? 0;
+  const requested = new Set(params.getAll("topic"));
 
-  let category = categories.some((item) => item.id === topic) ? topic : null;
+  let topics = categories.filter((item) => requested.has(item.id)).map((item) => item.id);
   let difficulty = level && level in DIFFICULTY_LABELS ? (level as Difficulty) : null;
-  if (count(category, difficulty) === 0) {
+  if (countAvailable(availability, topics, difficulty) === 0) {
     difficulty = null;
-    if (count(category, null) === 0) category = null;
+    if (countAvailable(availability, topics, null) === 0) topics = [];
   }
 
-  return { mode: params.get("mode") === "structure" ? "structure" : "name", category, difficulty };
+  return { mode: params.get("mode") === "structure" ? "structure" : "name", topics, difficulty };
 }
 
 /** Keep the URL showing what is being drilled, without reloading anything. */
 function writeSelection(
   mode: QuizMode,
-  category: string | null,
+  topics: string[],
   difficulty: Difficulty | null,
 ): void {
   const params = new URLSearchParams();
   if (mode !== "name") params.set("mode", mode);
-  if (category) params.set("topic", category);
+  for (const topic of topics) params.append("topic", topic);
   if (difficulty) params.set("level", difficulty);
   const query = params.toString();
   // Replaced rather than pushed: the back button should leave the drill, not
@@ -502,25 +517,25 @@ function writeSelection(
 function Filters({
   categories,
   mode,
-  category,
+  topics,
   difficulty,
   availability,
   isComplex,
   onMode,
-  onCategory,
+  onTopics,
   onDifficulty,
 }: {
   categories: Category[];
   mode: QuizMode;
-  category: string | null;
+  topics: string[];
   difficulty: Difficulty | null;
   availability: Record<string, number>;
   isComplex: boolean;
   onMode: (value: QuizMode) => void;
-  onCategory: (value: string | null) => void;
+  onTopics: (value: string[]) => void;
   onDifficulty: (value: Difficulty | null) => void;
 }) {
-  const count = (c: string | null, d: Difficulty | null) => availability[`${c ?? "*"}:${d ?? "*"}`] ?? 0;
+  const count = (selected: string[], level: Difficulty | null) => countAvailable(availability, selected, level);
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow)] sm:p-5">
       <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -535,26 +550,27 @@ function Filters({
         </Chip>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div role="group" aria-label="Topics — choose one or more" className="flex flex-wrap items-center gap-2">
         <span className="mr-1 text-xs font-medium tracking-wide text-text-faint uppercase">
-          Topic
+          Topics <span className="font-normal normal-case tracking-normal">· choose one or more</span>
         </span>
-        <Chip active={category === null} onClick={() => onCategory(null)}>
+        <Chip active={topics.length === 0} onClick={() => onTopics([])}>
           Everything
         </Chip>
         {categories.map((item) => {
-          const available = count(item.id, difficulty);
+          const available = count([item.id], difficulty);
+          const selected = topics.includes(item.id);
           return (
             <Chip
               key={item.id}
-              active={category === item.id}
-              disabled={available === 0}
+              active={selected}
+              disabled={available === 0 && !selected}
               title={
                 available === 0
                   ? `No ${difficulty ?? ""} questions in ${item.label.toLowerCase()} yet`.replace(/\s+/g, " ")
                   : `${item.blurb} — ${available} question${available === 1 ? "" : "s"}`
               }
-              onClick={() => onCategory(item.id)}
+              onClick={() => onTopics(selected ? topics.filter((topic) => topic !== item.id) : [...topics, item.id])}
             >
               {item.label}
             </Chip>
@@ -570,7 +586,7 @@ function Filters({
           Any
         </Chip>
         {(Object.keys(DIFFICULTY_LABELS) as Difficulty[]).map((level) => {
-          const available = count(category, level);
+          const available = count(topics, level);
           return (
             <Chip
               key={level}
@@ -578,7 +594,7 @@ function Filters({
               disabled={available === 0}
               title={
                 available === 0
-                  ? "Nothing at this level in the chosen topic yet"
+                  ? "Nothing at this level in the chosen topics yet"
                   : `${available} question${available === 1 ? "" : "s"}`
               }
               onClick={() => onDifficulty(level)}

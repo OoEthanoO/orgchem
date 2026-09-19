@@ -14,20 +14,20 @@ import {
  * The practice session talks to the server for both halves, so the answer
  * never reaches the browser until the question has been attempted.
  *
- *   GET  /api/quiz?mode=structure&category=alcohols&difficulty=easy&seen=3,17
+ *   GET  /api/quiz?mode=structure&category=alkanes&category=alcohols&difficulty=easy&seen=3,17
  *   POST /api/quiz   { id, answer }          a typed name
  *   POST /api/quiz   { id, choice, nonce }   a structure, by its position
  */
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
-  const category = params.get("category") || null;
+  const categories = [...new Set(params.getAll("category").filter(Boolean))];
   const difficulty = asDifficulty(params.get("difficulty"));
   const seen = (params.get("seen") ?? "")
     .split(",")
     .map((value) => Number.parseInt(value, 10))
     .filter((value) => Number.isInteger(value));
 
-  const question = pickQuestion(asMode(params.get("mode")), category, difficulty, seen);
+  const question = pickQuestion(asMode(params.get("mode")), categories, difficulty, seen);
   if (!question) {
     return NextResponse.json({ error: "No questions match that selection." }, { status: 404 });
   }

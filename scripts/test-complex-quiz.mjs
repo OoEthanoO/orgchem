@@ -164,6 +164,26 @@ for (const category of [null, ...categoryIds]) {
 check(pickComplexQuestion("name", "unknown", null) === null, "Unknown category has no questions");
 check(pickComplexQuestion("name", null, null, ids) !== null, "Question pool resets after all entries seen");
 
+const selectedTopics = Object.freeze(["chelates", "salts"]);
+for (const difficulty of [null, ...COMPLEX_DIFFICULTIES]) {
+  const expected = selectedTopics.reduce((sum, category) => sum + countComplexQuestions(category, difficulty), 0);
+  check(countComplexQuestions(selectedTopics, difficulty) === expected, `Multiple topics count their union at ${difficulty ?? "any"} level`);
+  check(countComplexQuestions(["salts", "chelates", "salts"], difficulty) === expected, `Repeated topics are counted once at ${difficulty ?? "any"} level`);
+  check(countComplexQuestions([], difficulty) === countComplexQuestions(null, difficulty), `Empty topic array means all at ${difficulty ?? "any"} level`);
+  for (const category of selectedTopics) {
+    const target = COMPLEX_QUIZ_BANK.findIndex((entry) => entry.category === category && (!difficulty || entry.difficulty === difficulty));
+    if (target < 0) continue;
+    for (const mode of ["name", "structure"]) {
+      const question = pickComplexQuestion(mode, selectedTopics, difficulty, ids.filter((id) => id !== target));
+      check(question?.id === target, `${mode}: unseen ${category} question survives combined history at ${difficulty ?? "any"} level`);
+    }
+  }
+}
+const unionReset = pickComplexQuestion("name", selectedTopics, "medium", ids);
+check(unionReset && selectedTopics.includes(unionReset.category) && unionReset.difficulty === "medium", "Exhausted union resets within the selected topics and level");
+check(countComplexQuestions(["unknown"], null) === 0 && pickComplexQuestion("name", ["unknown"], null) === null, "Unknown topic array has no questions");
+check(pickComplexQuestion("name", selectedTopics, "easy") === null, "Empty union/difficulty selection returns no question");
+
 // Independently specified chemistry checks: mixed neutral ligands, cyanide
 // oxidation states, chelate denticity, and salt stoichiometry.
 const chromiumId = nameId("triamminetriaquachromium(III)");
@@ -197,10 +217,20 @@ let response = get("?category=mixed-ligands&difficulty=medium");
 check(response.status === 200 && response.headers.get("cache-control") === "no-store", "Question endpoint is uncached");
 let returned = await response.json();
 check(returned.category === "mixed-ligands" && returned.difficulty === "medium", "Endpoint applies selection");
-for (const query of ["?mode=other", "?category=other", "?difficulty=other", "?seen=1,nope", "?seen=-1"]) {
+for (const query of ["?mode=other", "?category=other", "?category=salts&category=other", "?category=other&category=salts", "?difficulty=other", "?seen=1,nope", "?seen=-1"]) {
   check(get(query).status === 400, `Bad query rejected ${query}`);
 }
 check(get("?category=chelates&difficulty=easy").status === 404, "Empty filter has explicit 404");
+check(get("?category=chelates&category=salts&difficulty=easy").status === 404, "Empty topic union has explicit 404");
+const secondTopicTarget = COMPLEX_QUIZ_BANK.findIndex((entry) => entry.category === "salts" && entry.difficulty === "medium");
+const unseenSecondTopic = ids.filter((id) => id !== secondTopicTarget).join(",");
+for (const mode of ["name", "structure"]) {
+  const unionResponse = get(`?mode=${mode}&category=chelates&category=salts&category=chelates&difficulty=medium&seen=${unseenSecondTopic}`);
+  const question = await unionResponse.json();
+  check(unionResponse.status === 200 && question.id === secondTopicTarget && question.difficulty === "medium", `${mode}: endpoint reads every selected topic and combined history`);
+}
+const emptyTopics = get(`?category=&category=&seen=${unseenSecondTopic}`);
+check(emptyTopics.status === 200 && (await emptyTopics.json()).id === secondTopicTarget, "Empty API topic values preserve all-topic selection");
 
 for (const body of [null, [], 7, {}, { id: "0", answer: "" }, { id: -1, answer: "" }, { id: 999, answer: "" }, { id: 0 }, { id: 0, answer: "x".repeat(301) }, { id: 0, choice: 0 }, { id: 0, choice: 5, nonce: "a".repeat(32) }, { id: 0, choice: 0, nonce: "bad" }, { id: 0, choice: 0, nonce: "a".repeat(32), answer: "x" }]) {
   check((await post(body)).status === 400, `Invalid request rejected ${JSON.stringify(body).slice(0, 80)}`);

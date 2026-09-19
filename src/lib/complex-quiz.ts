@@ -3,7 +3,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 
 import { complexKey, complexSvg, parseComplex, type CoordinationComplex } from "./complexes";
-import type { Category, Difficulty, NameQuestion, QuizMode, StructureQuestion, Verdict } from "./quiz";
+import type { Category, CategorySelection, Difficulty, NameQuestion, QuizMode, StructureQuestion, Verdict } from "./quiz";
 
 export const COMPLEX_CATEGORIES: Category[] = [
   { id: "single-ligand", label: "One ligand type", blurb: "ligand prefixes, ion charge and metal oxidation states" },
@@ -143,17 +143,19 @@ function complexFor(id: number): CoordinationComplex {
   return parsed;
 }
 
-function matches(entry: BankEntry, category: string | null, difficulty: Difficulty | null) {
-  return (!category || category === entry.category) && (!difficulty || difficulty === entry.difficulty);
+function matches(entry: BankEntry, category: CategorySelection, difficulty: Difficulty | null) {
+  return (!category || (typeof category === "string"
+    ? category === entry.category
+    : category.length === 0 || category.includes(entry.category))) && (!difficulty || difficulty === entry.difficulty);
 }
 
-export function countComplexQuestions(category: string | null, difficulty: Difficulty | null): number {
+export function countComplexQuestions(category: CategorySelection, difficulty: Difficulty | null): number {
   return COMPLEX_QUIZ_BANK.filter((entry) => matches(entry, category, difficulty)).length;
 }
 
 export function pickComplexQuestion(
   mode: QuizMode,
-  category: string | null,
+  category: CategorySelection,
   difficulty: Difficulty | null,
   exclude: number[] = [],
 ): ComplexQuestion | null {
