@@ -1,60 +1,70 @@
-/**
- * How hard a structure is to name, scored from the things that actually make
- * naming hard rather than from the size of the molecule.
- *
- * Shared by the bank builder and the re-grader so the two cannot drift apart.
- */
+/** Naming difficulty shared by the builder, offline regrader, and tests. */
 import * as OCL from "openchemlib";
 
-/** Multiplying prefixes, but only where they multiply something. "nitrile" contains "tri". */
-const MULTIPLIER =
-  /(di|tri|tetra)(methyl|ethyl|propyl|butyl|chloro|bromo|fluoro|iodo|hydroxy|amino|nitro|ol|one|oic|al|ene|yne|amine)/;
+const MULTIPLIER = /(?:di|tri|tetra|penta|hexa)(?:methyl|ethyl|propyl|butyl|chloro|bromo|fluoro|iodo|hydroxy|amino|nitro|methoxy|ethoxy|ol|one|oic|al|ene|yne|amine)/;
+const PREFIX = /(?:^|[^a-z])(?:di|tri|tetra|penta|hexa)?(methyl|ethyl|propyl|butyl|chloro|bromo|fluoro|iodo|hydroxy|amino|nitro|methoxy|ethoxy|oxo|cyano)/g;
 
-/** Classes whose naming has a rule beyond locating groups on a chain. */
-const AWKWARD_CLASS = [
-  /^\S+yl \S+oate$/, // esters are two words, and the halves are numbered separately
-  /amide$/,
-  /nitrile$/,
-  /oyl chloride$/,
-  /carbonyl chloride$/,
-  /anhydride$/,
-];
-
-export function difficultyOf(smiles, name) {
+/** Exposed so regressions can check why a molecule is difficult. */
+export function namingComplexity(smiles, name) {
   const molecule = OCL.Molecule.fromSmiles(smiles);
   molecule.ensureHelperArrays(OCL.Molecule.cHelperCIP);
-
-  // A branch is a carbon with three or more *carbon* neighbours. Counting any
-  // atom with three heavy neighbours would treat every secondary alcohol and
-  // every carbonyl as a branch, which is not what makes them hard to name.
   let branches = 0;
+  let aromaticAttachments = 0;
+  let specifiedStereo = 0;
   for (let atom = 0; atom < molecule.getAtoms(); atom++) {
+    const parity = molecule.getAtomParity(atom);
+    if (parity === OCL.Molecule.cAtomParity1 || parity === OCL.Molecule.cAtomParity2) specifiedStereo++;
     if (molecule.getAtomicNo(atom) !== 6) continue;
     let carbonNeighbours = 0;
+    let outsideAromaticRing = false;
     for (let i = 0; i < molecule.getConnAtoms(atom); i++) {
-      if (molecule.getAtomicNo(molecule.getConnAtom(atom, i)) === 6) carbonNeighbours++;
+      const neighbour = molecule.getConnAtom(atom, i);
+      if (molecule.getAtomicNo(neighbour) === 6) carbonNeighbours++;
+      if (!molecule.isAromaticAtom(neighbour)) outsideAromaticRing = true;
     }
-    if (carbonNeighbours >= 3) branches++;
+    // Aromatic ring junctions are not chain branches. Count the actual ring
+    // substitution pattern separately, including heteroatom substituents.
+    if (molecule.isAromaticAtom(atom)) {
+      if (outsideAromaticRing) aromaticAttachments++;
+    } else if (carbonNeighbours >= 3) branches++;
+  }
+  for (let bond = 0; bond < molecule.getBonds(); bond++) {
+    // Small rings have geometrically fixed alkene parity without requiring an
+    // E/Z descriptor. Only explicitly directed, acyclic double bonds count.
+    if (!/[/\\]/.test(smiles) || molecule.getBondOrder(bond) !== 2 || molecule.isRingBond(bond)) continue;
+    const parity = molecule.getBondParity(bond);
+    if (parity === OCL.Molecule.cBondParityEor1 || parity === OCL.Molecule.cBondParityZor2) specifiedStereo++;
   }
 
-  let stereo = /[@/\\]/.test(smiles);
-  for (let atom = 0; atom < molecule.getAtoms(); atom++) {
-    if (molecule.isAtomStereoCenter(atom)) stereo = true;
-  }
+  // Descriptor locants are handled by the stereo dimension. Read whole
+  // numbers: 2,10 is two locants, not the three digits 2,1,0.
+  const constitutionName = name.replace(/^\([^)]*\)-/, "");
+  const locants = new Set(constitutionName.match(/\d+/g) ?? []).size;
+  const prefixKinds = new Set([...constitutionName.matchAll(PREFIX)].map((match) => match[1])).size;
+  const repeated = MULTIPLIER.test(constitutionName);
+  // These names cross a numbering/attachment boundary (ester halves, N
+  // substitution, or suffix carbon outside a ring), rather than just adding
+  // atoms. One point alone never makes a question Hard.
+  const separateParts = /\S+yl\s.+(?:oate|acetate)$/.test(constitutionName)
+    || /(?:^|[-,(])N(?:[,'-]|$)/.test(constitutionName)
+    || /(?:carboxylic acid|carboxamide|carbonitrile|carbonyl (?:chloride|bromide))$/.test(constitutionName);
+  const mixedGroups = /(?:hydroxy|amino|oxo|methoxy|ethoxy|cyano)/.test(constitutionName)
+    && /(?:ol|one|al|oic acid|oate|amide|nitrile|amine)$/.test(constitutionName);
 
-  const locants = new Set(name.match(/\d/g) ?? []).size;
-  const heavy = molecule.getAtoms();
+  const score = Math.min(3, branches)
+    + Math.min(2, Math.max(0, aromaticAttachments - 1))
+    + Math.min(2, Math.max(0, locants - 1))
+    + Math.min(2, Math.max(0, prefixKinds - 1))
+    + Number(repeated)
+    + Number(separateParts || mixedGroups)
+    + Math.min(4, specifiedStereo * 2);
+  return { branches, aromaticAttachments, specifiedStereo, locants, prefixKinds, repeated, separateParts, mixedGroups, score };
+}
 
-  let score = 0;
-  if (heavy >= 8) score++;
-  if (heavy >= 12) score++;
-  score += Math.min(2, branches);
-  if (locants >= 2) score++;
-  if (MULTIPLIER.test(name)) score++;
-  if (AWKWARD_CLASS.some((pattern) => pattern.test(name))) score++;
-  if (stereo) score += 2;
-
-  if (score <= 1) return "easy";
-  if (score <= 3) return "medium";
-  return "hard";
+export function difficultyOf(smiles, name) {
+  const { score, specifiedStereo } = namingComplexity(smiles, name);
+  // Two explicit stereodescriptors require several independent assignments;
+  // otherwise Hard needs a combination of numbering/branching/group rules.
+  if (specifiedStereo >= 2 || score >= 5) return "hard";
+  return score <= 1 ? "easy" : "medium";
 }

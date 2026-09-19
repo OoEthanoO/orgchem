@@ -10,6 +10,7 @@ import { registerHooks } from "node:module";
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
 import { CATEGORIES, DIFFICULTIES, QUIZ_MODES, TOPIC_ALIASES, checkChoice, countFor, pickQuestion } from "../src/lib/quiz.ts";
 import { classifyQuizTopic } from "./quiz-topics.mjs";
+import { DEFAULT_DISPLAY, depict } from "../src/lib/depict.ts";
 
 /** Pull one specific question out by narrowing until only it can be chosen. */
 function describeById(index) {
@@ -410,6 +411,29 @@ check(
   `most distractors are true isomers (${sameFormula}/${totalDistractors})`,
   totalDistractors > 0 && sameFormula / totalDistractors > 0.5,
 );
+
+// Hard must not offer easy cross-family eliminations when enough same-family
+// isomers exist. Find a real four-drawing pool, then test the public question
+// and answer flow rather than depending on the option-building internals.
+const hardIsomerTarget = QUIZ_BANK.findIndex((entry, id) => {
+  if (entry.difficulty !== "hard") return false;
+  const peers = QUIZ_BANK.flatMap((candidate, index) =>
+    candidate.category === entry.category && formulaMatches(id, index) ? [candidate] : [],
+  );
+  return new Set(peers.map((candidate) => depict(candidate.smiles, DEFAULT_DISPLAY).svg)).size >= 4;
+});
+check("Hard has a pool of closely related same-family isomers", hardIsomerTarget >= 0);
+if (hardIsomerTarget >= 0) {
+  const target = QUIZ_BANK[hardIsomerTarget];
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const question = pickQuestion("structure", target.category, "hard", all.filter((id) => id !== hardIsomerTarget));
+    const verdicts = question.choices.map((_, position) => checkChoice(question.id, position, question.nonce));
+    const peers = verdicts.filter((verdict) => !verdict.correct).map((verdict) => bankByName.get(verdict.named));
+    check(`Hard distractors stay in the same family and formula (${attempt})`, peers.length === 3
+      && peers.every((id) => id !== undefined && QUIZ_BANK[id].category === target.category && formulaMatches(id, hardIsomerTarget)));
+    check(`Hard isomer options have exactly one correct choice (${attempt})`, verdicts.filter((verdict) => verdict.correct).length === 1);
+  }
+}
 
 check("both modes are offered", QUIZ_MODES.length === 2);
 

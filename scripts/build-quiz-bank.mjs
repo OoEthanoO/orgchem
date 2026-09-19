@@ -17,8 +17,9 @@
  *   node --experimental-strip-types --import ./scripts/loader.mjs \
  *     scripts/build-quiz-bank.mjs --expand
  * Successful responses are cached under ignored node_modules/.cache/chem.
+ * Append only the verified harder practice candidates: use --hard-only.
  *
- * Update topic labels only, preserving all chemistry and IDs without fetching:
+ * Refresh topic/difficulty labels, preserving chemistry and IDs without fetching:
  *   node --experimental-strip-types --import ./scripts/loader.mjs \
  *     scripts/build-quiz-bank.mjs --reclassify
  */
@@ -28,13 +29,15 @@ import * as OCL from "openchemlib";
 
 import { difficultyOf } from "./quiz-difficulty.mjs";
 import { expansionCandidates } from "./quiz-expansion-candidates.mjs";
+import { hardCandidates } from "./quiz-hard-candidates.mjs";
 import { classifyQuizTopic } from "./quiz-topics.mjs";
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
 import { DEFAULT_DISPLAY, depict } from "../src/lib/depict.ts";
 
 const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound";
 const OPSIN = "https://www.ebi.ac.uk/opsin/ws";
-const APPEND = process.argv.includes("--expand");
+const HARD_ONLY = process.argv.includes("--hard-only");
+const APPEND = process.argv.includes("--expand") || HARD_ONLY;
 const RECLASSIFY = process.argv.includes("--reclassify");
 const CACHE_DIR = "node_modules/.cache/chem";
 const CACHE_FILE = `${CACHE_DIR}/quiz-bank-verification.json`;
@@ -202,9 +205,9 @@ function candidates() {
   add("aromatics", "C=Cc1ccccc1");
   add("aromatics", "CCc1ccccc1");
 
-  // --- deliberately harder cases -------------------------------------------
-  // Every topic needs something at each level, so these are chosen to score
-  // high: several branches, two locants to place, or stereochemistry on top.
+  // --- additional branched and stereochemical cases -----------------------
+  // These expand the original structural variety. The shared naming grader
+  // assigns their levels; topics need not contain every difficulty.
   for (const smiles of ["CC/C=C/C(C)C", "CC(C)/C=C/CC", "C/C=C/C=C/C", "CCC(C)C=CC", "CC1=CC(C)CCC1", "CC(C)C=C(C)C"]) {
     add("unsaturated", smiles);
   }
@@ -297,13 +300,14 @@ function flatKey(smiles) {
 }
 
 const existing = APPEND || RECLASSIFY
-  ? QUIZ_BANK.map((entry) => ({ ...entry, category: classifyQuizTopic(entry.category, entry.smiles) }))
+  ? QUIZ_BANK.map((entry) => ({ ...entry, category: classifyQuizTopic(entry.category, entry.smiles), difficulty: difficultyOf(entry.smiles, entry.name) }))
   : [];
 const seen = new Set(existing.map((entry) => idCode(entry.smiles)));
 const seenNames = new Set(existing.map((entry) => entry.name));
 const rejected = [];
 const pool = [];
-const candidatesToCheck = RECLASSIFY ? [] : APPEND ? expansionCandidates() : [...candidates(), ...expansionCandidates()];
+const additionsToCheck = HARD_ONLY ? hardCandidates() : [...expansionCandidates(), ...hardCandidates()];
+const candidatesToCheck = RECLASSIFY ? [] : APPEND ? additionsToCheck : [...candidates(), ...additionsToCheck];
 for (const candidate of candidatesToCheck) {
   try {
     const key = idCode(candidate.smiles);
@@ -358,12 +362,14 @@ async function considerCandidate(candidate) {
   if (netCharge !== 0) throw new Error("ionic compound");
   // The actual application must be able to draw what the services agreed on.
   depict(named.smiles, DEFAULT_DISPLAY);
+  const difficulty = difficultyOf(named.smiles, named.name);
+  if (HARD_ONLY && difficulty !== "hard") throw new Error(`"${named.name}" is ${difficulty} under the current naming criteria`);
   return {
     category: classifyQuizTopic(candidate.category, named.smiles),
     smiles: named.smiles,
     name: named.name,
     title: named.title ?? "",
-    difficulty: difficultyOf(named.smiles, named.name),
+    difficulty,
   };
 }
 

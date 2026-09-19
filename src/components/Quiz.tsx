@@ -294,7 +294,7 @@ export function Quiz({
               </div>
             ) : (
               <div className="px-4 py-5 sm:px-5">
-                <p className="text-center text-lg font-medium text-text sm:text-xl">
+                <p className="break-words text-center text-lg font-medium text-text sm:text-xl">
                   {question.name}
                 </p>
                 <ul className="mt-4 grid grid-cols-2 gap-3">
@@ -610,6 +610,13 @@ function Filters({
           );
         })}
       </div>
+      {difficulty === "hard" && (
+        <p className="mt-3 text-xs text-text-dim">
+          {isComplex
+            ? "Hard combines mixed ligands, chelate naming and charge balancing."
+            : "Hard combines branching, functional-group priorities, detailed numbering or specified stereochemistry."}
+        </p>
+      )}
     </section>
   );
 }

@@ -29,7 +29,7 @@ function questionFor(id, mode = "name") {
   return pickComplexQuestion(mode, entry.category, entry.difficulty, ids.filter((other) => other !== id));
 }
 
-check(COMPLEX_QUIZ_BANK.length >= 90, "Expanded practice bank size");
+check(COMPLEX_QUIZ_BANK.length >= 113, "Expanded practice bank includes advanced compositions");
 const categoryIds = new Set(COMPLEX_CATEGORIES.map((item) => item.id));
 const keys = new Set();
 for (const [id, entry] of COMPLEX_QUIZ_BANK.entries()) {
@@ -134,6 +134,22 @@ const addedFixtures = [
   ["tris(ethane-1,2-diamine)nickel(II) sulfate", "[Ni(en)3]SO4", 2, 2, 6, "Ni-en-sulfate"],
   ["potassium diaquadioxalatochromate(III)", "K[Cr(H2O)2(C2O4)2]", 3, -1, 6, "Cr-aqua-oxalate"],
   ["potassium trioxalatocobaltate(III)", "K3[Co(C2O4)3]", 3, -3, 6, "Co-oxalate"],
+  ["diamminedibromidodichloridoplatinum(IV)", "[Pt(NH3)2Br2Cl2]", 4, 0, 6, "Pt-IV-mixed-halides"],
+  ["diamminedichloridodiiodidoplatinum(IV)", "[Pt(NH3)2Cl2I2]", 4, 0, 6, "Pt-IV-mixed-halides"],
+  ["triamminetrichloridoplatinum(IV) chloride", "[Pt(NH3)3Cl3]Cl", 4, 1, 6, "Pt-IV-mixed-halides"],
+  ["triamminetribromidoplatinum(IV) bromide", "[Pt(NH3)3Br3]Br", 4, 1, 6, "Pt-IV-mixed-halides"],
+  ["amminechloridobis(ethane-1,2-diamine)cobalt(III)", "[Co(NH3)Cl(en)2]^2+", 3, 2, 6, "Co-ammine-chloride-en"],
+  ["amminechloridobis(ethane-1,2-diamine)cobalt(III) nitrate", "[Co(NH3)Cl(en)2](NO3)2", 3, 2, 6, "Co-ammine-chloride-en"],
+  ["aquachloridobis(ethane-1,2-diamine)cobalt(III)", "[Co(H2O)Cl(en)2]^2+", 3, 2, 6, "Co-aqua-chloride-en"],
+  ["aquachloridobis(ethane-1,2-diamine)cobalt(III) sulfate", "[Co(H2O)Cl(en)2]SO4", 3, 2, 6, "Co-aqua-chloride-en"],
+  ["amminebromidobis(ethane-1,2-diamine)cobalt(III)", "[Co(NH3)Br(en)2]^2+", 3, 2, 6, "Co-ammine-bromide-en"],
+  ["amminebromidobis(ethane-1,2-diamine)cobalt(III) bromide", "[Co(NH3)Br(en)2]Br2", 3, 2, 6, "Co-ammine-bromide-en"],
+  ["bis(ethane-1,2-diamine)oxalatocobalt(III)", "[Co(en)2(C2O4)]^+", 3, 1, 6, "Co-en-oxalate"],
+  ["bis(ethane-1,2-diamine)oxalatocobalt(III) chloride", "[Co(en)2(C2O4)]Cl", 3, 1, 6, "Co-en-oxalate-chloride"],
+  ["(ethane-1,2-diamine)dioxalatocobaltate(III)", "[Co(en)(C2O4)2]^-", 3, -1, 6, "Co-en-dioxalate"],
+  ["sodium (ethane-1,2-diamine)dioxalatocobaltate(III)", "Na[Co(en)(C2O4)2]", 3, -1, 6, "Co-en-dioxalate"],
+  ["tetraammineoxalatocobalt(III)", "[Co(NH3)4(C2O4)]^+", 3, 1, 6, "Co-ammine-oxalate"],
+  ["aquabis(ethane-1,2-diamine)hydroxidocobalt(III)", "[Co(H2O)(en)2(OH)]^2+", 3, 2, 6, "Co-aqua-hydroxide-en"],
 ];
 check(addedFixtures.length === COMPLEX_QUIZ_BANK.length - 38, "Independent fixture for every appended entry");
 for (const [index, [name, formula, oxidationState, charge, coordinationNumber, source]] of addedFixtures.entries()) {
@@ -150,6 +166,65 @@ check(!checkComplexAnswer(nameId("tetracarbonylcobaltate(-I)"), "tetracarbonylco
 check(!checkComplexAnswer(nameId("tetracarbonylnickel(0)"), "tetracarbonylnickel(II)").correct, "Zero oxidation state cannot be replaced by positive");
 check(questionFor(nameId("tetracarbonylnickel(0)")).hints.some((hint) => hint.includes("Write 0 for zero")), "Hints explain zero oxidation state");
 check(questionFor(nameId("tetracarbonylcobaltate(-I)")).hints.some((hint) => hint.includes("minus sign")), "Hints explain negative oxidation states");
+
+// A Hard question must combine decisions; a less familiar metal or one large
+// ligand prefix alone must not put an otherwise routine example in Hard.
+for (const entry of COMPLEX_QUIZ_BANK.filter((entry) => entry.difficulty === "hard")) {
+  const complex = parseComplex(entry.name);
+  const charged = complex.ligands.some((ligand) => ligand.charge !== 0);
+  const neutral = complex.ligands.some((ligand) => ligand.charge === 0);
+  const chelate = complex.ligands.some((ligand) => ligand.denticity > 1);
+  const layered = (complex.counterion && complex.oxidationState < 0)
+    || (charged && neutral && (chelate || complex.counterion || complex.ligands.length >= 3 || complex.charge < 0))
+    || (chelate && complex.counterion && (charged || complex.complexCount > 1));
+  check(layered, `${entry.name}: Hard combines ligand, oxidation-state or salt-balance decisions`);
+}
+for (const name of [
+  "hexachloridoplatinate(IV)", "hexachloridoiridate(IV)",
+  "potassium hexacyanidoferrate(II)", "hexaamminecobalt(III) chloride",
+  "tris(ethane-1,2-diamine)cobalt(III)", "trioxalatoferrate(III)",
+  "tetracarbonylcobaltate(-I)",
+]) check(COMPLEX_QUIZ_BANK[nameId(name)].difficulty === "medium", `${name}: routine single-ligand task is Medium`);
+check(countComplexQuestions("single-ligand", "hard") === 0, "Ordinary single-ligand ions do not fill Hard");
+check(countComplexQuestions(null, "hard") >= 25, "Hard retains a substantial pool of advanced questions");
+for (const entry of COMPLEX_QUIZ_BANK.slice(97)) check(entry.difficulty === "hard", `${entry.name}: new advanced exercise is Hard`);
+for (const mode of ["name", "structure"]) {
+  const target = nameId("aquachloridobis(ethane-1,2-diamine)cobalt(III) sulfate");
+  const unseen = pickComplexQuestion(mode, ["chelates", "salts"], "hard", ids.filter((id) => id !== target));
+  check(unseen?.id === target, `${mode}: Hard combined topics respect unseen advanced question`);
+  const afterOldBank = pickComplexQuestion(mode, null, "hard", ids.slice(0, 97));
+  check(afterOldBank.id >= 97 && afterOldBank.difficulty === "hard", `${mode}: existing session history reaches new Hard examples`);
+  const reset = pickComplexQuestion(mode, ["chelates", "salts"], "hard", ids);
+  check(reset && ["chelates", "salts"].includes(reset.category) && reset.difficulty === "hard", `${mode}: exhausted Hard history never falls back to an easier level`);
+  check(pickComplexQuestion(mode, "single-ligand", "hard") === null, `${mode}: unavailable Hard topic does not silently serve Medium`);
+}
+
+// These are real, close alternatives: the same metal and donor count, with
+// ligand/counterion differences that cannot be solved by spotting the metal.
+const hardChoiceCases = [
+  ["bis(ethane-1,2-diamine)oxalatocobalt(III)", [
+    "[Co(en)2(C2O4)]^+", "[Co(en)2(C2O4)]Cl", "[Co(en)(C2O4)2]^-", "Na[Co(en)(C2O4)2]",
+  ]],
+  ["diamminedibromidodichloridoplatinum(IV)", [
+    "[Pt(NH3)2Br2Cl2]", "[Pt(NH3)2Cl2I2]", "[Pt(NH3)3Cl3]Cl", "[Pt(NH3)3Br3]Br",
+  ]],
+];
+for (const [name, formulas] of hardChoiceCases) {
+  const arrangements = new Set();
+  for (let sample = 0; sample < 12; sample++) {
+    const question = questionFor(nameId(name), "structure");
+    const actual = question.choices.map((choice) => choice.formula);
+    check(actual.every((formula) => formulas.includes(formula)) && actual.length === formulas.length, `${name}: close curated alternatives chosen`);
+    const correct = question.choices.filter((_, position) => checkComplexChoice(question.id, position, question.nonce).correct);
+    check(correct.length === 1, `${name}: close alternatives still have one correct answer`);
+    arrangements.add(actual.join("|"));
+  }
+  check(arrangements.size > 1, `${name}: harder alternatives still shuffle`);
+}
+const mixedChelateId = nameId("amminechloridobis(ethane-1,2-diamine)cobalt(III) nitrate");
+check(!checkComplexAnswer(mixedChelateId, "amminechloridobis(ethane-1,2-diamine)cobalt(II) nitrate").correct, "Hard mixed-chelate salt rejects wrong oxidation state");
+check(!checkComplexAnswer(mixedChelateId, "amminechloridobis(ethane-1,2-diamine)cobalt(III) sulfate").correct, "Hard mixed-chelate salt rejects wrong counterion");
+check(!checkComplexAnswer(nameId("bis(ethane-1,2-diamine)oxalatocobalt(III)"), "(ethane-1,2-diamine)dioxalatocobaltate(III)").correct, "Swapping chelate counts changes the complex and its charge");
 
 for (const category of [null, ...categoryIds]) {
   for (const difficulty of [null, ...COMPLEX_DIFFICULTIES]) {

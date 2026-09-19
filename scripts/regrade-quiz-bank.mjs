@@ -2,11 +2,9 @@
  * Re-scores the question bank's difficulty from the structures and names it
  * already holds, without going back to the network.
  *
- * The first pass counted any carbon with three heavy neighbours as a chain
- * branch, which made every secondary alcohol and every carbonyl carbon look
- * like extra complexity — heptan-2-ol came out "hard". A branch is a carbon
- * with three or more *carbon* neighbours; a functional group is counted by
- * what it does to the name instead.
+ * The shared grader counts naming decisions: branching, complete locants,
+ * substituent patterns, naming boundaries, and explicitly specified stereo.
+ * Molecule size and unspecified stereocentres do not increase difficulty.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 

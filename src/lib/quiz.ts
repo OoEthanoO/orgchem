@@ -236,6 +236,7 @@ const BANK_INDEX = (() => {
   const byFormula = new Map<string, number[]>();
   const formulas: string[] = [];
   const drawings: string[] = [];
+  const atomCounts: number[] = [];
   QUIZ_BANK.forEach((question, index) => {
     let formula = "";
     try {
@@ -247,12 +248,14 @@ const BANK_INDEX = (() => {
       drawings[index] = `unrenderable:${index}`;
     }
     formulas[index] = formula;
+    atomCounts[index] = [...formula.matchAll(/([A-Z][a-z]?)(\d*)/g)]
+      .reduce((count, [, element, amount]) => count + (element === "H" ? 0 : Number(amount || 1)), 0);
     if (!formula) return;
     const bucket = byFormula.get(formula);
     if (bucket) bucket.push(index);
     else byFormula.set(formula, [index]);
   });
-  return { byFormula, formulas, drawings };
+  return { byFormula, formulas, drawings, atomCounts };
 })();
 
 /** A short digest of a string, for comparing two drawings cheaply. */
@@ -290,9 +293,11 @@ function distractorsFor(id: number, random: () => number): number[] {
   const taken = new Set([id]);
   const drawings = new Set([BANK_INDEX.drawings[id]]);
 
-  const take = (candidates: number[]) => {
+  const take = (candidates: number[], rank?: (candidate: number) => number) => {
     const shuffled = [...candidates];
     shuffle(shuffled, random);
+    // Shuffling before a stable sort randomizes ties without losing closeness.
+    if (rank) shuffled.sort((a, b) => rank(a) - rank(b));
     for (const candidate of shuffled) {
       if (chosen.length >= wanted) return;
       if (taken.has(candidate)) continue;
@@ -304,20 +309,27 @@ function distractorsFor(id: number, random: () => number): number[] {
     }
   };
 
-  take((BANK_INDEX.byFormula.get(formulaOf(id)) ?? []).filter((index) => index !== id));
+  const isomers = (BANK_INDEX.byFormula.get(formulaOf(id)) ?? []).filter((index) => index !== id);
+  if (question.difficulty === "hard") {
+    // On Hard, recognising the functional group should not eliminate options:
+    // prefer isomers from that same family before other same-formula compounds.
+    take(isomers.filter((index) => QUIZ_BANK[index].category === question.category));
+  }
+  take(isomers);
 
   if (chosen.length < wanted) {
-    const size = QUIZ_BANK[id].smiles.length;
-    take(
-      QUIZ_BANK.map((_, index) => index)
-        .filter((index) => QUIZ_BANK[index].category === question.category)
-        .sort(
+    const sameTopic = QUIZ_BANK.map((_, index) => index)
+      .filter((index) => QUIZ_BANK[index].category === question.category);
+    if (question.difficulty === "hard") {
+      take(sameTopic, (index) => Math.abs(BANK_INDEX.atomCounts[index] - BANK_INDEX.atomCounts[id]));
+    } else {
+      const size = question.smiles.length;
+      take(sameTopic.sort(
           (a, b) =>
             Math.abs(QUIZ_BANK[a].smiles.length - size) -
             Math.abs(QUIZ_BANK[b].smiles.length - size),
-        )
-        .slice(0, 12),
-    );
+        ).slice(0, 12));
+    }
   }
 
   if (chosen.length < wanted) take(QUIZ_BANK.map((_, index) => index));
@@ -431,7 +443,7 @@ function hintsFor(question: BankQuestion, formula: string, mode: QuizMode): stri
     return hints;
   }
 
-  const locants = [...new Set(name.match(/\d/g) ?? [])].sort();
+  const locants = [...new Set(name.match(/\d+/g) ?? [])].sort((a, b) => Number(a) - Number(b));
   hints.push(
     locants.length > 0
       ? `Number the parent chain of each option and look at position${locants.length > 1 ? "s" : ""} ${listOf(locants)} — only one option has everything in the right place.`

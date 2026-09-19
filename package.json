@@ -15,7 +15,7 @@
     "test:depict": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-depict.mjs",
     "test:stereo": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-stereo.mjs",
     "test:rotation": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-rotation.mjs",
-    "test:quiz": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-quiz.mjs",
+    "test:quiz": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-quiz-difficulty.mjs && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-quiz.mjs",
     "test:bonds": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-bonds.mjs",
     "test:live": "npm run test:resolution && npm run test:robustness && npm run test:marking",
     "test:resolution": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/loader.mjs scripts/test-resolution.mjs",

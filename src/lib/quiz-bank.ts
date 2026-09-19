@@ -22,14 +22,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(Cl)C(=O)O",
     "name": "2-chloropropanoic acid",
     "title": "2-Chloropropionic acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
     "smiles": "CC(C(=O)O)CC",
     "name": "2-methylbutanoic acid",
     "title": "2-Methylbutanoic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -43,14 +43,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C(C)C(=O)O",
     "name": "2,3-dimethylbutanoic acid",
     "title": "2,3-Dimethylbutanoic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
     "smiles": "OC(=O)C(C)CC(C)C",
     "name": "2,4-dimethylpentanoic acid",
     "title": "2,4-Dimethylpentanoic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
@@ -85,7 +85,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "OC(=O)CCC(=O)O",
     "name": "butanedioic acid",
     "title": "Succinic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -99,7 +99,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C(=O)OCC",
     "name": "ethyl 2-methylbutanoate",
     "title": "Ethyl 2-methylbutyrate",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "esters",
@@ -113,7 +113,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCCC(=O)OCC",
     "name": "ethyl butanoate",
     "title": "Ethyl butyrate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
@@ -190,7 +190,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "OC(=O)CCCC(=O)O",
     "name": "pentanedioic acid",
     "title": "Glutaric Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -204,7 +204,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CC(=O)OC(C)C",
     "name": "propan-2-yl 3-methylbutanoate",
     "title": "Isopropyl isovalerate",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amides",
@@ -246,7 +246,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCCC(=O)OCCC",
     "name": "propyl butanoate",
     "title": "Propyl butyrate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
@@ -260,7 +260,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(=O)OCCC",
     "name": "propyl propanoate",
     "title": "Propyl propionate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ethers",
@@ -274,7 +274,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCOC(C)(C)C",
     "name": "2-ethoxy-2-methylpropane",
     "title": "Ethyl tert-butyl ether",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "ethers",
@@ -288,14 +288,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "OCC(C)CC",
     "name": "2-methylbutan-1-ol",
     "title": "2-Methyl-1-butanol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC1CCCCC1O",
     "name": "2-methylcyclohexan-1-ol",
     "title": "2-Methylcyclohexanol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -330,14 +330,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "OC1CC(C)CCC1",
     "name": "3-methylcyclohexan-1-ol",
     "title": "3-Methylcyclohexanol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC(C)CC(O)CC",
     "name": "5-methylhexan-3-ol",
     "title": "3-Hexanol, 5-methyl-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -351,7 +351,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(O)CC",
     "name": "butan-2-ol",
     "title": "(+-)-2-Butanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -386,14 +386,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(O)CCCCC",
     "name": "heptan-2-ol",
     "title": "2-Heptanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
     "smiles": "CCC(O)CCCC",
     "name": "heptan-3-ol",
     "title": "3-Heptanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -414,14 +414,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(O)CCCC",
     "name": "hexan-2-ol",
     "title": "2-Hexanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
     "smiles": "CCC(O)CCC",
     "name": "hexan-3-ol",
     "title": "3-Hexanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ethers",
@@ -449,7 +449,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(O)CCC",
     "name": "pentan-2-ol",
     "title": "2-Pentanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -477,7 +477,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(O)CO",
     "name": "propane-1,2-diol",
     "title": "Propylene Glycol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -498,28 +498,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCCCC1C",
     "name": "1,2-dimethylcyclohexane",
     "title": "1,2-Dimethylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCC(C)C1",
     "name": "1,3-dimethylcyclohexane",
     "title": "1,3-Dimethylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCC(C)CC1",
     "name": "1,4-dimethylcyclohexane",
     "title": "1,4-Dimethylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CCCCC",
     "name": "2-methylheptane",
     "title": "2-Methylheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -533,7 +533,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CCCCCC",
     "name": "2-methyloctane",
     "title": "2-Methyloctane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -568,21 +568,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C(C)CCCC",
     "name": "2,3-dimethylheptane",
     "title": "2,3-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)C(C)CCC",
     "name": "2,3-dimethylhexane",
     "title": "2,3-Dimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)C(C)CC",
     "name": "2,3-dimethylpentane",
     "title": "2,3-Dimethylpentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
@@ -596,70 +596,70 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CC(C)CCC",
     "name": "2,4-dimethylheptane",
     "title": "2,4-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CC(C)CC",
     "name": "2,4-dimethylhexane",
     "title": "2,4-Dimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CC(C)C",
     "name": "2,4-dimethylpentane",
     "title": "2,4-Dimethylpentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CCC(C)CC",
     "name": "2,5-dimethylheptane",
     "title": "2,5-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CCC(C)C",
     "name": "2,5-dimethylhexane",
     "title": "2,5-Dimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CCCC(C)C",
     "name": "2,6-dimethylheptane",
     "title": "2,6-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)C(C)CC",
     "name": "3-ethyl-4-methylhexane",
     "title": "3-Ethyl-4-methylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)CCCC",
     "name": "3-ethylheptane",
     "title": "3-Ethylheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)CCC",
     "name": "3-ethylhexane",
     "title": "3-Ethylhexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)CCCCC",
     "name": "3-ethyloctane",
     "title": "3-Ethyloctane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -673,28 +673,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(CC)CCCC",
     "name": "3-methylheptane",
     "title": "3-Methylheptane",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CC(CC)CCC",
     "name": "3-methylhexane",
     "title": "3-Methylhexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CC(CC)CCCCCC",
     "name": "3-methylnonane",
     "title": "3-Methylnonane",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CC(CC)CCCCC",
     "name": "3-methyloctane",
     "title": "3-Methyloctane",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -729,49 +729,49 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C(C)CCC",
     "name": "3,4-dimethylheptane",
     "title": "3,4-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(C)C(C)CC",
     "name": "3,4-dimethylhexane",
     "title": "3,4-Dimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(C)CC(C)CC",
     "name": "3,5-dimethylheptane",
     "title": "3,5-Dimethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCCC(CC)CCC",
     "name": "4-ethylheptane",
     "title": "Heptane, 4-ethyl-",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CCCC(CC)CCCC",
     "name": "4-ethyloctane",
     "title": "4-Ethyloctane",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CCCC(C)CCC",
     "name": "4-methylheptane",
     "title": "4-Methylheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
     "smiles": "CCCC(C)CCCC",
     "name": "4-methyloctane",
     "title": "4-Methyloctane",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -820,7 +820,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC1CCCCC1",
     "name": "ethylcyclohexane",
     "title": "Ethylcyclohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkanes",
@@ -869,21 +869,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "NCC(C)CC(C)N",
     "name": "2-methylpentane-1,4-diamine",
     "title": "(racemic+meso) 2-Methyl-pentane-1,4-diamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
     "smiles": "CC(C)C#N",
     "name": "2-methylpropanenitrile",
     "title": "Isobutyronitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "nitriles",
     "smiles": "CC(C)C(C)C#N",
     "name": "2,3-dimethylbutanenitrile",
     "title": "2,3-Dimethylbutanenitrile",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -897,14 +897,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CC(C)C#N",
     "name": "2,4-dimethylpentanenitrile",
     "title": "2,4-Dimethylpentanenitrile",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CCC(C)C(C)N",
     "name": "3-methylpentan-2-amine",
     "title": "3-Methyl-2-pentanamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
@@ -925,7 +925,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(N)C",
     "name": "butan-2-amine",
     "title": "Sec-Butylamine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "nitriles",
@@ -974,7 +974,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CN(C)C",
     "name": "N,N-dimethylmethanamine",
     "title": "Trimethylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -1044,14 +1044,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "Cc1ccc(cc1)C(C)C",
     "name": "1-methyl-4-propan-2-ylbenzene",
     "title": "P-Cymene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aromatics",
     "smiles": "Cc1ccccc1C",
     "name": "1,2-xylene",
     "title": "O-Xylene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aromatics",
@@ -1065,7 +1065,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "Cc1cccc(C)c1",
     "name": "1,3-xylene",
     "title": "M-Xylene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aromatics",
@@ -1086,7 +1086,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "Cc1ccc(C)cc1",
     "name": "1,4-xylene",
     "title": "P-Xylene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aromatics",
@@ -1100,28 +1100,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "OC(=O)c1ccc(Cl)cc1",
     "name": "4-chlorobenzoic acid",
     "title": "4-Chlorobenzoic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "Cc1ccc(C=O)cc1",
     "name": "4-methylbenzaldehyde",
     "title": "4-Methylbenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "OC(=O)c1ccc(C)cc1",
     "name": "4-methylbenzoic acid",
     "title": "P-Toluic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "Oc1ccc(C)cc1",
     "name": "4-methylphenol",
     "title": "P-Cresol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -1135,7 +1135,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "c1ccccc1C=O",
     "name": "benzaldehyde",
     "title": "Benzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -1149,7 +1149,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "c1ccccc1C(=O)O",
     "name": "benzoic acid",
     "title": "Benzoic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -1170,14 +1170,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "c1ccccc1CC",
     "name": "ethylbenzene",
     "title": "Ethylbenzene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "c1ccc2ccccc2c1",
     "name": "naphthalene",
     "title": "Naphthalene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -1198,14 +1198,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "c1ccccc1CCC",
     "name": "propylbenzene",
     "title": "Propylbenzene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C=Cc1ccccc1",
     "name": "styrene",
     "title": "Styrene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -1219,7 +1219,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCCCC1=O",
     "name": "2-methylcyclohexan-1-one",
     "title": "2-Methylcyclohexanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aldehydes",
@@ -1240,7 +1240,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CC(C)C=O",
     "name": "2,4-dimethylpentanal",
     "title": "2,4-Dimethylpentanal",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -1268,7 +1268,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "O=C1CC(C)CCC1",
     "name": "3-methylcyclohexan-1-one",
     "title": "3-Methylcyclohexanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -1408,7 +1408,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "ClCCCCBr",
     "name": "1-bromo-4-chlorobutane",
     "title": "1-Bromo-4-chlorobutane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -1541,42 +1541,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "ClCC(Cl)C",
     "name": "1,2-dichloropropane",
     "title": "1,2-Dichloropropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC(Br)C(C)C",
     "name": "2-bromo-3-methylbutane",
     "title": "2-Bromo-3-methylbutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "BrC(C)C(C)CC",
     "name": "2-bromo-3-methylpentane",
     "title": "2-Bromo-3-methylpentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC(Br)CC",
     "name": "2-bromobutane",
     "title": "2-Bromobutane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(Br)CCCC",
     "name": "2-bromohexane",
     "title": "2-Bromohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(Br)CCC",
     "name": "2-bromopentane",
     "title": "2-Bromopentane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1590,35 +1590,35 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)(Cl)C",
     "name": "2-chloro-2-methylpropane",
     "title": "tert-BUTYL CHLORIDE",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC(C)CC(Cl)C",
     "name": "2-chloro-4-methylpentane",
     "title": "Pentane, 2-chloro-4-methyl-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC(Cl)CC",
     "name": "2-chlorobutane",
     "title": "2-Chlorobutane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(Cl)CCCC",
     "name": "2-chlorohexane",
     "title": "Hexane, 2-chloro-",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(Cl)CCC",
     "name": "2-chloropentane",
     "title": "2-Chloropentane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1632,21 +1632,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(F)CC",
     "name": "2-fluorobutane",
     "title": "2-Fluorobutane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(F)CCCC",
     "name": "2-fluorohexane",
     "title": "2-Fluorohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(F)CCC",
     "name": "2-fluoropentane",
     "title": "2-Fluoropentane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1660,21 +1660,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(I)CC",
     "name": "2-iodobutane",
     "title": "2-Iodobutane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(I)CCCC",
     "name": "2-iodohexane",
     "title": "2-Iodohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
     "smiles": "CC(I)CCC",
     "name": "2-iodopentane",
     "title": "2-Iodopentane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1688,7 +1688,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(Br)CCC",
     "name": "3-bromohexane",
     "title": "3-Bromohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1709,7 +1709,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(Cl)CCC",
     "name": "3-chlorohexane",
     "title": "3-Chlorohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1723,7 +1723,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(F)CCC",
     "name": "3-fluorohexane",
     "title": "3-Fluorohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1737,7 +1737,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(I)CCC",
     "name": "3-iodohexane",
     "title": "3-Iodohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "halides",
@@ -1758,7 +1758,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC/C=C/C(C)C",
     "name": "(E)-2-methylhex-3-ene",
     "title": "(3E)-2-Methyl-3-hexene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -1800,7 +1800,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1=CC(C)CCC1",
     "name": "1,3-dimethylcyclohexene",
     "title": "1,3-Dimethyl-1-cyclohexene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -1821,14 +1821,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C=C(C)C",
     "name": "2,4-dimethylpent-2-ene",
     "title": "2,4-Dimethylpent-2-ene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
     "smiles": "CCC(C)C=CC",
     "name": "4-methylhex-2-ene",
     "title": "4-Methylhex-2-ene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -2003,7 +2003,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C(=O)O)Br",
     "name": "2-bromopropanoic acid",
     "title": "2-Bromopropionic acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -2017,35 +2017,35 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C(=O)O)O",
     "name": "2-hydroxypropanoic acid",
     "title": "Lactic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
     "smiles": "CC1CCC1C(=O)O",
     "name": "2-methylcyclobutane-1-carboxylic acid",
     "title": "2-Methylcyclobutane-1-carboxylic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
     "smiles": "CC1CCCCC1C(=O)O",
     "name": "2-methylcyclohexane-1-carboxylic acid",
     "title": "2-Methylcyclohexanecarboxylic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
     "smiles": "CC1CCCC1C(=O)O",
     "name": "2-methylcyclopentane-1-carboxylic acid",
     "title": "2-Methylcyclopentane-1-carboxylic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
     "smiles": "CC1CC1C(=O)O",
     "name": "2-methylcyclopropane-1-carboxylic acid",
     "title": "2-Methylcyclopropanecarboxylic acid",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "acids",
@@ -2059,21 +2059,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C(=O)N",
     "name": "2-methylpropanamide",
     "title": "Isobutyramide",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acyl-halides",
     "smiles": "CC(C)C(=O)Cl",
     "name": "2-methylpropanoyl chloride",
     "title": "Isobutyryl chloride",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
     "smiles": "CC(C)COC(=O)C",
     "name": "2-methylpropyl acetate",
     "title": "Isobutyl Acetate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -2108,7 +2108,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(CC(=O)O)O",
     "name": "3-hydroxybutanoic acid",
     "title": "3-Hydroxybutyric Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "acids",
@@ -2157,7 +2157,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CC(C1)C(=O)O",
     "name": "cyclobutanecarboxylic acid",
     "title": "Cyclobutanecarboxylic acid",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amides",
@@ -2199,7 +2199,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CC1C(=O)O",
     "name": "cyclopropanecarboxylic acid",
     "title": "Cyclopropanecarboxylic acid",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "esters",
@@ -2234,7 +2234,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C(=O)OC",
     "name": "methyl 2-methylbutanoate",
     "title": "Methyl 2-methylbutyrate",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "esters",
@@ -2248,21 +2248,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "COC(=O)C1CCC1",
     "name": "methyl cyclobutanecarboxylate",
     "title": "Cyclobutanecarboxylic acid methyl ester",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
     "smiles": "COC(=O)C1CCCCC1",
     "name": "methyl cyclohexanecarboxylate",
     "title": "Methyl cyclohexanecarboxylate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
     "smiles": "COC(=O)C1CCCC1",
     "name": "methyl cyclopentanecarboxylate",
     "title": "Methyl cyclopentanecarboxylate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "esters",
@@ -2332,7 +2332,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(=O)OC(C)C",
     "name": "propan-2-yl propanoate",
     "title": "Isopropyl propionate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ethers",
@@ -2360,14 +2360,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCCCCC1)O",
     "name": "1-methylcycloheptan-1-ol",
     "title": "1-Methylcycloheptan-1-ol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
     "smiles": "CC1(CCCCC1)O",
     "name": "1-methylcyclohexan-1-ol",
     "title": "1-Methylcyclohexanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -2416,7 +2416,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)(C)OC",
     "name": "2-methoxy-2-methylpropane",
     "title": "tert-Butyl methyl ether",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -2437,28 +2437,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCC1O",
     "name": "2-methylcyclobutan-1-ol",
     "title": "2-Methylcyclobutan-1-ol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC1CCCCCC1O",
     "name": "2-methylcycloheptan-1-ol",
     "title": "2-Methylcycloheptan-1-ol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC1CCCC1O",
     "name": "2-methylcyclopentan-1-ol",
     "title": "2-Methylcyclopentanol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC1CC1O",
     "name": "2-methylcyclopropan-1-ol",
     "title": "2-Methylcyclopropan-1-ol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -2486,14 +2486,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCCCC(C1)O",
     "name": "3-methylcycloheptan-1-ol",
     "title": "3-Methylcycloheptanol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "CC1CCC(C1)O",
     "name": "3-methylcyclopentan-1-ol",
     "title": "3-Methylcyclopentanol, mixed isomers",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -2514,7 +2514,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(CO)O",
     "name": "butane-1,2-diol",
     "title": "1,2-Butanediol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -2528,7 +2528,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C(C)O)O",
     "name": "butane-2,3-diol",
     "title": "2,3-Butanediol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
@@ -2556,21 +2556,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CCCC(CC1)CO",
     "name": "cycloheptylmethanol",
     "title": "Cycloheptanemethanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
     "smiles": "C1CCC(C(C1)O)O",
     "name": "cyclohexane-1,2-diol",
     "title": "1,2-Cyclohexanediol",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alcohols",
     "smiles": "C1CCC(CC1)CO",
     "name": "cyclohexylmethanol",
     "title": "Cyclohexanemethanol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -2654,7 +2654,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(CC=C)O",
     "name": "pent-4-en-2-ol",
     "title": "4-Penten-2-OL",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alcohols",
@@ -2675,42 +2675,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC1CCC1C",
     "name": "1-ethyl-2-methylcyclobutane",
     "title": "1-Ethyl-2-methylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CCCCCC1C",
     "name": "1-ethyl-2-methylcycloheptane",
     "title": "1-Ethyl-2-methylcycloheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CCCCC1C",
     "name": "1-ethyl-2-methylcyclohexane",
     "title": "1-Ethyl-2-methylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CCCCCCC1C",
     "name": "1-ethyl-2-methylcyclooctane",
     "title": "1-Ethyl-2-methylcyclooctane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CCCC1C",
     "name": "1-ethyl-2-methylcyclopentane",
     "title": "1-Ethyl-2-methylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CC1C",
     "name": "1-ethyl-2-methylcyclopropane",
     "title": "1-Ethyl-2-methylcyclopropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
@@ -2759,77 +2759,77 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCC1C",
     "name": "1,2-dimethylcyclobutane",
     "title": "1,2-Dimethylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCCCC1C",
     "name": "1,2-dimethylcycloheptane",
     "title": "1,2-Dimethylcycloheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCCCCC1C",
     "name": "1,2-dimethylcyclooctane",
     "title": "1,2-Dimethylcyclooctane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCC1C",
     "name": "1,2-dimethylcyclopentane",
     "title": "1,2-Dimethylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CC1C",
     "name": "1,2-dimethylcyclopropane",
     "title": "1,2-Dimethylcyclopropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CC(C1)C",
     "name": "1,3-dimethylcyclobutane",
     "title": "1,3-Dimethylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCCC(C1)C",
     "name": "1,3-dimethylcycloheptane",
     "title": "1,3-Dimethylcycloheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCCCC(C1)C",
     "name": "1,3-dimethylcyclooctane",
     "title": "1,3-Dimethylcyclooctane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCC(C1)C",
     "name": "1,3-dimethylcyclopentane",
     "title": "1,3-Dimethylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)(C)CC(C)(C)C",
     "name": "2,2,4,4-tetramethylpentane",
     "title": "2,2,4,4-Tetramethylpentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CC(C)CCC(C)(C)C",
     "name": "2,2,5-trimethylhexane",
     "title": "2,2,5-Trimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
@@ -2850,21 +2850,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C(C)(C)CC",
     "name": "3,3,4-trimethylhexane",
     "title": "3,3,4-Trimethylhexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)C(CC)CC",
     "name": "3,4-diethylhexane",
     "title": "Hexane, 3,4-diethyl-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkanes",
     "smiles": "CCC(CC)CC(CC)CC",
     "name": "3,5-diethylheptane",
     "title": "3,5-Diethylheptane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "cycloalkanes",
@@ -2892,14 +2892,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC1CCCCCC1",
     "name": "ethylcycloheptane",
     "title": "Ethylcycloheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CCC1CCCCCCC1",
     "name": "ethylcyclooctane",
     "title": "Ethylcyclooctane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "cycloalkanes",
@@ -2927,14 +2927,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCCCCC1",
     "name": "methylcycloheptane",
     "title": "Methylcycloheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "cycloalkanes",
     "smiles": "CC1CCCCCCC1",
     "name": "methylcyclooctane",
     "title": "Cyclooctane, methyl-",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "cycloalkanes",
@@ -3011,7 +3011,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C#N)O",
     "name": "2-hydroxypropanenitrile",
     "title": "Lactonitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "nitro",
@@ -3025,7 +3025,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)CN",
     "name": "2-methylbutan-1-amine",
     "title": "2-Methylbutylamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -3039,56 +3039,56 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C#N",
     "name": "2-methylbutanenitrile",
     "title": "2-Methylbutyronitrile",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "amines",
     "smiles": "CC1CCC1N",
     "name": "2-methylcyclobutan-1-amine",
     "title": "2-Methylcyclobutan-1-amine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CC1CCCCCC1N",
     "name": "2-methylcycloheptan-1-amine",
     "title": "2-Methylcycloheptan-1-amine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CC1CCCCC1N",
     "name": "2-methylcyclohexan-1-amine",
     "title": "2-Methylcyclohexylamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CC1CCCC1N",
     "name": "2-methylcyclopentan-1-amine",
     "title": "2-Methylcyclopentylamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CC1CC1N",
     "name": "2-methylcyclopropan-1-amine",
     "title": "2-Methylcyclopropan-1-amine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
     "smiles": "CCCC(C)C#N",
     "name": "2-methylpentanenitrile",
     "title": "2-Methylpentanenitrile",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "nitriles",
     "smiles": "CC(=C)C#N",
     "name": "2-methylprop-2-enenitrile",
     "title": "Methacrylonitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "amines",
@@ -3158,28 +3158,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C(C)N",
     "name": "3-methylbutan-2-amine",
     "title": "1,2-Dimethylpropylamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
     "smiles": "CC(C)CC#N",
     "name": "3-methylbutanenitrile",
     "title": "Isovaleronitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "amines",
     "smiles": "CC(C)CC(C)N",
     "name": "4-methylpentan-2-amine",
     "title": "1,3-Dimethylbutylamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
     "smiles": "CC(C)CCC#N",
     "name": "4-methylpentanenitrile",
     "title": "4-Methylpentanenitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "nitriles",
@@ -3193,7 +3193,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(CCN)N",
     "name": "butane-1,3-diamine",
     "title": "1,3-Butanediamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -3249,7 +3249,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CCCC(CC1)CN",
     "name": "cycloheptylmethanamine",
     "title": "Cycloheptylmethylamine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "amines",
@@ -3270,7 +3270,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CCC(CC1)CN",
     "name": "cyclohexylmethanamine",
     "title": "Cyclohexanemethylamine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "amines",
@@ -3326,7 +3326,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCN(C)CC",
     "name": "N-ethyl-N-methylethanamine",
     "title": "Diethylmethylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -3403,28 +3403,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCN(CC)CC",
     "name": "N,N-diethylethanamine",
     "title": "Triethylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CCN(C)C",
     "name": "N,N-dimethylethanamine",
     "title": "Dimethylethylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CCCN(C)C",
     "name": "N,N-dimethylpropan-1-amine",
     "title": "N,N-Dimethylpropylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
     "smiles": "CC(C)N(C)C",
     "name": "N,N-dimethylpropan-2-amine",
     "title": "N,N-Dimethylisopropylamine",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "amines",
@@ -3452,7 +3452,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(CN)N",
     "name": "propane-1,2-diamine",
     "title": "Propylenediamine",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "nitriles",
@@ -3473,42 +3473,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C(=C1)CO)Cl",
     "name": "(2-chlorophenyl)methanol",
     "title": "2-Chlorobenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=CC=C1CO",
     "name": "(2-methylphenyl)methanol",
     "title": "2-Methylbenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC(=CC(=C1)Cl)CO",
     "name": "(3-chlorophenyl)methanol",
     "title": "3-Chlorobenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC(=CC=C1)CO",
     "name": "(3-methylphenyl)methanol",
     "title": "3-Methylbenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC(=CC=C1CO)Cl",
     "name": "(4-chlorophenyl)methanol",
     "title": "4-Chlorobenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=C(C=C1)CO",
     "name": "(4-methylphenyl)methanol",
     "title": "4-Methylbenzyl alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3578,21 +3578,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(=O)C1=CC=CC=C1",
     "name": "1-phenylethanone",
     "title": "Acetophenone",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CCC(=O)C1=CC=CC=C1",
     "name": "1-phenylpropan-1-one",
     "title": "1-Phenyl-1-propanone",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC=C(C=C1)C2=CC=CC=C2",
     "name": "1,1'-biphenyl",
     "title": "Biphenyl",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3613,14 +3613,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=C(C=C(C=C1Cl)Cl)Cl",
     "name": "1,3,5-trichlorobenzene",
     "title": "1,3,5-Trichlorobenzene",
-    "difficulty": "medium"
+    "difficulty": "hard"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC=C(C(=C1)C(=O)O)Cl",
     "name": "2-chlorobenzoic acid",
     "title": "2-Chlorobenzoic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3634,7 +3634,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C(=C1)C=O)O",
     "name": "2-hydroxybenzaldehyde",
     "title": "Salicylaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3648,21 +3648,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "COC1=CC=CC=C1C=O",
     "name": "2-methoxybenzaldehyde",
     "title": "2-Methoxybenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=CC=C1N",
     "name": "2-methylaniline",
     "title": "O-Toluidine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=CC=C1C#N",
     "name": "2-methylbenzonitrile",
     "title": "2-Methylbenzonitrile",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3676,14 +3676,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C=C1)CCN",
     "name": "2-phenylethanamine",
     "title": "Phenethylamine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC(=CC(=C1)Cl)C(=O)O",
     "name": "3-chlorobenzoic acid",
     "title": "3-Chlorobenzoic Acid",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3697,7 +3697,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC(=CC(=C1)O)C=O",
     "name": "3-hydroxybenzaldehyde",
     "title": "3-Hydroxybenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3711,21 +3711,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "COC1=CC=CC(=C1)C=O",
     "name": "3-methoxybenzaldehyde",
     "title": "3-Methoxybenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC(=CC=C1)N",
     "name": "3-methylaniline",
     "title": "m-Toluidine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC(=CC=C1)C#N",
     "name": "3-methylbenzonitrile",
     "title": "3-Tolunitrile",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3760,7 +3760,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC(=CC=C1C=O)O",
     "name": "4-hydroxybenzaldehyde",
     "title": "4-Hydroxybenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3774,21 +3774,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "COC1=CC=C(C=C1)C=O",
     "name": "4-methoxybenzaldehyde",
     "title": "4-Methoxybenzaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=C(C=C1)N",
     "name": "4-methylaniline",
     "title": "p-Toluidine",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC1=CC=C(C=C1)C#N",
     "name": "4-methylbenzonitrile",
     "title": "p-Tolunitrile",
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3809,7 +3809,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C=C1)C(=O)N",
     "name": "benzamide",
     "title": "Benzamide",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3823,7 +3823,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC(=C(C=C1O)O)O",
     "name": "benzene-1,2,4-triol",
     "title": "1,2,4-Benzenetriol",
-    "difficulty": "medium"
+    "difficulty": "hard"
   },
   {
     "category": "aromatics",
@@ -3844,21 +3844,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C=C1)C#N",
     "name": "benzonitrile",
     "title": "Benzonitrile",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "C1=CC=C(C=C1)C(=O)Cl",
     "name": "benzoyl chloride",
     "title": "Benzoyl chloride",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC(C)C1=CC=CC=C1",
     "name": "cumene",
     "title": "Cumene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3872,7 +3872,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCOC(=O)C1=CC=CC=C1",
     "name": "ethyl benzoate",
     "title": "Ethyl benzoate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3886,14 +3886,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "COC(=O)C1=CC=CC=C1",
     "name": "methyl benzoate",
     "title": "Methyl Benzoate",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
     "smiles": "CC(=O)NC1=CC=CC=C1",
     "name": "N-phenylacetamide",
     "title": "Acetanilide",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3907,7 +3907,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1=CC=C(C=C1)CO",
     "name": "phenylmethanol",
     "title": "Benzyl Alcohol",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3921,7 +3921,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)(C)C1=CC=CC=C1",
     "name": "tert-butylbenzene",
     "title": "Tert-Butylbenzene",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aromatics",
@@ -3935,21 +3935,21 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(=O)CO",
     "name": "1-hydroxypropan-2-one",
     "title": "Hydroxyacetone",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC(=O)COC",
     "name": "1-methoxypropan-2-one",
     "title": "Methoxyacetone",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "aldehydes",
     "smiles": "CC(C=O)Cl",
     "name": "2-chloropropanal",
     "title": "2-Chloropropanal",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aldehydes",
@@ -3963,49 +3963,49 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C=O)O",
     "name": "2-hydroxypropanal",
     "title": "Lactaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aldehydes",
     "smiles": "CCC(C)C=O",
     "name": "2-methylbutanal",
     "title": "2-Methylbutanal",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCC1=O",
     "name": "2-methylcyclobutan-1-one",
     "title": "2-Methylcyclobutan-1-one",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCCCCC1=O",
     "name": "2-methylcycloheptan-1-one",
     "title": "2-Methylcycloheptanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCCCCCC1=O",
     "name": "2-methylcyclooctan-1-one",
     "title": "2-Methyl-cyclooctanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCCC1=O",
     "name": "2-methylcyclopentan-1-one",
     "title": "2-Methylcyclopentanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CC1=O",
     "name": "2-methylcyclopropan-1-one",
     "title": "Methylcyclopropanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4019,7 +4019,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCCC(C)C=O",
     "name": "2-methylpentanal",
     "title": "2-Methylpentaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aldehydes",
@@ -4047,7 +4047,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)C(C)C=O",
     "name": "2,3-dimethylbutanal",
     "title": "2,3-Dimethylbutanal",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4089,7 +4089,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)CC(C)C=O",
     "name": "2,4-dimethylhexanal",
     "title": "2,4-Dimethylhexanal",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4110,28 +4110,28 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCCCC(=O)C1",
     "name": "3-methylcycloheptan-1-one",
     "title": "3-Methylcycloheptanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCCCCC(=O)C1",
     "name": "3-methylcyclooctan-1-one",
     "title": "3-Methylcyclooctan-1-one",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CC1CCC(=O)C1",
     "name": "3-methylcyclopentan-1-one",
     "title": "3-Methylcyclopentanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
     "smiles": "CCC(C)C(=O)C",
     "name": "3-methylpentan-2-one",
     "title": "3-Methylpentan-2-One",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4159,7 +4159,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C)CC(C)CC=O",
     "name": "3,5-dimethylhexanal",
     "title": "3,5-Dimethylhexanal",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4173,7 +4173,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C(=O)CC",
     "name": "4-methylhexan-3-one",
     "title": "4-Methylhexan-3-one",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "ketones",
@@ -4187,7 +4187,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(=O)CC(C)(C)C",
     "name": "4,4-dimethylpentan-2-one",
     "title": "4,4-Dimethyl-2-pentanone",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "aldehydes",
@@ -4243,7 +4243,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CCCC(CC1)C=O",
     "name": "cycloheptanecarbaldehyde",
     "title": "Formylcycloheptane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ketones",
@@ -4257,14 +4257,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C1CCC(CC1)C=O",
     "name": "cyclohexanecarbaldehyde",
     "title": "Cyclohexanecarboxaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "aldehydes",
     "smiles": "C1CCCC(CCC1)C=O",
     "name": "cyclooctanecarbaldehyde",
     "title": "Cyclooctanecarbaldehyde",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "ketones",
@@ -4334,7 +4334,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCC1)Br",
     "name": "1-bromo-1-methylcyclobutane",
     "title": "1-Bromo-1-methylcyclobutane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4348,42 +4348,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCCC1)Br",
     "name": "1-bromo-1-methylcyclopentane",
     "title": "1-Bromo-1-methylcyclopentane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1(CC1)Br",
     "name": "1-bromo-1-methylcyclopropane",
     "title": "1-Bromo-1-methylcyclopropane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCC1Br",
     "name": "1-bromo-2-methylcyclobutane",
     "title": "1-Bromo-2-methylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCCC1Br",
     "name": "1-bromo-2-methylcyclohexane",
     "title": "Cyclohexane, 1-bromo-2-methyl-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCC1Br",
     "name": "1-bromo-2-methylcyclopentane",
     "title": "1-Bromo-2-methylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CC1Br",
     "name": "1-bromo-2-methylcyclopropane",
     "title": "1-Bromo-2-methylcyclopropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4397,7 +4397,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCC1)Cl",
     "name": "1-chloro-1-methylcyclobutane",
     "title": "1-Chloro-1-methylcyclobutane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4411,42 +4411,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCCC1)Cl",
     "name": "1-chloro-1-methylcyclopentane",
     "title": "1-Chloro-1-methylcyclopentane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1(CC1)Cl",
     "name": "1-chloro-1-methylcyclopropane",
     "title": "1-Chloro-1-methylcyclopropane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCC1Cl",
     "name": "1-chloro-2-methylcyclobutane",
     "title": "1-Chloro-2-methylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCCC1Cl",
     "name": "1-chloro-2-methylcyclohexane",
     "title": "1-Chloro-2-methylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCC1Cl",
     "name": "1-chloro-2-methylcyclopentane",
     "title": "1-Chloro-2-methylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CC1Cl",
     "name": "1-chloro-2-methylcyclopropane",
     "title": "1-Chloro-2-methylcyclopropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4460,7 +4460,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCC1)F",
     "name": "1-fluoro-1-methylcyclobutane",
     "title": "1-Fluoro-1-methylcyclobutane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4474,42 +4474,42 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1(CCCC1)F",
     "name": "1-fluoro-1-methylcyclopentane",
     "title": "1-Fluoro-1-methylcyclopentane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1(CC1)F",
     "name": "1-fluoro-1-methylcyclopropane",
     "title": "1-Fluoro-1-methylcyclopropane",
-    "difficulty": "easy"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCC1F",
     "name": "1-fluoro-2-methylcyclobutane",
     "title": "1-Fluoro-2-methylcyclobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCCC1F",
     "name": "1-fluoro-2-methylcyclohexane",
     "title": "1-Fluoro-2-methylcyclohexane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CCCC1F",
     "name": "1-fluoro-2-methylcyclopentane",
     "title": "1-Fluoro-2-methylcyclopentane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC1CC1F",
     "name": "1-fluoro-2-methylcyclopropane",
     "title": "1-Fluoro-2-methylcyclopropane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4558,14 +4558,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC(C(C)Br)Br",
     "name": "2,3-dibromobutane",
     "title": "2,3-Dibromobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
     "smiles": "CC(C(C)Cl)Cl",
     "name": "2,3-dichlorobutane",
     "title": "2,3-Dichlorobutane",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "halides",
@@ -4719,14 +4719,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)/C=C/C",
     "name": "(E)-4-methylhex-2-ene",
     "title": "4-Methyl-2-hexene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
     "smiles": "C/C=C/C(C)C",
     "name": "(E)-4-methylpent-2-ene",
     "title": "4-Methyl-2-pentene, (2E)-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -4768,14 +4768,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)/C=C\\C",
     "name": "(Z)-4-methylhex-2-ene",
     "title": "4-Methyl-2-hexene, (Z)-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
     "smiles": "C/C=C\\C(C)C",
     "name": "(Z)-4-methylpent-2-ene",
     "title": "4-Methyl-2-pentene, (2Z)-",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -4810,14 +4810,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CC1CCC(=C1)C",
     "name": "1,3-dimethylcyclopentene",
     "title": "1,3-Dimethylcyclopentene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
     "smiles": "CC1CC=C(C1)C",
     "name": "1,4-dimethylcyclopentene",
     "title": "1,4-Dimethylcyclopentene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -4887,14 +4887,14 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(C)C=C",
     "name": "3-methylpent-1-ene",
     "title": "3-Methyl-1-pentene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkynes",
     "smiles": "CCC(C)C#C",
     "name": "3-methylpent-1-yne",
     "title": "3-Methyl-1-pentyne",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -4915,7 +4915,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "CCC(=C(C)CC)C",
     "name": "3,4-dimethylhex-3-ene",
     "title": "3,4-Dimethylhex-3-ene",
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
     "category": "alkenes",
@@ -5027,7 +5027,7 @@ export const QUIZ_BANK: BankQuestion[] = [
     "smiles": "C=CC1CCCCC1",
     "name": "ethenylcyclohexane",
     "title": "Vinylcyclohexane",
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "category": "alkenes",
@@ -5112,5 +5112,390 @@ export const QUIZ_BANK: BankQuestion[] = [
     "name": "propane",
     "title": "Propane",
     "difficulty": "easy"
+  },
+  {
+    "category": "acids",
+    "smiles": "C[C@H]([C@H](C(=O)O)O)O",
+    "name": "(2R,3R)-2,3-dihydroxybutanoic acid",
+    "title": "4-Deoxyerythronic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)C(C)C(C(=O)O)O",
+    "name": "2-hydroxy-3,4-dimethylpentanoic acid",
+    "title": "2-Hydroxy-3,4-dimethylpentanoic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acids",
+    "smiles": "CC(C)C(C)C(C)C(=O)O",
+    "name": "2,3,4-trimethylpentanoic acid",
+    "title": "2,3,4-Trimethylpentanoic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "acyl-halides",
+    "smiles": "CC(C)C(C)C(C)C(=O)Cl",
+    "name": "2,3,4-trimethylpentanoyl chloride",
+    "title": "2,3,4-Trimethylpentanoyl chloride",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC[C@H]([C@H](C)O)O",
+    "name": "(2S,3R)-pentane-2,3-diol",
+    "title": "(2S,3R)-2,3-Pentanediol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CC(C)C(C)C(C)CO",
+    "name": "2,3,4-trimethylpentan-1-ol",
+    "title": "2,3,4-Trimethyl-1-pentanol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alcohols",
+    "smiles": "CCC(C)C(C)C(C)O",
+    "name": "3,4-dimethylhexan-2-ol",
+    "title": "3,4-Dimethyl-2-hexanol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aldehydes",
+    "smiles": "CC(C)C(C)C(C=O)O",
+    "name": "2-hydroxy-3,4-dimethylpentanal",
+    "title": "",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aldehydes",
+    "smiles": "CC(C)C(C)C(C)C=O",
+    "name": "2,3,4-trimethylpentanal",
+    "title": "2,3,4-Trimethylpentanal",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCCC(C)C(C)C(C)C",
+    "name": "2,3,4-trimethylheptane",
+    "title": "2,3,4-Trimethylheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(C)C(C)CC(C)C",
+    "name": "2,4,5-trimethylheptane",
+    "title": "2,4,5-Trimethylheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkanes",
+    "smiles": "CCC(C)C(CC)C(C)CC",
+    "name": "4-ethyl-3,5-dimethylheptane",
+    "title": "4-Ethyl-3,5-dimethylheptane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkenes",
+    "smiles": "CC/C=C/C=C/C",
+    "name": "(2E,4E)-hepta-2,4-diene",
+    "title": "2,4-Heptadiene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkenes",
+    "smiles": "CC/C=C\\C=C/C",
+    "name": "(2Z,4Z)-hepta-2,4-diene",
+    "title": "2,4-Heptadiene, (Z,Z)",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkenes",
+    "smiles": "CCC(C)/C=C/C(C)C",
+    "name": "(E)-2,5-dimethylhept-3-ene",
+    "title": "(E)-2,5-dimethylhept-3-ene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkynes",
+    "smiles": "CCC(C)C(C)C#C",
+    "name": "3,4-dimethylhex-1-yne",
+    "title": "3,4-Dimethylhex-1-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkynes",
+    "smiles": "CC(C)CC(C)C#C",
+    "name": "3,5-dimethylhex-1-yne",
+    "title": "3,5-Dimethylhex-1-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "alkynes",
+    "smiles": "CCC(C)C(C)C#CC",
+    "name": "4,5-dimethylhept-2-yne",
+    "title": "4,5-Dimethylhept-2-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amides",
+    "smiles": "CC(C)C(C(=O)N(C)C)Cl",
+    "name": "2-chloro-N,N,3-trimethylbutanamide",
+    "title": "2-chloro-N,N,3-trimethylbutanamide",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amides",
+    "smiles": "CC(C)C(C)C(C)C(=O)N",
+    "name": "2,3,4-trimethylpentanamide",
+    "title": "2,3,4-Trimethylpentanamide",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amides",
+    "smiles": "CCNC(=O)C(C)C(C)C",
+    "name": "N-ethyl-2,3-dimethylbutanamide",
+    "title": "N-ethyl-2,3-dimethylbutanamide",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amides",
+    "smiles": "CCN(C)C(=O)C(C)C(C)C",
+    "name": "N-ethyl-N,2,3-trimethylbutanamide",
+    "title": "N-ethyl-N,2,3-trimethylbutanamide",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amides",
+    "smiles": "CC(C)C(C)C(=O)N(C)C",
+    "name": "N,N,2,3-tetramethylbutanamide",
+    "title": "N,N,2,3-tetramethylbutanamide",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)C(C)C(C)CN",
+    "name": "2,3,4-trimethylpentan-1-amine",
+    "title": "2,3,4-Trimethylpentan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CCN(C)CC(C)C(C)C",
+    "name": "N-ethyl-N,2,3-trimethylbutan-1-amine",
+    "title": "N-ethyl-N,2,3-trimethylbutan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "amines",
+    "smiles": "CC(C)C(C)CN(C)C",
+    "name": "N,N,2,3-tetramethylbutan-1-amine",
+    "title": "N,N,2,3-tetramethylbutan-1-amine",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=C(C=CC(=C1)C(=O)C)Cl",
+    "name": "1-(4-chloro-3-methylphenyl)ethanone",
+    "title": "4'-Chloro-3'-methylacetophenone",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=C(C=C1Cl)OC)O",
+    "name": "4-chloro-2-methoxy-5-methylphenol",
+    "title": "4-Chloro-2-methoxy-5-methylphenol",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "C1=CC(=C(C=C1C(=O)O)O)Cl",
+    "name": "4-chloro-3-hydroxybenzoic acid",
+    "title": "4-Chloro-3-hydroxybenzoic acid",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=CC(=CC(=C1C)Cl)Br",
+    "name": "5-bromo-1-chloro-2,3-dimethylbenzene",
+    "title": "5-Bromo-1-chloro-2,3-dimethylbenzene",
+    "difficulty": "hard"
+  },
+  {
+    "category": "aromatics",
+    "smiles": "CC1=C(C=C(C=C1)C(=O)OC)Cl",
+    "name": "methyl 3-chloro-4-methylbenzoate",
+    "title": "Methyl 3-Chloro-4-methylbenzoate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "cycloalkanes",
+    "smiles": "CC1CCCC(C1C)C",
+    "name": "1,2,3-trimethylcyclohexane",
+    "title": "1,2,3-Trimethylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "cycloalkanes",
+    "smiles": "CC1CC(CC(C1)C)C",
+    "name": "1,3,5-trimethylcyclohexane",
+    "title": "1,3,5-Trimethylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "cycloalkanes",
+    "smiles": "CCC1CC(CCC1C)C",
+    "name": "2-ethyl-1,4-dimethylcyclohexane",
+    "title": "1,4-Dimethyl-2-ethylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "enynes",
+    "smiles": "CC(CC#C)C(=C)C",
+    "name": "2,3-dimethylhex-1-en-5-yne",
+    "title": "2,3-Dimethylhex-1-en-5-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "enynes",
+    "smiles": "CC(C=C)C(C)C#C",
+    "name": "3,4-dimethylhex-1-en-5-yne",
+    "title": "3,4-Dimethylhex-1-en-5-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "enynes",
+    "smiles": "CC=C(C)C(C)C#C",
+    "name": "3,4-dimethylhex-4-en-1-yne",
+    "title": "3,4-Dimethylhex-4-en-1-yne",
+    "difficulty": "hard"
+  },
+  {
+    "category": "esters",
+    "smiles": "CCOC(=O)C(C(C)C)O",
+    "name": "ethyl 2-hydroxy-3-methylbutanoate",
+    "title": "Ethyl 2-hydroxy-3-methylbutanoate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "esters",
+    "smiles": "CCOC(=O)C(C)C(C)C",
+    "name": "ethyl 2,3-dimethylbutanoate",
+    "title": "Ethyl 2,3-dimethylbutanoate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "esters",
+    "smiles": "C[C@H]([C@H](C(=O)OC)O)O",
+    "name": "methyl (2R,3R)-2,3-dihydroxybutanoate",
+    "title": "Methyl (2R,3R)-2,3-dihydroxybutanoate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "esters",
+    "smiles": "CC(C)C(C)CC(=O)OC",
+    "name": "methyl 3,4-dimethylpentanoate",
+    "title": "(-)-Methyl-3,4-dimethylvalerate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "esters",
+    "smiles": "CC(C)C(C)C(=O)OC(C)C",
+    "name": "propan-2-yl 2,3-dimethylbutanoate",
+    "title": "Propan-2-yl 2,3-dimethylbutanoate",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ethers",
+    "smiles": "CC1CCCC(C1C)OC",
+    "name": "1-methoxy-2,3-dimethylcyclohexane",
+    "title": "1-Methoxy-2,3-dimethylcyclohexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ethers",
+    "smiles": "CC(C)C(C)C(C)COC",
+    "name": "1-methoxy-2,3,4-trimethylpentane",
+    "title": "1-Methoxy-2,3,4-trimethylpentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ethers",
+    "smiles": "CCOC(C)C(C)C(C)C",
+    "name": "2-ethoxy-3,4-dimethylpentane",
+    "title": "2-Ethoxy-3,4-dimethylpentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ethers",
+    "smiles": "CC(C)C(C)C(C)OC",
+    "name": "2-methoxy-3,4-dimethylpentane",
+    "title": "2-Methoxy-3,4-dimethylpentane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ethers",
+    "smiles": "CC(C)C(C(C)OC)Cl",
+    "name": "3-chloro-2-methoxy-4-methylpentane",
+    "title": "",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "C[C@@H]([C@@H](C)Br)Cl",
+    "name": "(2R,3S)-2-bromo-3-chlorobutane",
+    "title": "(2R,3S)-2-Brom-3-chlorbutan",
+    "difficulty": "hard"
+  },
+  {
+    "category": "halides",
+    "smiles": "CC(C)C(C)C(C(C)C)Cl",
+    "name": "3-chloro-2,4,5-trimethylhexane",
+    "title": "3-Chloro-2,4,5-trimethylhexane",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ketones",
+    "smiles": "CC(C)C(C(=O)C)O",
+    "name": "3-hydroxy-4-methylpentan-2-one",
+    "title": "3-Hydroxy-4-methylpentan-2-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "ketones",
+    "smiles": "CC(C)C(C)C(C)C(=O)C",
+    "name": "3,4,5-trimethylhexan-2-one",
+    "title": "3,4,5-Trimethylhexan-2-one",
+    "difficulty": "hard"
+  },
+  {
+    "category": "nitriles",
+    "smiles": "CC(C)C(C)C(C#N)Cl",
+    "name": "2-chloro-3,4-dimethylpentanenitrile",
+    "title": "",
+    "difficulty": "hard"
+  },
+  {
+    "category": "nitriles",
+    "smiles": "CC(C)C(C)C(C#N)O",
+    "name": "2-hydroxy-3,4-dimethylpentanenitrile",
+    "title": "2-Hydroxy-3,4-dimethylpentanenitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "nitriles",
+    "smiles": "CC(C)C(C)C(C)C#N",
+    "name": "2,3,4-trimethylpentanenitrile",
+    "title": "2,3,4-Trimethylpentanenitrile",
+    "difficulty": "hard"
+  },
+  {
+    "category": "nitro",
+    "smiles": "CC(C)C(C(C)C)[N+](=O)[O-]",
+    "name": "2,4-dimethyl-3-nitropentane",
+    "title": "2,4-Dimethyl-3-nitropentane",
+    "difficulty": "hard"
   }
 ];

@@ -1,7 +1,8 @@
 # Coordination practice expansion references
 
-Checked 2026-09-15. The original 38 question IDs are preserved; 59 entries are
-appended. `test-complex-quiz.mjs` supplies an independent, literal formula,
+Checked 2026-09-19. The original 97 question IDs and compositions are preserved;
+16 advanced exercises are appended (113 total). The earlier expansion added
+59 entries after the first 38. `test-complex-quiz.mjs` supplies a literal formula,
 oxidation state, entity charge and coordination number for every addition.
 The fixture's source key refers to the table below.
 
@@ -24,6 +25,30 @@ The fixture's source key refers to the table below.
 - Names use modern ligand spellings according to the
   [IUPAC brief guide](https://iupac.qmul.ac.uk/BriefGuide/inorganic.html).
   Traditional spellings remain accepted by the marker.
+
+## Hard-level standard
+
+Twenty existing single-ligand ions and straightforward salts move from Hard
+to Medium. The 16 new entries are Hard. Totals change from 18 Easy / 46 Medium /
+33 Hard to 18 Easy / 66 Medium / 29 Hard.
+
+Hard requires a combination of decisions:
+
+- Charged and neutral ligands combined with chelation, salt charge balance,
+  three ligand types, or an anionic metal name.
+- Anionic chelates with counterions (or a chelated salt requiring multiple
+  coordination entities in a formula unit).
+- A negative metal oxidation state together with salt charge balance.
+
+A rare metal, an ordinary homoleptic salt, or a single chelate multiplier is
+insufficient by itself. For example, potassium hexacyanidoferrate(II) and
+tris(ethane-1,2-diamine)cobalt(III) now belong to Medium. Hard includes
+aquachloridobis(ethane-1,2-diamine)cobalt(III) sulfate and sodium
+(ethane-1,2-diamine)dioxalatocobaltate(III). Optional hints remain available.
+
+Hard multiple choice first selects real examples with the same metal, then
+prefers nearby ligand compositions, coordination numbers, charges and salt
+forms. It still randomizes option order and never manufactures a distractor.
 
 ## Source index
 
@@ -65,3 +90,12 @@ The fixture's source key refers to the table below.
 | Co-en-chloride | `[CoCl2(en)2]Cl` | [IUCr original paper's named precursor](https://journals.iucr.org/e/issues/2009/07/00/bq2142/index.html) |
 | Co-en-perchlorate | `[CoCl2(en)2]ClO4` | [IUCr original structure, DOI 10.1107/S0108270186095379](https://journals.iucr.org/paper?buy=yes&cnor=a25774) |
 | Ni-en-sulfate | `[Ni(en)3]SO4` | [ACS original structure, DOI 10.1021/ic50093a007](https://pubs.acs.org/doi/10.1021/ic50093a007) |
+| Pt-IV-mixed-halides | `[Pt(NH3)2Br2Cl2]`, `[Pt(NH3)2Cl2I2]`, `[Pt(NH3)3Cl3]Cl`, `[Pt(NH3)3Br3]Br` | [Original Dalton Transactions synthesis and crystallography, DOI 10.1039/C4DT02627F](https://pmc.ncbi.nlm.nih.gov/articles/PMC4252584/). Lattice DMF in solvated crystals is omitted. Cis/fac descriptions in the source do not become stereochemical practice claims. |
+| Co-ammine-chloride-en | `[Co(NH3)Cl(en)2](NO3)2`, its `2+` cation | [Original JACS photochemical study, DOI 10.1021/ja00450a016](https://pubs.acs.org/doi/10.1021/ja00450a016), on chloro(ammine)bis(ethylenediamine)cobalt dinitrate. |
+| Co-aqua-chloride-en | `[Co(H2O)Cl(en)2]SO4`, its `2+` cation | [Inorganic Syntheses 14, chapter 14, pp.71–72](https://sites.lsa.umich.edu/jbuss/wp-content/uploads/sites/811/2020/08/inorganic-synthesis14.pdf); [publisher chapter](https://onlinelibrary.wiley.com/doi/10.1002/9780470132456.ch14). Omit two lattice waters from the reported sulfate dihydrate, retaining its coordinated water. |
+| Co-ammine-bromide-en | `[Co(NH3)Br(en)2]Br2`, its `2+` cation | [Original Acta Crystallographica C53, 216–217, DOI 10.1107/S0108270196013479](https://journals.iucr.org/c/issues/1997/02/00/ta1130/ta1130.pdf). No lattice water in this formula. |
+| Co-en-oxalate | `[Co(en)2(C2O4)]+` | [Original BCSJ crystal structure, DOI 10.1246/bcsj.51.3251](https://academic.oup.com/bcsj/article-abstract/51/11/3251/7357585). Only the complex cation is extracted from the hydrogen-tartrate monohydrate. |
+| Co-en-oxalate-chloride | `[Co(en)2(C2O4)]Cl` | [Wiley experimental text, procedure 5.1.b](https://catalogimages.wiley.com/images/db/pdf/9780471464839.toc.pdf); [original chloride study, DOI 10.1139/v71-156](https://doi.org/10.1139/v71-156). |
+| Co-en-dioxalate | `Na[Co(en)(C2O4)2]`, its `1-` anion | [Inorganic Syntheses 13, p.199](https://sites.lsa.umich.edu/jbuss/wp-content/uploads/sites/811/2020/08/inorganic-synthesis13.pdf). Omit the reported three-and-a-half lattice waters. |
+| Co-ammine-oxalate | `[Co(NH3)4(C2O4)]+` | [Original BCSJ NMR study, DOI 10.1246/bcsj.49.1867](https://academic.oup.com/bcsj/article-pdf/49/7/1867/56091129/bcsj.49.1867.pdf), explicitly studying the oxalato/tetraammine composition. |
+| Co-aqua-hydroxide-en | `[Co(H2O)(en)2(OH)]2+` | [Inorganic Syntheses 14, chapter 14, pp.74–75](https://sites.lsa.umich.edu/jbuss/wp-content/uploads/sites/811/2020/08/inorganic-synthesis14.pdf). Extract only the cation of the documented dithionate salt; dithionate is outside this parser's scope. |
