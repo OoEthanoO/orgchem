@@ -41,12 +41,15 @@ const EMPTY_SCORE: Score = { correct: 0, asked: 0, streak: 0, best: 0 };
 export function Quiz({
   categories,
   availability,
+  topicAliases = {},
   endpoint = "/api/quiz",
   subject = "organic",
 }: {
   categories: Category[];
   /** Question counts by "category:difficulty", with "*" meaning unfiltered. */
   availability: Record<string, number>;
+  /** Retired topic IDs that now select several individual topics. */
+  topicAliases?: Record<string, readonly string[]>;
   endpoint?: string;
   subject?: "organic" | "complexes";
 }) {
@@ -55,7 +58,7 @@ export function Quiz({
   // the URL is kept in step with it, rather than the other way round: a drill
   // in progress should not be restarted by the address bar.
   const searchParams = useSearchParams();
-  const [selection] = useState(() => readSelection(searchParams, categories, availability));
+  const [selection] = useState(() => readSelection(searchParams, categories, availability, topicAliases));
   const [mode, setMode] = useState<QuizMode>(selection.mode);
   const [topics, setTopics] = useState<string[]>(selection.topics);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(selection.difficulty);
@@ -484,9 +487,12 @@ function readSelection(
   params: URLSearchParams,
   categories: Category[],
   availability: Record<string, number>,
+  topicAliases: Record<string, readonly string[]>,
 ): Selection {
   const level = params.get("level");
-  const requested = new Set(params.getAll("topic"));
+  const requested = new Set(params.getAll("topic").flatMap((topic) =>
+    Object.hasOwn(topicAliases, topic) ? topicAliases[topic] : [topic],
+  ));
 
   let topics = categories.filter((item) => requested.has(item.id)).map((item) => item.id);
   let difficulty = level && level in DIFFICULTY_LABELS ? (level as Difficulty) : null;

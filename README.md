@@ -127,9 +127,12 @@ identifiers.
 
 ## Naming practice
 
-`/practice` drills organic structures in both directions, filtered by topic
-(alkanes, alkenes, haloalkanes, alcohols, carbonyls, acids, amines, aromatics)
-and by level. **Name the structure** shows a drawing and takes a typed name.
+`/practice` drills organic structures in both directions, filtered by one or
+more topics and by level. Topics are separate: alkanes, cycloalkanes, alkenes,
+alkynes, enynes, haloalkanes, alcohols, ethers, aldehydes, ketones, carboxylic
+acids, esters, amides, acyl halides, acid anhydrides, amines, nitriles, nitro
+compounds and aromatics. Select several to practise them together, or choose
+Everything to reset the topic filter. **Name the structure** shows a drawing and takes a typed name.
 **Find the structure** shows a name and offers four drawings, three of them
 usually true isomers of the answer — same formula, different connectivity,
 which is the discrimination the exercise is about. A candidate drawn exactly
@@ -152,8 +155,9 @@ marked wrong.
 
 What is being drilled lives in the URL, as the lookup page's query does, so a
 selection can be handed to someone:
-`/practice?mode=structure&topic=alcohols&level=easy` sets them down in front of
-exactly that. Anything the bank cannot fill is dropped rather than becoming an
+`/practice?mode=structure&topic=alcohols&topic=ethers&level=easy` sets them down in front of
+both selected topics. Retired `unsaturated` and `carbonyls` topic links expand
+to their individual topics. Anything the bank cannot fill is dropped rather than becoming an
 error. The multiple choice is answerable from the keyboard — the number keys
 pick an option, Enter moves on — as the typed direction already was.
 
@@ -170,6 +174,13 @@ and OPSIN then reads it back; a pair is kept only if OPSIN's structure for the
 name is the structure it was paired with. Difficulty is computed from what makes
 naming hard (branches, how many locants have to be placed, whether there is
 stereochemistry) rather than assigned by hand.
+
+`scripts/quiz-topics.mjs` splits the original course groups by molecular bonds,
+and is shared by bank generation and topic checks. Mixed-function questions
+stay with their principal naming exercise: a hydroxyether remains an alcohol,
+for example, and aromatic exercises remain in Aromatics. Run the bank builder
+with `--reclassify` to update only topics, without external requests or changing
+question order and IDs.
 
 Additional candidates live in `scripts/quiz-expansion-candidates.mjs`. To verify
 and append them without renumbering existing questions, run:

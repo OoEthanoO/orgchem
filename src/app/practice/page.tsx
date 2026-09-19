@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { Quiz } from "@/components/Quiz";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { CATEGORIES, DIFFICULTIES, countFor } from "@/lib/quiz";
+import { CATEGORIES, DIFFICULTIES, TOPIC_ALIASES, countFor } from "@/lib/quiz";
 
 export const metadata: Metadata = {
   title: "chem — organic naming practice",
@@ -66,7 +66,7 @@ export default function PracticePage() {
         whatever is being practised, so it stays prerendered while this waits.
       */}
       <Suspense fallback={<div className="h-[28rem] animate-pulse rounded-2xl bg-surface-2" />}>
-        <Quiz categories={CATEGORIES} availability={availability} />
+        <Quiz categories={CATEGORIES} availability={availability} topicAliases={TOPIC_ALIASES} />
       </Suspense>
 
       <footer className="mt-auto pt-6 text-xs text-text-faint">

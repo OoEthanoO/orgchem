@@ -8,7 +8,8 @@ import * as OCL from "openchemlib";
 import { registerHooks } from "node:module";
 
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
-import { CATEGORIES, DIFFICULTIES, QUIZ_MODES, checkChoice, countFor, pickQuestion } from "../src/lib/quiz.ts";
+import { CATEGORIES, DIFFICULTIES, QUIZ_MODES, TOPIC_ALIASES, checkChoice, countFor, pickQuestion } from "../src/lib/quiz.ts";
+import { classifyQuizTopic } from "./quiz-topics.mjs";
 
 /** Pull one specific question out by narrowing until only it can be chosen. */
 function describeById(index) {
@@ -57,6 +58,78 @@ if (problems.length) failures.push(...problems.slice(0, 5));
 
 check("no duplicate structures", structures.size === QUIZ_BANK.length);
 check("no duplicate names", names.size === QUIZ_BANK.length);
+
+// Independently specified functional-group examples include names whose
+// spelling would be misleading (acetyl acetate is an anhydride) and molecules
+// with several groups. Classification stays within the original course group.
+const topicFixtures = [
+  ["alkanes", "CCCC", "alkanes"],
+  ["alkanes", "CC(C)C", "alkanes"],
+  ["alkanes", "CC1CCCCC1", "cycloalkanes"],
+  ["alkanes", "C1CCCCCCC1", "cycloalkanes"],
+  ["alkanes", "CC1CCCCCCC1", "cycloalkanes"],
+  ["alkanes", "C1CCCCCCCCCCC1", "cycloalkanes"],
+  ["unsaturated", "C/C=C/C", "alkenes"],
+  ["unsaturated", "CC#CC", "alkynes"],
+  ["unsaturated", "C=CC#C", "enynes"],
+  ["unsaturated", "C#CCC=C", "enynes"],
+  ["alcohols", "CCO", "alcohols"],
+  ["alcohols", "COCCO", "alcohols"],
+  ["alcohols", "O(CC)CC", "ethers"],
+  ["alcohols", "C1CCOC1", "ethers"],
+  ["carbonyls", "C=O", "aldehydes"],
+  ["carbonyls", "CCC=O", "aldehydes"],
+  ["carbonyls", "O=CCC=O", "aldehydes"],
+  ["carbonyls", "CC(=O)C", "ketones"],
+  ["carbonyls", "CC(=O)CO", "ketones"],
+  ["carbonyls", "O=C1CCCCC1", "ketones"],
+  ["acids", "CC(=O)O", "acids"],
+  ["acids", "CC(O)C(=O)O", "acids"],
+  ["acids", "CC(=O)OC", "esters"],
+  ["acids", "COC=O", "esters"],
+  ["acids", "CC(=O)N", "amides"],
+  ["acids", "CC(=O)N(C)C", "amides"],
+  ["acids", "CC(=O)Cl", "acyl-halides"],
+  ["acids", "CC(=O)Br", "acyl-halides"],
+  ["acids", "CC(=O)OC(=O)C", "anhydrides"],
+  ["amines", "CCN", "amines"],
+  ["amines", "CN(C)C", "amines"],
+  ["amines", "N1CCOCC1", "amines"],
+  ["amines", "CC#N", "nitriles"],
+  ["amines", "CC(O)C#N", "nitriles"],
+  ["amines", "O=[N+]([O-])C", "nitro"],
+  ["aromatics", "COc1ccccc1", "aromatics"],
+  ["aromatics", "CC(=O)c1ccccc1", "aromatics"],
+  ["aromatics", "N#Cc1ccccc1", "aromatics"],
+  ["halides", "ClCCO", "halides"],
+];
+for (const [original, smiles, expected] of topicFixtures) {
+  check(`${smiles}: correct topic within ${original}`, classifyQuizTopic(original, smiles) === expected);
+  check(`${smiles}: reclassification preserves its specific topic`, classifyQuizTopic(expected, smiles) === expected);
+}
+let nitrileMisreadAsAlkyne = false;
+try { classifyQuizTopic("unsaturated", "CC#N"); nitrileMisreadAsAlkyne = true; } catch { /* No carbon-carbon multiple bond. */ }
+check("a nitrile triple bond is not an alkyne", !nitrileMisreadAsAlkyne);
+check("every bank topic agrees with its structural class", QUIZ_BANK.every((entry) => classifyQuizTopic(entry.category, entry.smiles) === entry.category));
+const classifiedBankFixtures = [
+  [300, "acetyl acetate", "anhydrides"],
+  [340, "2-ethoxyethanol", "alcohols"],
+  [343, "2-methoxyethanol", "alcohols"],
+  [705, "but-1-en-3-yne", "enynes"],
+  [719, "pent-1-en-4-yne", "enynes"],
+  [611, "formaldehyde", "aldehydes"],
+  [559, "1-hydroxypropan-2-one", "ketones"],
+  [582, "3-hydroxybutan-2-one", "ketones"],
+  [284, "2-hydroxyacetic acid", "acids"],
+  [285, "2-hydroxypropanoic acid", "acids"],
+  [427, "2-hydroxypropanenitrile", "nitriles"],
+];
+for (const [id, name, category] of classifiedBankFixtures) {
+  check(`${name}: ID preserved with specific topic`, QUIZ_BANK[id]?.name === name && QUIZ_BANK[id]?.category === category);
+}
+for (const id of [382, 388, 393, 398, 407, 411, 416, 422]) {
+  check(`cyclooctane question ${id}: large ring belongs to cycloalkanes`, QUIZ_BANK[id].category === "cycloalkanes");
+}
 
 // Stereodescriptors have to keep their case: "(e)" is not a descriptor.
 const miscased = QUIZ_BANK.filter((q) => /\([0-9]*[ezrs][,)]/.test(q.name));
@@ -117,6 +190,23 @@ const all = QUIZ_BANK.map((_, index) => index);
 check("exhausting the pool starts over rather than failing", pickQuestion("name", null, null, all) !== null);
 check("an impossible selection returns nothing", pickQuestion("name", "no-such-category", null, []) === null);
 
+// Retained names and heterocycles do not reliably spell out their family.
+// The first hint must use the actual topic in both practice directions.
+for (const [name, family] of [
+  ["oxane", "an ether"],
+  ["1-nitroethane", "a nitro compound"],
+  ["acetyl acetate", "an acid anhydride"],
+  ["but-1-en-3-yne", "an enyne, with both a double and a triple bond"],
+  ["piperidine", "an amine"],
+  ["formaldehyde", "an aldehyde"],
+]) {
+  const target = QUIZ_BANK.findIndex((entry) => entry.name === name);
+  for (const mode of QUIZ_MODES) {
+    const question = target < 0 ? null : pickQuestion(mode, null, null, all.filter((id) => id !== target));
+    check(`${name}: ${mode} family hint identifies its structural class`, question?.id === target && question.hints[0].endsWith(`it is ${family}.`));
+  }
+}
+
 // A selected topic is part of one combined pool. Exhausting the first topic
 // must not reset it while another selected topic still has unseen questions.
 const selectedTopics = Object.freeze(["alkanes", "alcohols"]);
@@ -137,6 +227,25 @@ for (const difficulty of [null, ...DIFFICULTIES]) {
 const unionReset = pickQuestion("name", selectedTopics, "hard", all);
 check("exhausted union resets only within its topics and difficulty", unionReset && selectedTopics.includes(unionReset.category) && unionReset.difficulty === "hard");
 check("unknown topic arrays have no questions", countFor(["no-such-category"], null) === 0 && pickQuestion("name", ["no-such-category"], null) === null);
+
+// Legacy links for retired IDs still mean the old union. Combining an alias
+// with one of its children must not count or sample that child twice.
+for (const [legacy, children] of Object.entries(TOPIC_ALIASES)) {
+  for (const difficulty of [null, ...DIFFICULTIES]) {
+    const expected = children.reduce((sum, topic) => sum + countFor(topic, difficulty), 0);
+    check(`${legacy}: legacy count is its child union at ${difficulty ?? "any"} level`, countFor(legacy, difficulty) === expected);
+    check(`${legacy}: overlapping alias selections count each question once`, countFor([legacy, ...children, legacy], difficulty) === expected);
+  }
+  for (const child of children) {
+    const target = QUIZ_BANK.findIndex((entry) => entry.category === child);
+    for (const mode of QUIZ_MODES) {
+      check(`${legacy}: ${mode} can pick an unseen ${child} question`, pickQuestion(mode, legacy, null, all.filter((id) => id !== target))?.id === target);
+    }
+  }
+}
+for (const category of categoryIds) {
+  check(`${category}: specific topic count excludes sibling topics`, countFor(category, null) === QUIZ_BANK.filter((entry) => entry.category === category).length);
+}
 
 // Load the real Next handler under Node with the same aliases/extension that
 // Next resolves at build time. Keep this adapter local to the route import.
@@ -162,6 +271,14 @@ check("API preserves single-topic requests", legacyTopicResponse.status === 200 
 const emptyTopicResponse = await quizGet(new Request(`http://localhost/api/quiz?category=&category=&seen=${unseenSecondTopic}`));
 check("empty API topic values mean all topics", emptyTopicResponse.status === 200 && (await emptyTopicResponse.json()).id === secondTopicTarget);
 check("API preserves unknown-only topic 404", (await quizGet(new Request("http://localhost/api/quiz?category=no-such-category"))).status === 404);
+for (const [legacy, topic] of [["unsaturated", "enynes"], ["carbonyls", "ketones"]]) {
+  const target = QUIZ_BANK.findIndex((entry) => entry.category === topic);
+  const seen = all.filter((id) => id !== target).join(",");
+  const response = await quizGet(new Request(`http://localhost/api/quiz?category=${legacy}&category=${topic}&seen=${seen}`));
+  check(`API supports legacy ${legacy} with overlapping ${topic} selection`, response.status === 200 && (await response.json()).id === target);
+}
+const etherResponse = await quizGet(new Request("http://localhost/api/quiz?category=ethers"));
+check("API supports the separate ethers topic", etherResponse.status === 200 && (await etherResponse.json()).category === "ethers");
 
 // The substituent hint must name what the compound actually carries. A plain
 // substring test gets this wrong both ways: "methyl" ends with "ethyl", and

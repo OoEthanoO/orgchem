@@ -17,6 +17,10 @@
  *   node --experimental-strip-types --import ./scripts/loader.mjs \
  *     scripts/build-quiz-bank.mjs --expand
  * Successful responses are cached under ignored node_modules/.cache/chem.
+ *
+ * Update topic labels only, preserving all chemistry and IDs without fetching:
+ *   node --experimental-strip-types --import ./scripts/loader.mjs \
+ *     scripts/build-quiz-bank.mjs --reclassify
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
@@ -24,12 +28,14 @@ import * as OCL from "openchemlib";
 
 import { difficultyOf } from "./quiz-difficulty.mjs";
 import { expansionCandidates } from "./quiz-expansion-candidates.mjs";
+import { classifyQuizTopic } from "./quiz-topics.mjs";
 import { QUIZ_BANK } from "../src/lib/quiz-bank.ts";
 import { DEFAULT_DISPLAY, depict } from "../src/lib/depict.ts";
 
 const PUBCHEM = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound";
 const OPSIN = "https://www.ebi.ac.uk/opsin/ws";
 const APPEND = process.argv.includes("--expand");
+const RECLASSIFY = process.argv.includes("--reclassify");
 const CACHE_DIR = "node_modules/.cache/chem";
 const CACHE_FILE = `${CACHE_DIR}/quiz-bank-verification.json`;
 mkdirSync(CACHE_DIR, { recursive: true });
@@ -290,18 +296,21 @@ function flatKey(smiles) {
   return molecule.getIDCode();
 }
 
-const existing = APPEND ? QUIZ_BANK : [];
+const existing = APPEND || RECLASSIFY
+  ? QUIZ_BANK.map((entry) => ({ ...entry, category: classifyQuizTopic(entry.category, entry.smiles) }))
+  : [];
 const seen = new Set(existing.map((entry) => idCode(entry.smiles)));
 const seenNames = new Set(existing.map((entry) => entry.name));
 const rejected = [];
 const pool = [];
-for (const candidate of APPEND ? expansionCandidates() : [...candidates(), ...expansionCandidates()]) {
+const candidatesToCheck = RECLASSIFY ? [] : APPEND ? expansionCandidates() : [...candidates(), ...expansionCandidates()];
+for (const candidate of candidatesToCheck) {
   try {
     const key = idCode(candidate.smiles);
     if (seen.has(key)) continue;
     seen.add(key);
     if (candidate.smiles.includes(".")) throw new Error("disconnected structure");
-    pool.push(candidate);
+    pool.push({ ...candidate, category: classifyQuizTopic(candidate.category, candidate.smiles) });
   } catch (error) { rejected.push(`${candidate.smiles}: ${error.message}`); }
 }
 console.log(`${pool.length} unique candidate structures; preserving ${existing.length} existing questions\n`);
@@ -350,7 +359,7 @@ async function considerCandidate(candidate) {
   // The actual application must be able to draw what the services agreed on.
   depict(named.smiles, DEFAULT_DISPLAY);
   return {
-    category: candidate.category,
+    category: classifyQuizTopic(candidate.category, named.smiles),
     smiles: named.smiles,
     name: named.name,
     title: named.title ?? "",
@@ -384,7 +393,7 @@ console.log("by difficulty:", byDifficulty);
 console.log(`\nrejected ${rejected.length}:`);
 for (const reason of rejected.slice(0, 40)) console.log(`  ${reason}`);
 
-if (!APPEND) accepted.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+if (!APPEND && !RECLASSIFY) accepted.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
 const file = `/**
  * Naming-practice questions.

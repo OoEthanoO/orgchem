@@ -27,15 +27,32 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "alkanes", label: "Alkanes & rings", blurb: "chains, branches and cycloalkanes" },
-  { id: "unsaturated", label: "Alkenes & alkynes", blurb: "double and triple bonds, and where they sit" },
+  { id: "alkanes", label: "Alkanes", blurb: "saturated carbon chains and branches" },
+  { id: "cycloalkanes", label: "Cycloalkanes", blurb: "saturated carbon rings and their substituents" },
+  { id: "alkenes", label: "Alkenes", blurb: "carbon–carbon double bonds and their positions" },
+  { id: "alkynes", label: "Alkynes", blurb: "carbon–carbon triple bonds and their positions" },
+  { id: "enynes", label: "Enynes", blurb: "hydrocarbons containing both double and triple bonds" },
   { id: "halides", label: "Haloalkanes", blurb: "halogens as substituents" },
-  { id: "alcohols", label: "Alcohols & ethers", blurb: "-ol suffixes, diols, alkoxy prefixes" },
-  { id: "carbonyls", label: "Aldehydes & ketones", blurb: "-al and -one, and their locants" },
-  { id: "acids", label: "Acids & derivatives", blurb: "acids, esters, amides, acyl chlorides" },
-  { id: "amines", label: "Amines & nitriles", blurb: "nitrogen as the principal group" },
+  { id: "alcohols", label: "Alcohols", blurb: "hydroxyl groups, -ol suffixes and polyols" },
+  { id: "ethers", label: "Ethers", blurb: "alkoxy prefixes and oxygen-containing rings" },
+  { id: "aldehydes", label: "Aldehydes", blurb: "-al suffixes and aldehyde groups" },
+  { id: "ketones", label: "Ketones", blurb: "-one suffixes and carbonyl positions" },
+  { id: "acids", label: "Carboxylic acids", blurb: "carboxyl groups and -oic acid suffixes" },
+  { id: "esters", label: "Esters", blurb: "the alcohol and acid parts of ester names" },
+  { id: "amides", label: "Amides", blurb: "-amide suffixes and nitrogen substituents" },
+  { id: "acyl-halides", label: "Acyl halides", blurb: "acyl groups bonded to halogens" },
+  { id: "anhydrides", label: "Acid anhydrides", blurb: "two acyl groups joined through oxygen" },
+  { id: "amines", label: "Amines", blurb: "amine groups and nitrogen substituents" },
+  { id: "nitriles", label: "Nitriles", blurb: "carbon–nitrogen triple bonds and -nitrile suffixes" },
+  { id: "nitro", label: "Nitro compounds", blurb: "nitro groups and their positions" },
   { id: "aromatics", label: "Aromatics", blurb: "benzene rings and their substituents" },
 ];
+
+/** Keep links using retired combined-topic IDs scoped to their original pool. */
+export const TOPIC_ALIASES: Record<string, readonly string[]> = {
+  unsaturated: ["alkenes", "alkynes", "enynes"],
+  carbonyls: ["aldehydes", "ketones"],
+};
 
 export const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
 
@@ -105,10 +122,10 @@ function matches(
   category: CategorySelection,
   difficulty: Difficulty | null,
 ): boolean {
+  const topics = !category ? [] : typeof category === "string" ? [category] : category;
   return (
-    (!category || (typeof category === "string"
-      ? question.category === category
-      : category.length === 0 || category.includes(question.category))) &&
+    (topics.length === 0 || topics.some((topic) => topic === question.category ||
+      (Object.hasOwn(TOPIC_ALIASES, topic) && TOPIC_ALIASES[topic].includes(question.category)))) &&
     (!difficulty || question.difficulty === difficulty)
   );
 }
@@ -356,24 +373,29 @@ const STEM_SIZES: Array<[string, string]> = [
   ["meth", "one"],
 ];
 
-const FAMILY_HINTS: Array<[RegExp, string]> = [
-  [/oic acid$|carboxylic acid$/, "a carboxylic acid"],
-  [/oate$|yl .*oate$/, "an ester"],
-  [/amide$/, "an amide"],
-  [/nitrile$/, "a nitrile"],
-  [/oyl chloride$|carbonyl chloride$/, "an acyl chloride"],
-  [/al$/, "an aldehyde"],
-  [/one$/, "a ketone"],
-  [/ol$/, "an alcohol"],
-  [/amine$/, "an amine"],
-  [/ene$/, "an alkene"],
-  [/yne$/, "an alkyne"],
-  [/benzene$|phenol$|aniline$|toluene$|benzoic acid$|benzaldehyde$/, "an aromatic compound"],
-  // These have to be tried before the plain alkane ending they both share.
-  [/(chloro|bromo|fluoro|iodo)[a-z]*ane$/, "a haloalkane"],
-  [/(methoxy|ethoxy|propoxy|butoxy)[a-z]*ane$/, "an ether"],
-  [/ane$/, "an alkane"],
-];
+// Topic assignment comes from the molecular bonds, including retained names
+// and heterocycles whose endings do not identify their functional group.
+const FAMILY_HINTS: Record<string, string> = {
+  alkanes: "an alkane",
+  cycloalkanes: "a cycloalkane",
+  alkenes: "an alkene",
+  alkynes: "an alkyne",
+  enynes: "an enyne, with both a double and a triple bond",
+  halides: "a haloalkane",
+  alcohols: "an alcohol",
+  ethers: "an ether",
+  aldehydes: "an aldehyde",
+  ketones: "a ketone",
+  acids: "a carboxylic acid",
+  esters: "an ester",
+  amides: "an amide",
+  "acyl-halides": "an acyl halide",
+  anhydrides: "an acid anhydride",
+  amines: "an amine",
+  nitriles: "a nitrile",
+  nitro: "a nitro compound",
+  aromatics: "an aromatic compound",
+};
 
 /**
  * Three hints that give away progressively more: what kind of compound it is,
@@ -389,7 +411,7 @@ function hintsFor(question: BankQuestion, formula: string, mode: QuizMode): stri
   const name = question.name;
   const hints: string[] = [];
 
-  const family = FAMILY_HINTS.find(([pattern]) => pattern.test(name))?.[1];
+  const family = FAMILY_HINTS[question.category];
   hints.push(
     family
       ? `${formula} — it is ${family}.`
